@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html style="overflow: hidden;">
+	<head>
+		<title>APRSViewJS</title>
+		
+		<link rel="stylesheet" href="../css/leaflet.css" />
+		<link rel="stylesheet" href="../css/leaflet.label.css" />
+		<link rel="stylesheet" href="../css/leaflet-search.css" />
+		
+		<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+	</head>
+	<body>
+		<div id="tabs" style="width: auto; height: 100vh; margin: 0px; padding: 0px; border-collapse: collapse;">
+			<ul>
+				<li><a href="#map">Map</a></li>
+				<li><a href="#messages">Messages</a></li>
+				<li><a href="#settings">Settings</a></li>
+			</li>
+			<br style="clear: both" />
+			<div id="map" style="width: auto; height: 100vh; border-collapse: collapse;"></div>
+			<div id="messages" style="width: auto; height: 100vh; max-height: 100vh; padding-bottom: 100px; overflow: hidden;">
+			<div id="messages" style="width: auto; padding-bottom: 100px; overflow: hidden;">
+				<table id="allMessagesTable" class="messages-table">
+					<thead>
+						<th>Message Number</th>
+						<th>To/Group Name</th>
+						<th>From</th>
+						<th>Message</th>
+						<th style="width: 50px;"></th>
+					</thead>
+					<tbody data-bind="foreach: messageWindowMessages" style="overflow: auto;">
+						<td style="text-align: left;">
+							<span data-bind="text: msgNumber"></span>
+						</td>
+						<td style="text-align: left;">
+							<span data-bind="text: sourceCall"></span>
+						</td>
+						<td style="text-align: left;">
+							<span data-bind="text: addressee"></span>
+							<span data-bind="text: groupName"></span>
+						</td>
+						<td style="text-align: left;">
+							<span data-bind="text: message"></span>
+						</td>
+						<td style="width: 50px; text-align: center;">
+							<a href="#" data-bind="value: $data, click: $root.DeleteMessage">
+								<img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
+							</a>
+						</td>
+					</tbody>
+				</table>
+			</div>
+			<div id="settings" style="width: auto; height: 100%; min-height: 100;">
+				
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="../js/lib/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="../js/lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+		
+		
+		<script type="text/javascript" src="../js/lib/socket.io.min.js"></script>
+		<script type="text/javascript" src="../js/lib/leaflet-0.7.2/leaflet.js"></script>
+		<script type="text/javascript" src="../js/lib/Leaflet.label-master/dist/leaflet.label.js"></script>
+		<script type="text/javascript" src="../js/lib/notify.min.js"></script>
+		<script type="text/javascript" src="../js/lib/leaflet-search-master/src/leaflet-search.js"></script>
+		
+		<script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
+		
+		
+		<script type="text/javascript" src="../js/techpire/LayerManager.js"></script>
+		<script type="text/javascript" src="../js/techpire/APRSConnectionManager.js"></script>
+		
+		<!--
+		<script type="text/javascript" src="../js/techpire/StationMarkerIcon.js"></script>
+		<script type="text/javascript" src="../js/techpire/APRSPositionMarker.js"></script>
+		<script type="text/javascript" src="../js/techpire/TrailColorUtil.js"></script>
+		-->
+		
+		<script type="text/javascript" src="../js/views/index.js"></script>
+		
+		
+		<script type="text/javascript">
+			var gui = require('nw.gui');
+			
+			$(document).keydown(function(e) {
+				if (e.which == 123 /*F12*/) {                           
+					e.preventDefault();              
+					gui.Window.get().showDevTools();
+					
+					return true;
+				}
+			});
+		</script>
+		
+		<style>
+			body {
+				font-size: 12px;
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			.messages-table {
+				width: 100%;
+				border: 1px solid black;
+				background-color: #ffffff;
+				border-collapse: collapse;
+			}
+			
+			.messages-table th {
+				background-color: silver;
+			}
+			
+			messages-table td, th {
+				border: 1px solid black;
+			}
+		</style>
+	</body>
+</html>

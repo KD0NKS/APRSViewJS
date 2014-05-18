@@ -1,0 +1,21 @@
+<html>
+	<head></head>
+	<body>
+		<script type="text/javascript" src="leaflet.js"></script>
+		<script type="text/javascript">
+			var polyline = L.polyline([L.latLng(30, -97)], { color: 'red' });
+			
+			polyline.addLatLng(L.latLng(31, -97));
+			polyline.addLatLng(L.latLng(32, -97));
+			polyline.addLatLng(L.latLng(33, -97));
+			polyline.addLatLng(L.latLng(34, -97));
+			polyline.addLatLng(L.latLng(35, -97));
+			
+			console.log(polyline);
+			
+			polyline.spliceLatLngs(3, 1);
+			
+			console.log(polyline);
+		</script>
+	</body>
+</html>

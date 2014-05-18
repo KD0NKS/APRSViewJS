@@ -1,0 +1,33 @@
+.leaflet-label {
+	background: rgb(235, 235, 235);
+	border: 1px solid #555;
+	color: #111;
+	display: block;
+	font: 10px Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	padding: 2px;
+	position: absolute;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	white-space: nowrap;
+}
+
+.leaflet-label.leaflet-clickable {
+	cursor: pointer;
+}
+
+.leaflet-label:before,
+.leaflet-label:after {
+	position: absolute;
+	top: 0px;
+}
+
+.leaflet-label:before {
+	left: -5px;
+}
+
+.leaflet-label:after {
+	right: -5px;
+}
