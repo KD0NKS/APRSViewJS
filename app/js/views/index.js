@@ -23,7 +23,7 @@
 	90m = 5400000 ms
 */
 
-var TIMEOUT_PERIOD = 900000;
+var TIMEOUT_PERIOD = 300000;
 var map = null;
 var markersLayer = null;
 
@@ -50,6 +50,8 @@ function StationTrail(data) {
 	Object containing all message objects - message packet specific
 */
 function MessageObject(data) {
+	console.log(data);
+	
 	this.msgNumber = ko.observable(data.number);
 	this.sourceCall = ko.observable(data.callsign);
 	this.addressee = ko.observable(data.addressee);
@@ -141,8 +143,19 @@ function pageViewModel() {
 $(document).ready(function() {
 	$("#tabs").tabs();
 	
-	layerManager.LoadMapLayers();
-	createMap(layerManager.baseLayer());
+	$.when(
+		layerManager.LoadMapLayers()
+	).done(function() {
+		createMap(layerManager.baseLayer());
+	
+		var viewModel = new pageViewModel();
+		ko.applyBindings(viewModel);
+		
+		window.setInterval(viewModel.RemoveOldPositions, 60000);
+		
+		connectionManager.LoadConnections();
+		readServerData(viewModel);
+	});
 	
 	
 	
@@ -222,8 +235,6 @@ $(document).ready(function() {
 	//map.on('click', function(e) {
 	//	alert(e.latlng);
 	//});
-	
-	
 });
 
 function createMap(baseLayer) {
@@ -259,9 +270,13 @@ function createMap(baseLayer) {
 }
 
 function readServerData(viewModel) {
-	var socket = io.connect('http://localhost:9999');
-	
-	socket.on('position', function (data) {
+	connectionManager.sentMessages.onValue(function(value) {
+		// Debugging purposes - outputs the data to the console.
+		console.log(value);
+	});
+
+	connectionManager.mapPackets.onValue(function(data) {
+		
 		// Debugging purposes - outputs the packet to the console.
 		//console.log(data);
 		
@@ -294,7 +309,7 @@ function readServerData(viewModel) {
 					[data.latitude, data.longitude]
 					, { 
 						icon: L.icon({
-							iconUrl: 'style/images/station' + getSymbolPath(data.symbolTableId, data.symbolCode)
+							iconUrl: '../css/images/station' + getSymbolPath(data.symbolTableId, data.symbolCode)
 						})
 						, receivedTime: Date.parse(data.receivedTime)
 						, callsign: data.callsign
@@ -349,15 +364,16 @@ function readServerData(viewModel) {
 		}
 	});
 	
-	socket.on('message', function (data) {
-		// todo: group filters
+	connectionManager.messages.onValue(function(value) {
+		console.log(value);
+	
 		$.notify(
-			'From: ' + data.callsign
-			+ '\nTo: ' + data.addressee
-			+ '\n' + data.message
+			'From: ' + value.callsign
+			+ '\nTo: ' + value.addressee
+			+ '\n' + value.message
 			, { autoHide: true, autoHideDelay: 15000 });
 		
-		viewModel.messageWindowMessages.push(new MessageObject(data));
+		viewModel.messageWindowMessages.push(new MessageObject(value));
 		
 		/*
 			NWS
