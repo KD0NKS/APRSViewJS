@@ -1,9 +1,9 @@
 var TechpireAPRS = require('TechpireAPRS')
 		;
 
-//var SOFTWARE_NAME = 'testsoftware';
-//var SOFTWARE_VERSION = 0;
-		
+var SOFTWARE_NAME = 'testsoftware';
+var SOFTWARE_VERSION = 0;
+
 function APRSConnectionManager() {
 	var self = this;
 	
@@ -18,26 +18,32 @@ function APRSConnectionManager() {
 	args['host'] = '';
 	args['port'] = 10154;
 	
+	args['filter'] = '';
+	
 	args['isEnabled'] = false;
 	args['isReconnectOnFailure'] = true;
 	
-	args['softwareName'] = 'testsoftware';
-	args['softwareVersion'] = 0;
+	args['SOFTWARE_NAME'] = SOFTWARE_NAME;
+	args['SOFTWARE_VERSION'] = SOFTWARE_VERSION;
 	
 	dataConnection = connectionFactory.CreateDataConnection(args);
 	
-	console.log(dataConnection.host);
-	console.log(dataConnection.callsign);
-	console.log(dataConnection);
+	//dataConnection.Read();
 	
-	dataConnection.Read();
+	dataConnection.on('position', function(data) {
+		console.log(data);
+	});
 	
-	//dataConnection.on('data', function(data) {
-	//	console.log(data);
-	//});
+	dataConnection.on('sending', function(data) {
+		console.log(data);
+	});
+	
+	dataConnection.on('message', function(data) {
+		console.log(data);
+	});
 	
 	try {
-		dataConnection.Connect();
+		//dataConnection.Connect();
 	} catch(e) {
 		console.log(e);
 	}
