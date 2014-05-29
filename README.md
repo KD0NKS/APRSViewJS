@@ -1,6 +1,9 @@
 #APRSViewJS
 
-Experimental APRS Client using NodeWebkit
+Experimental APRS Client using NodeWebkit.
+
+###Contributors
+If you are a HAM, a deveoper, and interested in contributing? Please contact me.  The more developers contributing, the faster we can add features and make this a viable APRS client.
 
 ##Local Dev Setup
 

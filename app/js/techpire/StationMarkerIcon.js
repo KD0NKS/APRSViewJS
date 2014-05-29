@@ -343,7 +343,7 @@ function getSymbolPath(symbolTableId, symbolCode) {
 		} else if(symbolCode == 'v') {
 			return "/AlternateTable/Van.gif";
 		} else if(symbolCode == 'w') {
-			return "/AlternateTable/Flooding.gif";
+			return "/AlternateTable/Flood.gif";
 		} else if(symbolCode == 'x') {
 			return "/AlternateTable/Obstruction.gif";
 		} else if(symbolCode == 'y') {

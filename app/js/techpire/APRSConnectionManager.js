@@ -11,6 +11,9 @@ var SOFTWARE_VERSION = 0;
 
 function APRSConnectionManager() {
 	this.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
+	
+	this.dataConnections = new Array();
+	
 	this.messages = new Bacon.Bus();
 	this.mapPackets = new Bacon.Bus();
 	this.sentMessages = new Bacon.Bus();
@@ -21,17 +24,14 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	
 	// TODO: foreach data connection
 	var args = Array();
+	
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
-	args['passcode'] = '-1';
 	args['host'] = '';
 	args['port'] = 10154;
-	
 	args['filter'] = '';
-	
 	args['isEnabled'] = false;
 	args['isReconnectOnFailure'] = true;
-	
 	args['SOFTWARE_NAME'] = SOFTWARE_NAME;
 	args['SOFTWARE_VERSION'] = SOFTWARE_VERSION;
 	
