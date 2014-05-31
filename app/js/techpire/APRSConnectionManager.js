@@ -32,8 +32,9 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['filter'] = '';
 	args['isEnabled'] = false;
 	args['isReconnectOnFailure'] = true;
-	args['SOFTWARE_NAME'] = SOFTWARE_NAME;
-	args['SOFTWARE_VERSION'] = SOFTWARE_VERSION;
+	args['keepAliveTime'] = 60000;
+	args['softwareName'] = SOFTWARE_NAME;
+	args['softwareVersion'] = SOFTWARE_VERSION;
 	
 	dataConnection = this.connectionFactory.CreateDataConnection(args);
 	

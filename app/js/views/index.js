@@ -23,12 +23,14 @@
 	90m = 5400000 ms
 */
 
-var TIMEOUT_PERIOD = 300000;
+var TIMEOUT_PERIOD = 900000;
 var map = null;
 var markersLayer = null;
 
 var layerManager = new LayerManager();
 var connectionManager = new APRSConnectionManager();
+
+var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
 /*
 	Object containing all the points from which an individual station has reported from - location packet specific
@@ -230,6 +232,15 @@ function readServerData(viewModel) {
 					+ '<br />Course: ' + data.direction
 					+ '<br />Raw Data: ' + data.rawPacket);
 			} else {
+				if(existingMarkers.length > 0) {
+					var lastMarker = existingMarkers[existingMarkers.length - 1];
+					console.log('Modifying existing label for: ' + data.callsign);
+					
+					lastMarker.unbindLabel();
+					lastMarker.setIcon(oldIcon);
+					lastMarker.options.angle = 0;
+				}
+				
 				var marker = new L.APRSPositionMarker(
 					[data.latitude, data.longitude]
 					, { 
