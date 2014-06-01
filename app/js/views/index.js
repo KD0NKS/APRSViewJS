@@ -32,6 +32,51 @@ var connectionManager = new APRSConnectionManager();
 
 var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
+// do DOM lookups once
+var mapEle = $('#map');
+var statusBar = $('#statusBar');
+var messagesEle = $('#messages');
+var tabNavBarEle; // set when tabs are created
+
+// DOM is already init'd, must create tabs before doing anything with map
+$('#tabs').tabs({
+    create: function(event, ui) {
+        $('body').css('opacity', '1'); // show body after markup has been enhanced
+        tabNavBarEle = $('.ui-tabs-nav');
+        resizeDynamicElements();
+    },
+    beforeActivate: function(event, ui) {
+        if (ui.newTab.text() === 'Map') {
+            statusBar.show() 
+            map._onResize(); // needed in case window is resized in other tabs
+        } else {
+            statusBar.hide();
+        }
+    }
+});
+
+$(window).on('resize', resizeDynamicElements);
+
+$.when(
+    layerManager.LoadMapLayers()
+).done(function() {
+    createMap(layerManager.baseLayer());
+
+    var viewModel = new pageViewModel();
+    ko.applyBindings(viewModel);
+    
+    window.setInterval(viewModel.RemoveOldPositions, 60000);
+    
+    connectionManager.LoadConnections();
+    readServerData(viewModel);
+    
+    // mouse move
+    //map.on('mousemove', function(e) {
+    //map.on('click', function(e) {
+    //	alert(e.latlng);
+    //});
+});
+
 /*
 	Object containing all the points from which an individual station has reported from - location packet specific
 
@@ -67,6 +112,10 @@ function pageViewModel() {
 	self.DeleteMessage = function(m) {
 		self.messageWindowMessages.remove(m);
 	};
+    
+    self.DeleteAllMessages = function() {
+        self.messageWindowMessages([]);
+    };
 	
 	// collection of markers for all stations on the map.
 	// does knockout have a remove function on arrays?
@@ -75,8 +124,7 @@ function pageViewModel() {
 	// trails for all the stations on the map... in the future, this will only be for moving stations
 	self.trails = ko.observableArray([]);
 	
-	
-	
+    
 	// USE SLICE!!!!!
 	self.RemoveOldPositions = function() {
 		var checkNext = true;
@@ -139,30 +187,6 @@ function pageViewModel() {
 		}
 	};
 };
-
-$(document).ready(function() {
-	$("#tabs").tabs();
-	
-	$.when(
-		layerManager.LoadMapLayers()
-	).done(function() {
-		createMap(layerManager.baseLayer());
-	
-		var viewModel = new pageViewModel();
-		ko.applyBindings(viewModel);
-		
-		window.setInterval(viewModel.RemoveOldPositions, 60000);
-		
-		connectionManager.LoadConnections();
-		readServerData(viewModel);
-		
-		// mouse move
-		//map.on('mousemove', function(e) {
-		//map.on('click', function(e) {
-		//	alert(e.latlng);
-		//});
-	});
-});
 
 function createMap(baseLayer) {
 	map = L.map('map', {
@@ -318,4 +342,16 @@ function readServerData(viewModel) {
 			check to see if the user's current position is inside the affected area using the given coordinates
 		*/
 	});
+}
+
+/*
+    Resizes the leaflet map and messages div (the CSS3 vw/vh does not cut the mustard)
+*/
+function resizeDynamicElements() {
+    var h = $(window).height() - tabNavBarEle.height() - 10; // ~45px
+    var w = $(window).width();
+    
+    mapEle.height(h).width(w);
+    
+    messagesEle.height(h - 75);
 }
