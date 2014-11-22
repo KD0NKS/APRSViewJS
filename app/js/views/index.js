@@ -11,6 +11,11 @@
 		//, AbstractDataConnection = require('scripts/data_connection/AbstractDataConnection.js')
 		//, JavAPRSISConnection = require('scripts/data_connection/JavAPRSISConnection.js')
 		//;
+		
+var TechpireAPRS = require('TechpireAPRS')
+	, ObjectReport = require('TechpireAPRS').ObjectReport
+	, APRSPositionReport = require('TechpireAPRS').APRSPositionReport
+	;
 
 /*
 	1m = 60000 ms
@@ -23,7 +28,7 @@
 	90m = 5400000 ms
 */
 
-var TIMEOUT_PERIOD = 900000;
+var TIMEOUT_PERIOD = 3600000;
 var map = null;
 var markersLayer = null;
 
@@ -201,9 +206,80 @@ function readServerData(viewModel) {
 		// Debugging purposes - outputs the data to the console.
 		console.log(value);
 	});
-
-	connectionManager.mapPackets.onValue(function(data) {
-		
+	
+	connectionManager.mapPackets.ofType = function(type) {
+		return connectionManager.mapPackets.filter(function(data) {
+			return data instanceof type
+		});
+	};
+	
+	connectionManager.mapPackets.ofType(ObjectReport).onValue(function(data) {
+		// TODO: remove the hard coded position marker
+		if(data.indicator == '*') { // Live object
+			if(data.latitude != null && data.longitude != null) {
+				var marker = null;
+				
+				// check to see if a marker already exists for that station at that coordinates
+				var existingMarkers = ko.utils.arrayFilter(viewModel.markers(), function(m) {
+					return m.options.callsign == data.name && m.options.symbolTableId == data.symbolTableId && m.options.symbolCode == data.symbolCode
+				});
+				
+				// if a station hasn't moved, we don't need to create 2 markers in the same place... lets be nice to our memory and graphics cards
+				// and simply update the marker.  we will remove it from the markers list and add it back at the end.
+				// the timer that removes the old markers loops through the markers array until it finds one where the time does not exceed the TIMEOUT_PERIOD period
+				if(existingMarkers.length > 0 && existingMarkers[0].getLatLng().lng == data.longitude && existingMarkers[0].getLatLng().lat == data.latitude ) {
+					marker = existingMarkers[0];
+					
+					marker.options.receivedTime = data.receivedTime;
+					marker.unbindPopup();
+					
+					marker.bindPopup('<b>' + data.name + '</b>'
+						+ '<br />Callsign: ' + data.callsign
+						+ '<br />Received Time: ' + data.receivedTime
+						+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
+						+ '<br />Speed: ' + data.speed
+						+ '<br />Course: ' + data.direction
+						+ '<br />Raw Data: ' + data.rawPacket);
+				} else {
+					if(existingMarkers.length > 0) {
+						var lastMarker = existingMarkers[existingMarkers.length - 1];
+						
+						lastMarker.unbindLabel();
+						lastMarker.setIcon(oldIcon);
+						lastMarker.options.angle = 0;
+					}
+					
+					var marker = new L.APRSPositionMarker(
+						[data.latitude, data.longitude]
+						, { 
+							icon: L.icon({
+								iconUrl: '../css/images/station' + getSymbolPath(data.symbolTableId, data.symbolCode)
+							})
+							, receivedTime: Date.parse(data.receivedTime)
+							, callsign: data.name
+							, angle: (data.isIconRotatable == true ? data.direction : 90)
+							, symbolTableId: (data.symbolTableId == null ? '' : data.symbolTableId)
+							, symbolCode: (data.symbolCode == null ? '' : data.symbolCode)
+						}
+					).bindPopup('<b>' + data.name + '</b>'
+						+ '<br />Callsign: ' + data.callsign
+						+ '<br />Received Time: ' + data.receivedTime
+						+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
+						+ '<br />Speed: ' + data.speed
+						+ '<br />Course: ' + data.direction
+						+ '<br />Raw Data: ' + data.rawPacket)
+					.bindLabel(data.name, { noHide: true, direction: 'right' });
+					
+					marker.addTo(markersLayer);
+					viewModel.markers.push(marker);
+				}
+			}
+		} else {
+			console.log('KILL OBJECT');
+		}
+	});
+	
+	connectionManager.mapPackets.ofType(APRSPositionReport).onValue(function(data) {
 		// Debugging purposes - outputs the packet to the console.
 		//console.log(data);
 		
@@ -234,7 +310,6 @@ function readServerData(viewModel) {
 			} else {
 				if(existingMarkers.length > 0) {
 					var lastMarker = existingMarkers[existingMarkers.length - 1];
-					console.log('Modifying existing label for: ' + data.callsign);
 					
 					lastMarker.unbindLabel();
 					lastMarker.setIcon(oldIcon);

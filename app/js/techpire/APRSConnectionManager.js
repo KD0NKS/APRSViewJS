@@ -11,9 +11,9 @@ var SOFTWARE_VERSION = 0;
 
 function APRSConnectionManager() {
 	this.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
-	
+
 	this.dataConnections = new Array();
-	
+
 	this.messages = new Bacon.Bus();
 	this.mapPackets = new Bacon.Bus();
 	this.sentMessages = new Bacon.Bus();
@@ -21,10 +21,11 @@ function APRSConnectionManager() {
 
 APRSConnectionManager.prototype.LoadConnections = function() {
 	var dataConnection = null;
-	
+
 	// TODO: foreach data connection
 	var args = Array();
-	
+
+	/*
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
 	args['host'] = '';
@@ -35,18 +36,48 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['keepAliveTime'] = 60000;
 	args['softwareName'] = SOFTWARE_NAME;
 	args['softwareVersion'] = SOFTWARE_VERSION;
-	
+	*/
+
+	args['connectionType'] = 'APRSIS';
+	args['callsign'] = 'KD0NKS';
+	args['passcode'] = '-1';
+	args['host'] = 'central.aprs2.net';
+	args['port'] = 14580;
+	args['filter'] = 'r/39.257/-94.632/500';
+	args['isEnabled'] = true;
+	args['isReconnectOnFailure'] = true;
+	args['keepAliveTime'] = 60000;
+	args['softwareName'] = SOFTWARE_NAME;
+	args['softwareVersion'] = SOFTWARE_VERSION;
+
+	/*
+	args['connectionType'] = 'AGWPE';
+	args['callsign'] = 'KD0NKS';
+	args['passcode'] = '-1';
+	args['host'] = 'localhost';
+	args['port'] = 8000;
+	args['radioPort'] = 0;
+	args['isEnabled'] = true;
+	args['isReconnectOnFailure'] = true;
+	args['softwareName'] = SOFTWARE_NAME;
+	args['softwareVersion'] = SOFTWARE_VERSION;
+	*/
+
 	dataConnection = this.connectionFactory.CreateDataConnection(args);
-	
+
 	dataConnection.Read();
-	
+
+
+
 	this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
 	this.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
 	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
-	
+	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
+
 	try {
 		if(dataConnection.isEnabled === true) {
 			dataConnection.Connect();
+			dataConnection.Monitor();
 		}
 	} catch(e) {
 		console.log(e);
