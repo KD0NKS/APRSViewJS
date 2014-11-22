@@ -8,52 +8,181 @@
 		<link rel="stylesheet" href="../css/leaflet-search.css" />
 		
 		<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+		<style>
+			html, body {
+				font-size: 12px;
+				margin: 0px;
+				padding: 0px;
+                height: 100%;
+			}
+
+            .ui-tabs .ui-tabs-panel {
+                padding: 0px;
+            }
+                        
+            #statusBar {
+                position: absolute;
+                bottom: 0;
+                background-color: #fff;
+                height: 20px;
+                padding: 3px 5px;
+                font-size: 14px;
+            }
+            
+            /* messages and fixed table header rules */
+			.messages-table {
+                background-color: white;
+                width: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+			}
+            
+            .messages-table th {
+                padding: 0 5px;
+            }
+            
+            .messages-table td {
+                padding: 5px;
+                border-bottom: 1px solid #ccc;
+            }
+            
+            .messages-table td + td {
+                border-left: 1px solid #ccc;
+            }
+            
+            .fixed-table-container {
+                width: 99.5%;
+                height: 100%;
+                border: 1px solid black;
+                /*margin: 10px auto;*/
+                background-color: white;
+                /* above is decorative or flexible */
+                position: absolute; /* could be absolute or relative */
+                padding-top: 30px; /* height of header */
+            }
+            
+            .header-background {
+                background-color: silver;
+                height: 30px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                border-bottom: 1px solid black;
+            }
+            
+            .fixed-table-container-inner {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: 100%;
+            }
+
+            .th-inner {
+                position: absolute;
+                top: 0;
+                line-height: 30px; /* height of header */
+                text-align: left;
+                border-left: 1px solid black;
+                padding-left: 5px;
+                margin-left: -5px;
+            }
+            
+            .first .th-inner {
+                border-left: none;
+                padding-left: 6px;
+            }
+            /* end messages rules */
+
+            /* helper classes */            
+            .text-center {
+                text-align: center !important;
+            }
+            
+            .text-left {
+                text-align: left !important;
+            }
+            
+            .text-right {
+                text-align: right !important;
+            }
+		</style>
 	</head>
-	<body>
-		<div id="tabs" style="width: auto; margin: 0px; padding: 0px; border-collapse: collapse;">
+	<body style="opacity: 0;">
+		<div id="tabs">
 			<ul>
 				<li><a href="#map">Map</a></li>
 				<li><a href="#messages">Messages</a></li>
 				<li><a href="#settings">Settings</a></li>
-			</li>
-			<br style="clear: both" />
-			<div id="map" style="width: auto; height: 90vh; border-collapse: collapse;"></div>
-			<div id="messages" style="width: auto; height: 90vh; max-height: 90vh; padding-bottom: 100px; overflow: hidden;">
-			<div id="messages" style="width: auto; padding-bottom: 100px; overflow: hidden;">
-				<table id="allMessagesTable" class="messages-table">
-					<thead>
-						<th>Message Number</th>
-						<th>To/Group Name</th>
-						<th>From</th>
-						<th>Message</th>
-						<th style="width: 50px;"></th>
-					</thead>
-					<tbody data-bind="foreach: messageWindowMessages" style="overflow: auto;">
-						<td style="text-align: left;">
-							<span data-bind="text: msgNumber"></span>
-						</td>
-						<td style="text-align: left;">
-							<span data-bind="text: sourceCall"></span>
-						</td>
-						<td style="text-align: left;">
-							<span data-bind="text: addressee"></span>
-							<span data-bind="text: groupName"></span>
-						</td>
-						<td style="text-align: left;">
-							<span data-bind="text: message"></span>
-						</td>
-						<td style="width: 50px; text-align: center;">
-							<a href="#" data-bind="value: $data, click: $root.DeleteMessage">
-								<img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
-							</a>
-						</td>
-					</tbody>
-				</table>
+			</ul>
+			<div id="map"></div>
+			<div id="messages">
+                <div class="fixed-table-container">
+                    <div class="header-background"></div>
+                    <div class="fixed-table-container-inner">
+                        <table id="allMessagesTable" class="messages-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="first" style="min-width: 140px;">
+                                        <div class="th-inner">
+                                            Message Number
+                                        </div>
+                                    </th>
+                                    <th style="min-width: 140px;">
+                                        <div class="th-inner">
+                                            To/Group Name
+                                        </div>
+                                    </th>
+                                    <th style="min-width: 60px;">
+                                        <div class="th-inner">
+                                            From
+                                        </div>
+                                    </th>
+                                    <th style="min-width: 80px;">
+                                        <div class="th-inner">
+                                            Message
+                                        </div>
+                                    </th>
+                                    <th style="width: 50px;">
+                                        <div class="th-inner" style="padding-left: 25px;">
+                                            <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages">
+                                                <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
+                                            </a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: messageWindowMessages">
+                                <td class="text-left">
+                                    <span data-bind="text: msgNumber"></span>
+                                </td>
+                                <td class="text-left">
+                                    <span data-bind="text: sourceCall"></span>
+                                </td>
+                                <td class="text-left">
+                                    <span data-bind="text: addressee"></span>
+                                    <span data-bind="text: groupName"></span>
+                                </td>
+                                <td class="text-left">
+                                    <span data-bind="text: message"></span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#" data-bind="value: $data, click: $root.DeleteMessage">
+                                        <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
+                                    </a>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 			</div>
-			<div id="settings" style="width: auto; height: 100%; min-height: 100;">
+			<div id="settings">
 				
 			</div>
 		</div>
+        
+        <div id="statusBar">
+            Status bar content here. Adjust height and font as needed.
+        </div>
 		
 		<script type="text/javascript" src="../js/lib/jquery-2.1.0.min.js"></script>
 		<script type="text/javascript" src="../js/lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
@@ -74,7 +203,6 @@
 		
 		<script type="text/javascript" src="../js/views/index.js"></script>
 		
-		
 		<script type="text/javascript">
 			var gui = require('nw.gui');
 			
@@ -87,28 +215,5 @@
 				}
 			});
 		</script>
-		
-		<style>
-			body {
-				font-size: 12px;
-				margin: 0px;
-				padding: 0px;
-			}
-			
-			.messages-table {
-				width: 100%;
-				border: 1px solid black;
-				background-color: #ffffff;
-				border-collapse: collapse;
-			}
-			
-			.messages-table th {
-				background-color: silver;
-			}
-			
-			messages-table td, th {
-				border: 1px solid black;
-			}
-		</style>
 	</body>
 </html>
