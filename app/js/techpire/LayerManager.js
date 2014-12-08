@@ -5,6 +5,8 @@ L.NamedTileLayer = L.TileLayer.extend({
 	}
 });
 
+// TODO: Can this be replaced by leaflet.wms.js?
+// https://github.com/heigeo/leaflet.wms
 L.TileLayer.NamedWMS = L.TileLayer.WMS.extend({
 	options: {
 		displayName: ''
@@ -72,7 +74,7 @@ function LayerManager() {
 		var l = new L.NamedTileLayer(
 			'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			, {
-				'attribution': '© {y} OpenStreetMap Contributors, CC-BY-SA'
+				'attribution': 'Â© {y} OpenStreetMap Contributors, CC-BY-SA'
 				, 'maxZoom': 18
 				, 'reuseTiles': true
 				, 'displayName': 'OSM'
@@ -85,7 +87,7 @@ function LayerManager() {
 		self.baseLayers.push(new L.NamedTileLayer(
 			'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
 			, {
-				'attribution': 'OpenCycleMap - © {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
+				'attribution': 'OpenCycleMap - Â© {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
 				, 'maxZoom': 18
 				, 'reuseTiles': true
 				, 'displayName': 'OpenCycleMap'
@@ -96,7 +98,7 @@ function LayerManager() {
 		self.baseLayers.push(new L.NamedTileLayer(
 			'http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png'
 			, {
-				'attribution': 'OpenCycleMap Transport - © {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
+				'attribution': 'OpenCycleMap Transport - Â© {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
 				, 'maxZoom': 18
 				, 'reuseTiles': true
 				, 'displayName': 'OCM Transport'
@@ -107,7 +109,7 @@ function LayerManager() {
 		self.baseLayers.push(new L.NamedTileLayer(
 			'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png'
 			, {
-				'attribution': 'OpenCycleMap Landscape - © {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
+				'attribution': 'OpenCycleMap Landscape - Â© {y} Andy Allen &amp; OpenStreetMap Contributors, CC-BY-SA'
 				, 'maxZoom': 18
 				, 'reuseTiles': true
 				, 'displayName': 'OCM Landscape'

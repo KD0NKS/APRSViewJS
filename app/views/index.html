@@ -27,6 +27,7 @@
                 height: 20px;
                 padding: 3px 5px;
                 font-size: 14px;
+                max-width: 50%;
             }
             
             /* messages and fixed table header rules */
@@ -105,6 +106,10 @@
             .text-right {
                 text-align: right !important;
             }
+            
+            .leaflet-bottom {
+                margin-bottom: -65px;
+            }
 		</style>
 	</head>
 	<body style="opacity: 0;">
@@ -181,7 +186,9 @@
 		</div>
         
         <div id="statusBar">
-            Status bar content here. Adjust height and font as needed.
+            Latitude: <span data-bind="text: mouseLatLng().lat.toFixed(3)"></span>
+            Longitude: <span data-bind="text: mouseLatLng().lng.toFixed(3)"></span>
+            Last Heard: <span data-bind="text: lastStationHeard"></span>
         </div>
 		
 		<script type="text/javascript" src="../js/lib/jquery-2.1.0.min.js"></script>

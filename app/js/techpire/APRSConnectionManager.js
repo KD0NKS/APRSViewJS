@@ -24,7 +24,8 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 
 	// TODO: foreach data connection
 	var args = Array();
-	
+
+	/*
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
 	args['host'] = '';
@@ -35,13 +36,12 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['keepAliveTime'] = 60000;
 	args['softwareName'] = SOFTWARE_NAME;
 	args['softwareVersion'] = SOFTWARE_VERSION;
-	
+	*/
+    
 	dataConnection = this.connectionFactory.CreateDataConnection(args);
 
 	dataConnection.Read();
-
-
-
+    
 	this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
 	this.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
 	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));

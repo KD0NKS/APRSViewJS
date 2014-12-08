@@ -2,6 +2,10 @@
 //var db = new PouchDB('APRSViewDB');
 //var remoteCouch = false;
 
+/*
+historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
+*/
+
 //var net = require('net')
 		//, stream = require('stream')
 		//, APRSPacketParser = require('APRSPacketParser')
@@ -72,14 +76,24 @@ $.when(
     
     window.setInterval(viewModel.RemoveOldPositions, 60000);
     
+    // Set a mouse listener to update the status bar with the current latitude and longitude.
+    // Set a timer to prevent the action event from executing for every pixel the mouse moves
+    // this prevents spikes on the processor.
+    var latLngUpdateDelay = 8;
+    var executionTimer;
+    
+    map.on('mousemove', function(e) {
+        if(executionTimer) {
+            clearTimeout(executionTimer);   
+        }
+        
+        executionTimer = setTimeout(function() {
+            viewModel.mouseLatLng(e.latlng);    
+        }, latLngUpdateDelay);
+    });
+    
     connectionManager.LoadConnections();
     readServerData(viewModel);
-    
-    // mouse move
-    //map.on('mousemove', function(e) {
-    //map.on('click', function(e) {
-    //	alert(e.latlng);
-    //});
 });
 
 /*
@@ -111,6 +125,9 @@ function MessageObject(data) {
 
 function pageViewModel() {
 	var self = this;
+    
+    self.mouseLatLng = ko.observable(L.latLng(39, -99));
+    self.lastStationHeard = ko.observable('');
 	
 	self.messageWindowMessages = ko.observableArray([]);
 	
@@ -298,6 +315,8 @@ function readServerData(viewModel) {
 					viewModel.markers.push(marker);
 				}
 			}
+            
+            viewModel.lastStationHeard(data.callsign);
 		} else {
 			console.log('KILL OBJECT');
 		}
@@ -397,6 +416,8 @@ function readServerData(viewModel) {
 				viewModel.markers.push(marker);
 			}
 		}
+        
+        viewModel.lastStationHeard(data.callsign);
 	});
 	
 	connectionManager.messages.onValue(function(value) {
@@ -408,6 +429,8 @@ function readServerData(viewModel) {
 		//	, { autoHide: true, autoHideDelay: 15000 });
 		
 		viewModel.messageWindowMessages.push(new MessageObject(value));
+        
+        viewModel.lastStationHeard(data.callsign);
 		
 		/*
 			NWS
