@@ -31,6 +31,7 @@ Navigate to the project directory
     > nodewebkit app
 
 ##Third-Party Libraries - Currently Used
+- NodeWebkit
 - bacon.js
 - jQuery
 - jQuery-UI
@@ -38,3 +39,7 @@ Navigate to the project directory
 - leaflet-search-master
 - knockout
 - notify.js
+- NeDB
+- path
+- OfflineMap (precache with filereader) https://github.com/tbicr/OfflineMap/blob/master/leaflet_base64fr_precache_site/map.js#L71
+-- This was heavily modified

@@ -1,7 +1,3 @@
-//Possibly use RequireJS
-//var db = new PouchDB('APRSViewDB');
-//var remoteCouch = false;
-
 /*
 historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
 */
@@ -19,7 +15,16 @@ historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
 var TechpireAPRS = require('TechpireAPRS')
 	, ObjectReport = require('TechpireAPRS').ObjectReport
 	, APRSPositionReport = require('TechpireAPRS').APRSPositionReport
+    , Datastore = require('nedb')
+    , path = require('path')
+    , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
+    , layerManager = new LayerManager(layerDB)
+    , connectionManager = new APRSConnectionManager()
 	;
+
+layerDB.loadDatabase();
+
+console.log('Saving layers to: ' + path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db'));
 
 /*
 	1m = 60000 ms
@@ -36,8 +41,10 @@ var TIMEOUT_PERIOD = 3600000;
 var map = null;
 var markersLayer = null;
 
-var layerManager = new LayerManager();
-var connectionManager = new APRSConnectionManager();
+//var layerDB = new PouchDB('APRSViewLayerDB');
+//var layerManager = new LayerManager(layerDB);
+//var layerManager = new LayerManager();
+//var connectionManager = new APRSConnectionManager();
 
 var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
@@ -97,9 +104,8 @@ $.when(
 });
 
 /*
-	Object containing all the points from which an individual station has reported from - location packet specific
-
-*/
+ * Object containing all the points from which an individual station has reported from - location packet specific
+ */
 function StationTrail(data) {
 	this.callsign = data.callsign;
 	this.symbolTableId = data.symbolTableId;
@@ -113,8 +119,8 @@ function StationTrail(data) {
 }
 
 /*
-	Object containing all message objects - message packet specific
-*/
+ * Object containing all message objects - message packet specific
+ */
 function MessageObject(data) {
 	this.msgNumber = ko.observable(data.number);
 	this.sourceCall = ko.observable(data.callsign);
@@ -422,11 +428,11 @@ function readServerData(viewModel) {
 	
 	connectionManager.messages.onValue(function(value) {
 		// TODO: Create user preferences to turn notifications off, these can get pretty annoying
-		//$.notify(
-		//	'From: ' + value.callsign
-		//	+ '\nTo: ' + value.addressee
-		//	+ '\n' + value.message
-		//	, { autoHide: true, autoHideDelay: 15000 });
+		$.notify(
+			'From: ' + value.callsign
+			+ '\nTo: ' + value.addressee
+			+ '\n' + value.message
+			, { autoHide: true, autoHideDelay: 15000 });
 		
 		viewModel.messageWindowMessages.push(new MessageObject(value));
         

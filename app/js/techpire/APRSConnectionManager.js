@@ -1,5 +1,6 @@
 var TechpireAPRS = require('TechpireAPRS')
 	, Bacon = require('baconjs')
+    , APRSPositionReport = require('TechpireAPRS').APRSPositionReport
 	;
 /*
  As we add support for message filtering or station filtering (on position reports)
@@ -9,7 +10,11 @@ var TechpireAPRS = require('TechpireAPRS')
 var SOFTWARE_NAME = 'testsoftware';
 var SOFTWARE_VERSION = 0;
 
+var instance = null;
+
 function APRSConnectionManager() {
+    instance = this;
+    
 	this.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
 
 	this.dataConnections = new Array();
@@ -20,11 +25,10 @@ function APRSConnectionManager() {
 }
 
 APRSConnectionManager.prototype.LoadConnections = function() {
-	var dataConnection = null;
-
 	// TODO: foreach data connection
-	var args = Array();
-
+	var dataConnection = null;
+    var args = Array();
+    
 	/*
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
@@ -32,6 +36,7 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['port'] = 10154;
 	args['filter'] = '';
 	args['isEnabled'] = false;
+    args['isTransmitEnabled'] = false;
 	args['isReconnectOnFailure'] = true;
 	args['keepAliveTime'] = 60000;
 	args['softwareName'] = SOFTWARE_NAME;
@@ -42,11 +47,13 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 
 	dataConnection.Read();
     
-	this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
+    this.dataConnections.push(dataConnection);
+    
+    this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
 	this.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
 	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
 	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
-
+    
 	try {
 		if(dataConnection.isEnabled === true) {
 			dataConnection.Connect();
@@ -56,3 +63,16 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 		console.log(e);
 	}
 };
+
+APRSConnectionManager.prototype.SendPacket = SendPacket;
+
+// Send a packet (of any kind) out to all data connections where sending is enabled
+function SendPacket(packet) {
+    for(var c = 0; c < instance.dataConnections.length; c++) {
+        var connection = instance.dataConnections[c];
+        
+        if(connection.isEnabled && connection.isTransmitEnabled) {
+            connection.Send(packet);
+        }
+    }
+}
