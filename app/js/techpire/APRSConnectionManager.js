@@ -29,7 +29,6 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	var dataConnection = null;
     var args = Array();
     
-	/*
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
 	args['host'] = '';
@@ -41,11 +40,10 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['keepAliveTime'] = 60000;
 	args['softwareName'] = SOFTWARE_NAME;
 	args['softwareVersion'] = SOFTWARE_VERSION;
-	*/
     
-	dataConnection = this.connectionFactory.CreateDataConnection(args);
-
-	dataConnection.Read();
+    dataConnection = this.connectionFactory.CreateDataConnection(args);
+    
+    dataConnection.Read();
     
     this.dataConnections.push(dataConnection);
     
