@@ -7,7 +7,7 @@ Experimental APRS Client using NodeWebkit.
 APRS is a registered trademark of APRS Software and Bob Bruninga, WB4APR.
 
 ###Contributors
-Are you a HAM, a deveoper, and interested in contributing? Please contact me.  The more developers contributing, the faster we can add features and make this a viable APRS client.
+Are you a HAM, a developer, and interested in contributing?  Please contact me.  The more developers contributing, the faster we can add features and make this a viable APRS client.
 
 Special Thanks To:
 - David Alexander - KD0ULC
