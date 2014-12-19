@@ -13,9 +13,6 @@ Special Thanks To:
 - David Alexander - KD0ULC
 - Ross Martin
 
-##Latest Update
-Honest, I haven't been sitting around letting the project go idle!  The latest round of updates includes support for AGWPE as well as adding support for Objects.  Both JavAPRS-IS and AGWPE connections and parsers are on par with each other.
-
 ##Local Dev Setup
 
 ###Windows
@@ -24,6 +21,32 @@ Honest, I haven't been sitting around letting the project go idle!  The latest r
 - Install the Yeoman Node WebKit Generator globally: npm install -g generator-node-webkit
 - Install Node WebKit globally: npm install -g nodewebkit
 - Install the Grunt CLI globally: npm install -g grunt-cli
+
+###Linux
+- Install Node.js (of course) via your favorite method (package manager or source)
+
+To do the following steps you'll have to have root (or sudo) permissions.
+- Install Yeoman globally: npm install -g yo
+- Install the Yeoman Node WebKit Generator globally: npm install -g generator-node-webkit
+- Install Node WebKit globally: npm install -g nodewebkit
+- Install the Grunt CLI globally: npm install -g grunt-cli
+
+This is where everything gets fun.  If you were excited, couldn't wait, and tried to run it, most likely you've run into an issue!
+Documentation: https://www.exponential.io/blog/install-node-webkit-on-ubuntu-linux
+
+- Now install ghex
+- Find where the nw file lives (for me this was /lib/node_modules/nodewebkit/nodewebkit
+- # ghex nw
+- Expand the window as this makes editing easier.
+- Press Ctrl + F to open the Find dialog box.
+- Press Tab to move the cursor to the right textbox.
+- Type libudev.so.
+- Click Find Next.
+- You should now see libudev.so.0. Note: **libudev.so will be highlighted in red. Hint: Resize the window if you do not see every character in libudev.so.0.
+- Select 0 with your mouse and type 1.
+- Select File, click Save.
+- Select File, click Exit.
+
 
 ##Run the project
 Navigate to the project directory
@@ -37,9 +60,9 @@ Navigate to the project directory
 - jQuery-UI
 - leaflet
 - leaflet-search-master
+- leaflet-plugins
 - knockout
 - notify.js
 - NeDB
-- path
 - OfflineMap (precache with filereader) https://github.com/tbicr/OfflineMap/blob/master/leaflet_base64fr_precache_site/map.js#L71
 -- This was heavily modified

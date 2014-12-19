@@ -43,8 +43,6 @@ APRSConnectionManager.prototype.LoadConnections = function() {
     
     dataConnection = this.connectionFactory.CreateDataConnection(args);
     
-    dataConnection.Read();
-    
     this.dataConnections.push(dataConnection);
     
     this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));

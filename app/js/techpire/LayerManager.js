@@ -1,5 +1,6 @@
 var Datastore = require('nedb')
-;
+    , path = require('path')
+    ;
 
 L.NamedTileLayer = L.TileLayer.extend({
 	options: {
@@ -42,60 +43,32 @@ L.NamedCachedTileLayer = L.NamedTileLayer.extend({
         });
     }
     , _loadTile: function (tile, tilePoint) {
+        var self = this;
+        var db = this.options.storage;
+        
         this._adjustTilePoint(tilePoint);
         
-        var key = tilePoint.z + ',' + tilePoint.x + ',' + tilePoint.y;
-        var self = this;
-        var tileValue = null;
-        
         if (this.options.storage) {
-            this.options.storage.findOne({ point: key }, function (err, cachedTiles) {
+            this.options.storage.findOne({ point: self.options.displayName + ',' + tilePoint.z + ',' + tilePoint.x + ',' + tilePoint.y }, function (err, cachedTiles) {
                 if(err) {
-                    console.log('Error finding tile: ' + err);   
+                    console.log('Error finding tile: ' + err);
+                } else if(cachedTiles) {
+                    console.log('reading local');
+                    
+                    self._setUpTile(tile, '' + cachedTiles.v);
+                    // TODO:
+                    // if the tile is "stale" using the refreshInterval
+                    // try to get a new one
+                    // if we get a new one
+                    // delete the old one
+                    // cache the new one
+                    // else
+                    // use the stale one
                 } else {
-                    tileValue = cachedTiles;
+                    self._setUpTile(tile, self.getTileUrl(tilePoint));
+                    saveCachedTile(tile, tilePoint, self.options.storage, self.options.displayName);
                 }
-            });
-                                      
-            if(tileValue) {
-                self._setUpTile(tile, tileValue);
-
-                // TODO: 
-                // if the tile is "stale"
-                //      try to get a new one
-                //      if we get a new one
-                //          delete the old one
-                //          cache the new one
-                // else
-                //      use the stale one
-            } else {
-                self._setUpTile(tile, self.getTileUrl(tilePoint));
-                
-                // store the tile in the database
-                try {
-                    ajax(tile.src, 'blob', function (response) {
-                        var reader = new FileReader();
-
-                        reader.onloadend = function(e) {
-                            var tileRecord = { point: key, v: e.target.result, date: new Date() };
-
-                            self.options.storage.insert(tileRecord, function(err, newRecord) {
-                                if(err) {
-                                   console.log('Error saving New Tile: ' + err);
-                                }
-                            });
-                        };
-
-                        try {
-                            reader.readAsDataURL(response);
-                        } catch(e) {
-                            console.log('Error reading ajax tile response as an image ' + e);
-                        }
-                    });
-                } catch(e) {
-                    console.log(e);   
-                }
-            }
+            })
         } else {
             console.log("database not found, reading layer from source");
             self._setUpTile(tile, self.getTileUrl(tilePoint));
@@ -103,17 +76,37 @@ L.NamedCachedTileLayer = L.NamedTileLayer.extend({
     }
 });
 
-function ajax(src, responseType, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', src, true);
-    xhr.responseType = responseType || 'text';
+// split out from _loadTile to prevent concurrency issues
+function saveCachedTile(tile, tilePoint, storage, layerName) {
+    var key = layerName + ',' + tilePoint.z + ',' + tilePoint.x + ',' + tilePoint.y;
     
+    var xhr = new XMLHttpRequest();
+    
+    xhr.open('GET', tile.src, true);
+    xhr.responseType = 'blob' || 'text';
+
     xhr.onload = function(err) {
         if (this.status == 200) {
-            callback(this.response);
+            var reader = new FileReader();
+
+            reader.onloadend = function(e) {
+                var tileRecord = { point: key, v: e.target.result, date: new Date() };
+
+                storage.insert(tileRecord, function(err, newRecord) {
+                    if(err) {
+                        console.log('Error saving New Tile: ' + err);
+                    }
+                });
+            };
+
+            try {
+                reader.readAsDataURL(this.response);
+            } catch(e) {
+                console.log('Error reading ajax tile response as an image ' + e);
+            }
         }
     };
-    
+
     xhr.send();
 };
 
@@ -227,7 +220,7 @@ function LayerManager(cachedTilesDatabase) {
 		self.overlays.push(new L.NamedImageOverlay(
 			'http://radar.weather.gov/ridge/RadarImg/N0R/EAX_N0R_0.gif'
 			, [[41.3440, -97.0287], [36.2668, -91.4900]]
-			, { 
+			, {
 				displayName: 'NOR'
 			}
 		));

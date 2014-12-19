@@ -8,7 +8,7 @@ L.APRSPositionMarker = L.Marker.extend({
 		, symbolTableId: ''
 		, symbolCode: ''
 	}
-	// _setPos was ripped from: https://github.com/bbecquet/Leaflet.PolylineDecorator/blob/master/src/L.RotatedMarker.js
+	// _setPos was taken from: https://github.com/bbecquet/Leaflet.PolylineDecorator/blob/master/src/L.RotatedMarker.js
 	// It was subsequently modified to meet our icon rotating needs.
 	, _setPos: function (pos) {
         L.Marker.prototype._setPos.call(this, pos);
@@ -27,16 +27,5 @@ L.APRSPositionMarker = L.Marker.extend({
 				this._icon.style[L.DomUtil.TRANSFORM] += ' rotateY(180deg)';
 			}
         }
-		/*
-		// NOBODY CARES
-		else if(L.Browser.ie) {
-            // fallback for IE6, IE7, IE8
-            var rad = this.options.angle * L.LatLng.DEG_TO_RAD,
-                costheta = Math.cos(rad),
-                sintheta = Math.sin(rad);
-            this._icon.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' +
-                costheta + ', M12=' + (-sintheta) + ', M21=' + sintheta + ', M22=' + costheta + ')';
-        }
-		*/
     }
 });

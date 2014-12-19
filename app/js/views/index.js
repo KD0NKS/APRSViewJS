@@ -11,16 +11,15 @@ historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
 		//, AbstractDataConnection = require('scripts/data_connection/AbstractDataConnection.js')
 		//, JavAPRSISConnection = require('scripts/data_connection/JavAPRSISConnection.js')
 		//;
-		
 var TechpireAPRS = require('TechpireAPRS')
-	, ObjectReport = require('TechpireAPRS').ObjectReport
+    , ObjectReport = require('TechpireAPRS').ObjectReport
 	, APRSPositionReport = require('TechpireAPRS').APRSPositionReport
     , Datastore = require('nedb')
     , path = require('path')
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
     , connectionManager = new APRSConnectionManager()
-	;
+    ;
 
 layerDB.loadDatabase();
 
@@ -40,11 +39,6 @@ console.log('Saving layers to: ' + path.join(require('nw.gui').App.dataPath, 'ap
 var TIMEOUT_PERIOD = 3600000;
 var map = null;
 var markersLayer = null;
-
-//var layerDB = new PouchDB('APRSViewLayerDB');
-//var layerManager = new LayerManager(layerDB);
-//var layerManager = new LayerManager();
-//var connectionManager = new APRSConnectionManager();
 
 var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
@@ -324,7 +318,11 @@ function readServerData(viewModel) {
             
             viewModel.lastStationHeard(data.callsign);
 		} else {
-			console.log('KILL OBJECT');
+			console.log('KILL OBJECT: ' + data.name);
+            
+            viewModel.markers.remove(function(m) {
+                return m.options.name == data.name
+            });
 		}
 	});
 	

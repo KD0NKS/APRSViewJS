@@ -18,7 +18,6 @@
     "grunt-contrib-compress": "~0.5.3",
     "TechpireAPRSData": "~0.0.0",
     "nedb": "~1.0.0",
-    "path": "~0.4.9"
   },
   "engines": {
     "node": ">=0.8.0"
