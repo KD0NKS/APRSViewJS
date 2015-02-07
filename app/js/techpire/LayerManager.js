@@ -216,7 +216,31 @@ function LayerManager(cachedTilesDatabase) {
 				, displayName: 'NextRAD - US'
 			}
 		));
-						
+        
+        self.overlays.push(new L.TileLayer.NamedWMS(
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            , {
+                displayName: 'NWS Ridge NexRad'
+                , layers: 'RAS_RIDGE_NEXRAD'
+                , format: 'image/png'
+                , transparent: true
+                , attribution: "NOAA/NOS nowCOAST"
+                , opacity: 0.5
+            }
+        ));
+        
+        self.overlays.push(new L.TileLayer.NamedWMS(
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            , {
+                displayName: 'NWS Infrared Cloud'
+                , layers: 'RAS_GOES_I4'
+                , format: 'image/png'
+                , transparent: true
+                , attribution: "NOAA/NWS"
+                , opacity: 0.5
+            }
+        ));
+        
 		self.overlays.push(new L.NamedImageOverlay(
 			'http://radar.weather.gov/ridge/RadarImg/N0R/EAX_N0R_0.gif'
 			, [[41.3440, -97.0287], [36.2668, -91.4900]]

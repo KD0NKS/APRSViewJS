@@ -175,9 +175,9 @@ function getSymbolPath(symbolTableId, symbolCode) {
 		} else if(symbolCode == 'z') {
 			return "/PrimaryTable/TBD.gif";
 		} else if(symbolCode == '|') {
-			return "/PrimaryTable/TNCSwitchStream.gif";
+			return "/PrimaryTable/TNCStreamSwitch.gif";
 		} else if(symbolCode == '~') {
-			return "/PrimaryTable/TNCSwitchStream1.gif";
+			return "/PrimaryTable/TNCStreamSwitch1.gif";
 		} else {
 			return "/Crosshair.gif";
 		}

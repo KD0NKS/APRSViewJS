@@ -7,11 +7,19 @@ Experimental APRS Client using NodeWebkit.
 APRS is a registered trademark of APRS Software and Bob Bruninga, WB4APR.
 
 ###Contributors
-Are you a HAM, a developer, and interested in contributing?  Please contact me.  The more developers contributing, the faster we can add features and make this a viable APRS client.
-
 Special Thanks To:
 - David Alexander - KD0ULC
+- Craig Schley - KA0FSP
+- Joe Bennett - KA3NAM
 - Ross Martin
+
+###Contributing
+Are you a HAM, a developer, and interested in contributing?  Please contact me at development@techpire.com.  The more developers contributing, the faster we can add features and make this a viable APRS client.
+
+Have ideas or suggestions on how to improve APRSView-JS?  Please go here https://github.com/KD0NKS/APRSViewJS/issues and mark them as an enhancement.
+
+Still nothing?  You are always more than welcome to test
+
 
 ##Local Dev Setup
 
@@ -66,3 +74,7 @@ Navigate to the project directory
 - NeDB
 - OfflineMap (precache with filereader) https://github.com/tbicr/OfflineMap/blob/master/leaflet_base64fr_precache_site/map.js#L71
 -- This was heavily modified
+
+##Overlay Sources
+- http://nowcoast.noaa.gov/help/mapservices.shtml?name=mapservices
+- http://radar.weather.gov/

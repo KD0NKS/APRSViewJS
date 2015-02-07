@@ -13,24 +13,42 @@
 	<body style="opacity: 0;">
 		<div id="tabs">
 			<ul>
-				<li><a href="#map">Map</a></li>
-				<li><a href="#messages">Messages</a></li>
-				<li><a href="#settings">Settings</a></li>
+				<li><a id="mapTab" href="#map">Map</a></li>
+				<li><a id="messagesTab" href="#messages">Messages</a></li>
+				<li><a id="settingsTab" href="#settings">Settings</a></li>
 			</ul>
 			<div id="map"></div>
-			<div id="messages">
+			<div id="messages" style="margin-bottom: 100px;">
+                <div style="margin-top: 5px; margin-bottom: 5px;">
+                    <label for="addressee">To: </label>
+                    <input id="addressee" type="text" data-bind="value: messageAddressee" maxlength="9" />
+                    
+                    <label for="messageText">Message: </label>
+                    <input id="messageText" type="text" data-bind="value: messageText" maxlength="67" />
+                    
+                    <label for="isRequireAck">Require Ack: </label>
+                    <input id="isRequireAck" type="checkbox" data-bind="checked: messageRequireAck" />
+                    
+                    <input type="button" value="Send" data-bind="click: SendMessage" />
+                </div>
+                
                 <div class="fixed-table-container">
                     <div class="header-background"></div>
                     <div class="fixed-table-container-inner">
                         <table id="allMessagesTable" class="messages-table" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th class="first" style="min-width: 140px;">
+                                    <th class="first" style="min-width: 50px;">
+                                        <div class="th-inner">
+                                            Received Time
+                                        </div>
+                                    </th>
+                                    <th style="min-width: 65px; max-width: 100px;">
                                         <div class="th-inner">
                                             Message Number
                                         </div>
                                     </th>
-                                    <th style="min-width: 140px;">
+                                    <th style="min-width: 60px;">
                                         <div class="th-inner">
                                             To/Group Name
                                         </div>
@@ -55,24 +73,39 @@
                                 </tr>
                             </thead>
                             <tbody data-bind="foreach: messageWindowMessages">
-                                <td class="text-left">
-                                    <span data-bind="text: msgNumber"></span>
-                                </td>
-                                <td class="text-left">
-                                    <span data-bind="text: sourceCall"></span>
-                                </td>
-                                <td class="text-left">
-                                    <span data-bind="text: addressee"></span>
-                                    <span data-bind="text: groupName"></span>
-                                </td>
-                                <td class="text-left">
-                                    <span data-bind="text: message"></span>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#" data-bind="value: $data, click: $root.DeleteMessage">
-                                        <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
-                                    </a>
-                                </td>
+                                <tr>
+                                    <td class="text-left" style="min-width: 50px; max-width: 100px;">
+                                        <span data-bind="text: receivedTime, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                    </td>
+                                    <td class="text-left" style="min-width: 65px; max-width: 100px;">
+                                        <span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                    </td>
+                                    <td class="text-left">
+                                        <a href="#" data-bind="text: addressee
+                                                , click: function() { messagesTabClick(addressee()) }
+                                                , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                        </a>
+                                        
+                                        <a href="#" data-bind="text: groupName
+                                                , click: function() { messagesTabClick(groupName()) }
+                                                , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                        </a>
+                                    </td>
+                                    <td class="text-left">
+                                        <a href="#" data-bind="text: sourceCall
+                                                , click: function() { messagesTabClick(sourceCall()) }
+                                                , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                        </a>
+                                    </td>
+                                    <td class="text-left">
+                                        <span data-bind="text: message, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" data-bind="value: $data, click: $root.DeleteMessage">
+                                            <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
+                                        </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -114,7 +147,7 @@
 		
 		<script type="text/javascript">
 			var gui = require('nw.gui');
-			
+            
 			$(document).keydown(function(e) {
 				if (e.which == 123 /*F12*/) {                           
 					e.preventDefault();              

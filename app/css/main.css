@@ -5,6 +5,11 @@ html, body {
     height: 100%;
 }
 
+label {
+    font-weight: bold;
+    font-size: 12px;
+}
+
 .ui-tabs .ui-tabs-panel {
     padding: 0px;
 }
@@ -29,6 +34,7 @@ html, body {
 
 .messages-table th {
     padding: 0 5px;
+    word-wrap: normal;
 }
 
 .messages-table td {

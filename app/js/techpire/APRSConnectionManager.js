@@ -1,6 +1,7 @@
 var TechpireAPRS = require('TechpireAPRS')
 	, Bacon = require('baconjs')
     , APRSPositionReport = require('TechpireAPRS').APRSPositionReport
+    , AGWPEDataConnection = require('TechpireAPRS').AGWPEDataConnection
 	;
 /*
  As we add support for message filtering or station filtering (on position reports)
@@ -26,9 +27,9 @@ function APRSConnectionManager() {
 
 APRSConnectionManager.prototype.LoadConnections = function() {
 	// TODO: foreach data connection
-	var dataConnection = null;
-    var args = Array();
+	var args = Array();
     
+    /*
 	args['connectionType'] = 'APRSIS';
 	args['callsign'] = 'N0CALL';
 	args['host'] = '';
@@ -41,19 +42,31 @@ APRSConnectionManager.prototype.LoadConnections = function() {
 	args['softwareName'] = SOFTWARE_NAME;
 	args['softwareVersion'] = SOFTWARE_VERSION;
     
-    dataConnection = this.connectionFactory.CreateDataConnection(args);
+    instance.AddConnection(args);
+    */
+};
+
+APRSConnectionManager.prototype.AddConnection = function(args) {
+    var dataConnection = instance.connectionFactory.CreateDataConnection(args);
     
-    this.dataConnections.push(dataConnection);
+    instance.dataConnections.push(dataConnection);
     
-    this.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
-	this.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
-	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
-	this.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
+    instance.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
+	instance.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
+	instance.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
+	instance.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
     
 	try {
-		if(dataConnection.isEnabled === true) {
+        if(dataConnection.isEnabled === true) {
 			dataConnection.Connect();
-			dataConnection.Monitor();
+            
+            //console.log(dataConnection instanceof AGWPEDataConnection);
+            
+            if(args['connectionType'] == 'AGWPE') {
+            //if(dataConnection instanceof AGWPEDataConnection) {
+                console.log('Enable Monitoring');
+                dataConnection.Monitor();
+            }
 		}
 	} catch(e) {
 		console.log(e);

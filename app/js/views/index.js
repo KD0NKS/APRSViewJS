@@ -2,18 +2,10 @@
 historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
 */
 
-//var net = require('net')
-		//, stream = require('stream')
-		//, APRSPacketParser = require('APRSPacketParser')
-		//, AbstractAPRSMessage = require('scripts/models/packets/AbstractAPRSMessage.js')
-		//, APRSPositionReport = require('scripts/models/packets/APRSPositionReport.js')
-		//, APRSMessage = require('scripts/models/packets/APRSMessage.js')
-		//, AbstractDataConnection = require('scripts/data_connection/AbstractDataConnection.js')
-		//, JavAPRSISConnection = require('scripts/data_connection/JavAPRSISConnection.js')
-		//;
 var TechpireAPRS = require('TechpireAPRS')
     , ObjectReport = require('TechpireAPRS').ObjectReport
 	, APRSPositionReport = require('TechpireAPRS').APRSPositionReport
+    , APRSMessage = require('TechpireAPRS').APRSMessage
     , Datastore = require('nedb')
     , path = require('path')
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
@@ -31,7 +23,7 @@ console.log('Saving layers to: ' + path.join(require('nw.gui').App.dataPath, 'ap
 	5m = 300000 ms 	
 	10m = 600000 ms
 	15m = 900000 ms
-	30m = 1800000 msprom
+	30m = 1800000 ms
 	60m = 3600000 ms
 	90m = 5400000 ms
 */
@@ -47,6 +39,7 @@ var mapEle = $('#map');
 var statusBar = $('#statusBar');
 var messagesEle = $('#messages');
 var tabNavBarEle; // set when tabs are created
+var viewModel = null;
 
 // DOM is already init'd, must create tabs before doing anything with map
 $('#tabs').tabs({
@@ -72,7 +65,7 @@ $.when(
 ).done(function() {
     createMap(layerManager.baseLayer());
 
-    var viewModel = new pageViewModel();
+    viewModel = new pageViewModel();
     ko.applyBindings(viewModel);
     
     window.setInterval(viewModel.RemoveOldPositions, 60000);
@@ -93,9 +86,25 @@ $.when(
         }, latLngUpdateDelay);
     });
     
-    connectionManager.LoadConnections();
-    readServerData(viewModel);
+    $.when(
+        connectionManager.LoadConnections()
+        , readServerData(viewModel)
+    ).done(function() {
+        //SendPositionPacket();
+    });
 });
+
+function SendPositionPacket() {
+    /*
+    connectionManager.SendPacket(posRpt);
+    
+    if(sendMessageInterval != null) {
+        clearInterval(self.sendMessageInterval);
+    }
+    
+    sendMessageInterval = setInterval(SendPositionPacket, 600000, posRpt);
+    */
+}
 
 /*
  * Object containing all the points from which an individual station has reported from - location packet specific
@@ -116,11 +125,13 @@ function StationTrail(data) {
  * Object containing all message objects - message packet specific
  */
 function MessageObject(data) {
+    this.receivedTime = ko.observable(data.receivedTime.toLocaleDateString() + '  ' + data.receivedTime.toLocaleTimeString());
 	this.msgNumber = ko.observable(data.number);
 	this.sourceCall = ko.observable(data.callsign);
 	this.addressee = ko.observable(data.addressee);
 	this.message = ko.observable(data.message);
 	this.groupName = ko.observable(data.groupName);
+    this.isAcked = ko.observable(false);
 };
 
 function pageViewModel() {
@@ -130,6 +141,9 @@ function pageViewModel() {
     self.lastStationHeard = ko.observable('');
 	
 	self.messageWindowMessages = ko.observableArray([]);
+    self.messageAddressee = ko.observable('');
+    self.messageText = ko.observable('');
+    self.messageRequireAck = ko.observable('');
 	
 	self.DeleteMessage = function(m) {
 		self.messageWindowMessages.remove(m);
@@ -208,6 +222,25 @@ function pageViewModel() {
 			}
 		}
 	};
+    
+    
+    self.SendMessage = function() {
+        if(self.messageAddressee() != '' && self.messageText() != '' && self.messageText().length < 67) {
+            /*
+            var msg = new APRSMessage();
+            msg.callsign = '';
+            msg.destination = 'APZ678';
+            msg.addressee = self.messageAddressee().trim();
+            msg.messageType = ':';
+            msg.message = self.messageText().trim();
+            msg.digipeaters.push('WIDE2-1');
+            
+            connectionManager.SendPacket(msg);
+            
+            self.messageText('');
+            */
+        }
+    };
 };
 
 function createMap(baseLayer) {
@@ -242,7 +275,7 @@ function createMap(baseLayer) {
 	);
 }
 
-function readServerData(viewModel) {
+function readServerData() {
 	connectionManager.sentMessages.onValue(function(value) {
 		// Debugging purposes - outputs the data to the console.
 		console.log(value);
@@ -280,7 +313,9 @@ function readServerData(viewModel) {
 						+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
 						+ '<br />Speed: ' + data.speed
 						+ '<br />Course: ' + data.direction
-						+ '<br />Raw Data: ' + data.rawPacket);
+						+ '<br />Raw Data: ' + data.rawPacket)
+                        + '<br /><a href="javascript:messagesTabClick(\'' + data.callsign + '\')">Send Message</a>'
+                        ;
 				} else {
 					if(existingMarkers.length > 0) {
 						var lastMarker = existingMarkers[existingMarkers.length - 1];
@@ -308,7 +343,9 @@ function readServerData(viewModel) {
 						+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
 						+ '<br />Speed: ' + data.speed
 						+ '<br />Course: ' + data.direction
-						+ '<br />Raw Data: ' + data.rawPacket)
+						+ '<br />Raw Data: ' + data.rawPacket
+                        + '<br /><a href="javascript:messagesTabClick(\'' + data.callsign + '\')">Send Message</a>'
+                        )
 					.bindLabel(data.name, { noHide: true, direction: 'right' });
 					
 					marker.addTo(markersLayer);
@@ -353,7 +390,9 @@ function readServerData(viewModel) {
 					+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
 					+ '<br />Speed: ' + data.speed
 					+ '<br />Course: ' + data.direction
-					+ '<br />Raw Data: ' + data.rawPacket);
+					+ '<br />Raw Data: ' + data.rawPacket)
+                    + '<br /><a href="javascript:messagesTabClick(\'' + data.callsign + '\')">Send Message</a>'
+                    ;
 			} else {
 				if(existingMarkers.length > 0) {
 					var lastMarker = existingMarkers[existingMarkers.length - 1];
@@ -380,7 +419,9 @@ function readServerData(viewModel) {
 					+ '<br />Coordinates (lon/lat): ' + data.longitude + '/' + data.latitude
 					+ '<br />Speed: ' + data.speed
 					+ '<br />Course: ' + data.direction
-					+ '<br />Raw Data: ' + data.rawPacket)
+					+ '<br />Raw Data: ' + data.rawPacket
+                    + '<br /><a href="javascript:messagesTabClick(\'' + data.callsign + '\')">Send Message</a>'
+                    )
 				.bindLabel(data.callsign, { noHide: true, direction: 'right' });
 				
 				/*
@@ -425,16 +466,42 @@ function readServerData(viewModel) {
 	});
 	
 	connectionManager.messages.onValue(function(value) {
-		// TODO: Create user preferences to turn notifications off, these can get pretty annoying
-		$.notify(
-			'From: ' + value.callsign
-			+ '\nTo: ' + value.addressee
-			+ '\n' + value.message
-			, { autoHide: true, autoHideDelay: 15000 });
-		
-		viewModel.messageWindowMessages.push(new MessageObject(value));
+        var msgs = null;
         
-        viewModel.lastStationHeard(data.callsign);
+        if(value.message.toLowerCase().indexOf('ack') != 0) {
+            viewModel.messageWindowMessages.push(new MessageObject(value));
+            
+            // TODO: Create user preferences to turn notifications off, these can get pretty annoying
+            $.notify(
+                'From: ' + value.callsign
+                + '\nTo: ' + value.addressee
+                + '\n' + value.message
+                , { autoHide: true, autoHideDelay: 15000 });
+        } else {
+            var msgNum = '';
+            
+            if(value.message.trim().length > 3) {
+                msgNum = value.message.substring(3);
+            }
+            
+            msgs = ko.utils.arrayFilter(viewModel.messageWindowMessages(), function(m) {
+                return m.msgNumber() != ''
+                        && m.sourceCall().trim().toUpperCase() == value.addressee.trim().toUpperCase()
+                        && m.addressee().trim().toUpperCase() == value.callsign.trim().toUpperCase()
+                        && m.msgNumber().trim().toUpperCase() == msgNum.trim().toUpperCase()
+                        ;
+            });
+            
+            if(msgs && msgs.length > 0) {
+                ko.utils.arrayForEach(msgs, function(m) {
+                    m.isAcked(true);
+                });
+            } else {
+                viewModel.messageWindowMessages.push(new MessageObject(value));
+            }
+        }
+            
+        viewModel.lastStationHeard(value.callsign);
 		
 		/*
 			NWS
@@ -456,4 +523,9 @@ function resizeDynamicElements() {
     mapEle.height(h).width(w);
     
     messagesEle.height(h - 75);
+}
+
+function messagesTabClick(sendTo) {
+    viewModel.messageAddressee(sendTo);
+    $('#messagesTab').trigger("click");
 }
