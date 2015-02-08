@@ -25,12 +25,12 @@ Still nothing?  You are always more than welcome to test
 
 ###Windows
 - Install Node.js (of course)
-- Install Yeoman globally: npm install -g yeoman
-- Install the Yeoman Node WebKit Generator globally: npm install -g generator-node-webkit
-- Install Node WebKit globally: npm install -g nodewebkit
+- Install NW globally: npm install -g nw
 - Install the Grunt CLI globally: npm install -g grunt-cli
 
 ###Linux
+####OLD DIRECTIONS< BUT SHOULD STILL WORK FOR NOW
+
 - Install Node.js (of course) via your favorite method (package manager or source)
 
 To do the following steps you'll have to have root (or sudo) permissions.
@@ -57,12 +57,20 @@ Documentation: https://www.exponential.io/blog/install-node-webkit-on-ubuntu-lin
 
 
 ##Run the project
+###USING NW
+
+Navigate to the project directory
+    > nw
+
+
+###OLD DIRECTIONS USING NODE WEBKIT
+
 Navigate to the project directory
 
     > nodewebkit app
 
 ##Third-Party Libraries - Currently Used
-- NodeWebkit
+- NW/NWJS
 - bacon.js
 - jQuery
 - jQuery-UI
