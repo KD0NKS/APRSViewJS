@@ -1,0 +1,31 @@
+.container {
+	background-color: #CCC;
+	margin: 5px;
+	padding: 5px;
+	border: thin solid #000;
+	width: 300px;
+	height: auto;
+	float: left;
+}
+
+.labelInputCont {
+	float: left;
+	text-align: right;
+	clear: both;
+	margin-right: 15px;
+	height: 25px;
+	width: 300px;
+	
+}
+
+.settingsWidth {
+	width: 190px;
+}
+
+.settingsLabelWidth {
+	width: 100px;
+}
+
+.settingsHeader {
+	height: 40px;
+}
