@@ -10,9 +10,9 @@ function loadSettings(e) {
 function APRSSettings() {
 	//Storage of defaults here
 	//Station
-	basicSettings.callSign = "KDOULC";
+	basicSettings.callSign = "";
 	basicSettings.callSignExt = "";
-	basicSettings.pass = "032285";
+	basicSettings.pass = "";
 	basicSettings.pointLifetime = 90;
 	basicSettings.trackStation = false;
 	
