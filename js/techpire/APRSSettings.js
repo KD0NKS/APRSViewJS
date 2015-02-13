@@ -1,46 +1,61 @@
-var station = {};
-var currentConnection = {};
-var filter = {};
-
-function loadSettings(e) {
-	//Load in the Settings from DB
-}
-
+/*******
+	Settings for APRSView
+****/
+var station = {
+		callSign: 'TEST',
+		callSignExt: 'TEST',
+		pass: 'TEST',
+		pointLifetime: 90,
+		trackStation: false
+	}
+	, currentConnection = {
+		type: 'TEST',
+		description: "",
+		server: "",
+		port: 8000,
+		filter: "",
+		reconnect: true,
+		enabled: true
+	}
+	, filter = {
+		statusReport: false,
+		gpgga: false,
+		newMicE: false,
+		oldMicE: false,
+		position: false,
+		wxReport: false,
+		thirdParty: false,
+		query: false,
+		object: false,
+		item: false,
+		normal: false,
+		kill: false,
+		stationCapabilities: false,
+		telemetry: false,
+		userDefined: false,
+		message: false,
+		nws: false
+	};
 
 function APRSSettings() {
 	//Storage of defaults here
 	//Station
-	basicSettings.callSign = "";
-	basicSettings.callSignExt = "";
-	basicSettings.pass = "";
-	basicSettings.pointLifetime = 90;
-	basicSettings.trackStation = false;
+	station.callSign = '';
+	station.callSignExt = '';
+	station.pass = '';
+	station.pointLifetime = 90;
+	station.trackStation = false;
 	
-	//Data Connections
-	currentConnection.type = "JavAPRSIS";
-	currentConnection.description = "test central";
-	currentConnection.server = "central.aprs2.net";
-	currentConnection.port = 14580;
-	currentConnection.filter = "r/39.257/-94.632/400";
-	currentConnection.reconnect = true;
-	currentConnection.enabled = true;
-	
-	//Filters
-	filter.statusReport = false;
-	filter.gpgga = false;
-	filter.newMicE = false;
-	filter.oldMicE = false;
-	filter.position = false;
-	filter.wxReport = false;
-	filter.thirdParty = false;
-	filter.query = false;
-	filter.object = false;
-	filter.item = false;
-	filter.normal = false;
-	filter.kill = false;
-	filter.stationCapabilities = false;
-	filter.telemetry = false;
-	filter.userDefined = false;
-	filter.message = false;
-	filter.nws = false;		
+}
+
+APRSSettings.loadSettings = function(e) {
+	//Load in the Settings from DB
+}
+
+APRSSettings.saveSettings = function(e) {
+	//Save to DB
+}
+
+APRSSettings.SetupBindings = function(e) {
+	ko.applyBindings(station);
 }

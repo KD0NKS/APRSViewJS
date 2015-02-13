@@ -11,6 +11,7 @@ var TechpireAPRS = require('TechpireAPRS')
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
     , connectionManager = new APRSConnectionManager()
+    , aprsSettings = new APRSSettings()
     ;
 
 layerDB.loadDatabase();
