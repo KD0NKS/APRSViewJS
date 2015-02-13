@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="../css/leaflet-search.css" />
 		
 		<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+        <link rel="stylesheet" href="../css/settings.css" />
         <link rel="stylesheet" href="../css/main.css" />
 	</head>
 	<body style="opacity: 0;">
@@ -112,7 +113,57 @@
                 </div>
 			</div>
 			<div id="settings">
-				
+                <div id="topSettingsRow">
+                    <div class="container">
+    				  <div class="labelInputCont text-center settingsHeader">
+    				  	<h4>General</h4>
+    				  </div>
+    				  <div class="labelInputCont">
+    					<label for="callSign" class="settingsLabelWidth">Callsign:</label>
+    					<input name="callSign" class="settingsWidth" />
+    				  </div>
+    				  <div class="labelInputCont">
+    					<label for="signExt" class="settingsLabelWidth">Ext:</label>
+    					<input name="signExt" class="settingsWidth"/>
+    				  </div>
+    				  <div class="labelInputCont">
+    					<label for="passCode" class="settingsLabelWidth">Passcode:</label>
+    					<input name="passCode" class="settingsWidth" type="password"/>
+    				  </div>
+    				  <div class="labelInputCont">
+    					<label for="lifetime" class="settingsLabelWidth">Point Lifetime:</label>
+    					<input name="lifetime" class="settingsWidth"/>
+    				  </div>
+    				  <div class="labelInputCont text-left">
+    					<label for="trackStat" class="settingsLabelWidth">Track Station:</label>
+    					<input name="trackStat" type="checkbox"/>
+    				  </div>
+    				</div>
+                    <div class="container">
+                      <div class="labelInputCont text-center settingsHeader">
+                        <h4>Data Connections</h4>
+                      </div>
+                      <div class="labelInputCont">
+                        <label for="connList" class="settingsLabelWidth">Callsign:</label>
+                        <select name="connList" class="settingsWidth">
+                            <option>Testing!</option>
+                            <option>Testing 2</option>
+                        </select>
+                      </div>
+                      <div class="labelInputCont text-center settingsHeader">
+                      	<input type="button" value="Add"/>
+                      </div>
+                    </div>
+                    <div class="container">
+                      <div class="labelInputCont text-center settingsHeader">
+                        <h4>Filters</h4>
+                      </div>
+                      <div class="labelInputCont">
+                        <label for="callSign" class="settingsLabelWidth">Callsign:</label>
+                        <input name="callSign" class="settingsWidth" />
+                      </div>
+                    </div>
+                </div>
 			</div>
 		</div>
         
