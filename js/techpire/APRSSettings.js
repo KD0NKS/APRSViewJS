@@ -37,17 +37,6 @@ var station = {
 		nws: false
 	};
 
-function APRSSettings() {
-	//Storage of defaults here
-	//Station
-	station.callSign = '';
-	station.callSignExt = '';
-	station.pass = '';
-	station.pointLifetime = 90;
-	station.trackStation = false;
-	
-}
-
 APRSSettings.loadSettings = function(e) {
 	//Load in the Settings from DB
 }
@@ -57,5 +46,22 @@ APRSSettings.saveSettings = function(e) {
 }
 
 APRSSettings.SetupBindings = function(e) {
-	ko.applyBindings(station);
+	this.station.callSign = '';
+	this.station.callSignExt = '';
+	this.station.pass = '';
+	this.station.pointLifetime = 90;
+	this.station.trackStation = false;
+	
+	APRSSettings.station = this.station;
+}
+
+function APRSSettings() {
+	//Storage of defaults here
+	//Station
+	station.callSign = '';
+	station.callSignExt = '';
+	station.pass = '';
+	station.pointLifetime = 90;
+	station.trackStation = false;
+	
 }
