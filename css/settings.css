@@ -1,10 +1,25 @@
 .container {
 	background-color: #CCC;
-	margin: 5px;
+	margin: 2px;
 	padding: 5px;
-	border: thin solid #000;
+	border: thin solid #999;
 	width: 300px;
 	height: auto;
+	float: left;
+}
+
+.filterContainer {
+	background-color: #CCC;
+	border: thin solid #999;
+	height: auto;
+	margin: 2px;
+	padding: 5px;
+	width: 600px;
+	float: left;
+}
+
+.containerColumn {
+	width: 280px;
 	float: left;
 }
 
@@ -19,7 +34,7 @@
 }
 
 .settingsWidth {
-	width: 190px;
+	width: 180px;
 }
 
 .settingsLabelWidth {
@@ -28,4 +43,9 @@
 
 .settingsHeader {
 	height: 40px;
+}
+
+.settingsRow {
+	width: 620px;
+	height: auto;
 }
