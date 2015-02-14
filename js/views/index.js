@@ -9,12 +9,14 @@ var TechpireAPRS = require('TechpireAPRS')
     , Datastore = require('nedb')
     , path = require('path')
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
+    , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db') })
     , layerManager = new LayerManager(layerDB)
     , connectionManager = new APRSConnectionManager()
-    , aprsSettings = new APRSSettings()
+    , aprsSettings = new APRSSettings(settingsDB, connectionManager, layerManager)
     ;
 
 layerDB.loadDatabase();
+settingsDB.loadDatabase();
 
 console.log('Saving layers to: ' + path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db'));
 
