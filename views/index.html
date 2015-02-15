@@ -68,31 +68,32 @@
     </div>
   </div>
   <div id="settings">
-    <div class="container">
+    <div class="container" data-bind="with: aprsSettings">
       <div class="labelInputCont text-center settingsHeader">
         <h4>General</h4>
       </div>
       <div class="labelInputCont">
         <label for="callSign" class="settingsLabelWidth">Callsign:</label>
-        <input name="callSign" class="settingsWidth" data-bind="text: callSign"/>
+        <input name="callSign" class="settingsWidth" data-bind="value: callsign"/>
       </div>
       <div class="labelInputCont">
-        <label for="signExt" class="settingsLabelWidth">Ext:</label>
-        <input name="signExt" class="settingsWidth" data-bind="text: callSignExt"/>
+        <label for="ssid" class="settingsLabelWidth">Ext:</label>
+        <input name="ssid" class="settingsWidth" data-bind="value: ssid"/>
       </div>
       <div class="labelInputCont">
-        <label for="passCode" class="settingsLabelWidth">Passcode:</label>
-        <input name="passCode" class="settingsWidth" type="password" data-bind="text: pass"/>
+        <label for="passcode" class="settingsLabelWidth">Passcode:</label>
+        <input name="passcode" class="settingsWidth" type="text" data-bind="value: passcode"/>
       </div>
       <div class="labelInputCont">
         <label for="lifetime" class="settingsLabelWidth">Point Lifetime:</label>
-        <input name="lifetime" class="settingsWidth" type="number" data-bind="text: pointLifetime"/>
+        <input name="lifetime" class="settingsWidth" type="number" data-bind="value: pointLifetime"/>
       </div>
       <div class="labelInputCont text-left">
         <label for="trackStat" class="settingsLabelWidth">Track Station:</label>
         <input name="trackStat" type="checkbox" data-bind="boolean: trackStation"/>
       </div>
     </div>
+    <!--
     <div class="container">
       <div class="labelInputCont text-center settingsHeader">
         <h4>Data Connections</h4>
@@ -187,6 +188,7 @@
         </div>
       </div>
     </div>
+-->
   </div>
 </div>
 

@@ -147,7 +147,10 @@ function pageViewModel() {
     self.messageAddressee = ko.observable('');
     self.messageText = ko.observable('');
     self.messageRequireAck = ko.observable('');
-	
+    
+    self.aprsSettings = aprsSettings;
+    self.aprsSettings.reloadSettings();
+    
 	self.DeleteMessage = function(m) {
 		self.messageWindowMessages.remove(m);
 	};
