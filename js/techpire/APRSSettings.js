@@ -3,6 +3,7 @@
 ****/
 function StationSettings(data) {
     this.settingsName = 'STATION_SETTINGS';
+    
     this.callsign = ko.observable(data.callsign);       // Station callsign
     this.ssid = ko.observable(data.ssid);            // SSID
     this.passcode = ko.observable(data.passcode);                 // APRS-IS passcode
@@ -31,7 +32,7 @@ function PacketFilterSettings(data) {
     this.nws = ko.observable(data.nws);
 };
 
-function APRSSettings(appSettingsDB, connectionManager, layerManager) {
+function APRSSettings(appSettingsDB) {
     var self = this;
     
     self.db = appSettingsDB;
@@ -46,68 +47,77 @@ function APRSSettings(appSettingsDB, connectionManager, layerManager) {
     // Observable settings objects
     self.stationSettings = null;
     self.packetFilterSettings = null; // TODO: Make this an array of simple filter 'objects'
-    self.connectionManager = connectionManager;
-    self.layerManager = layerManager;
     
     self.reloadSettings = function() {
         console.log('reloading settings');
         
         // Load station settings from the database
-        self.stationSettings = self.db.findOne({ settingsName: 'STATION_SETTINGS' }, function (err, stationSettings) {
+        self.db.findOne({ settingsName: 'STATION_SETTINGS' }, function (err, dbStationSettings) {
             if(err) {
                 console.log('Failed to load user settings.');
                 console.log(err);
-            } else if(stationSettings != null) {
-                console.log('Settings Found!');
-            
-                self.callsign = self.stationSettings.callsign();
-                self.ssid = self.stationSettings.ssid();
-                self.passcode = self.stationSettings.passcode();
-                self.pointLifetime = self.stationSettings.pointLifetime();
-                self.trackStation = self.stationSettings.trackStation();
             } else {
-                console.log('Settings NOT Found!');
-                
-                // lets load them into the database
-                self.stationSettings = new StationSettings({
-                    callsign: self.callsign()
-                    , ssid: self.ssid()
-                    , passcode: self.passcode()
-                    , pointLifetime: self.pointLifetime()
-                    , trackStation: self.trackStation()
-                });
+                // settings found from database
+                if(dbStationSettings) {
+                    self.callsign(dbStationSettings.callsign);
+                    self.ssid(dbStationSettings.ssid);
+                    self.passcode(dbStationSettings.passcode);
+                    self.pointLifetime(dbStationSettings.pointLifetime);
+                    self.trackStation(dbStationSettings.trackStation);
+                    
+                    self.stationSettings = new StationSettings(dbStationSettings);
+                } else {
+                    self.saveSettings();
+                }
             }
         });
-        
-        // if found
-        // Load filters from the database
-        //foreach filter setting
-        //  filters.Push(new Filter(Data));
-        // else
-        // self.filters = new Filter();
-        
-        // load layers
-        // load connections
     };
-
-    self.saveSettings = function(e) {
+    
+    // inserts new record or updates the existing record using the upsert option
+    self.saveSettings = function() {
         //Save to DB
-        
-        // self.db.findOne({ 
-        // try to find one
-        //      if found
-        //      else insert
-        
-        /*
-        storage.insert(tileRecord, function(err, newRecord) {
-            if(err) {
-                console.log('Error saving New Tile: ' + err);
+        self.db.update({ settingsName: 'STATION_SETTINGS' }
+            , {
+                settingsName: 'STATION_SETTINGS'
+                , callsign: self.callsign()
+                , ssid: self.ssid()
+                , passcode: self.passcode()
+                , pointLifetime: self.pointLifetime()
+                , trackStation: self.trackStation()
             }
-        });
-        */
+            , { upsert: true }
+            , function(err, updatedRecord) {
+                if(err) {
+                    console.log('Failed to upsert station settings.');
+                    console.log(err);
+                } else if(updatedRecord) {
+                    if(self.stationSettings) {
+                        self.stationSettings.callsign(updatedRecord.callsign);
+                        self.stationSettings.ssid(updatedRecord.ssid);
+                        self.stationSettings.passcode(updatedRecord.passcode);
+                        self.stationSettings.pointLifetime(updatedRecord.pointLifetime);
+                        self.stationSettings.trackStation(updatedRecord.trackStation);
+                    } else {
+                        self.stationSettings = new StationSettings(updatedRecord);
+                    }
+                }
+            }
+        );
     };
     
     self.cancelSave = function() {
-        
+        if(self.stationSettings != null) {
+            self.callsign(self.stationSettings.callsign());
+            self.ssid(self.stationSettings.ssid());
+            self.passcode(self.stationSettings.passcode());
+            self.pointLifetime(self.stationSettings.pointLifetime());
+            self.trackStation(self.stationSettings.trackStation());
+        } else {
+            self.callsign('N0CALL');
+            self.ssid('');
+            self.passcode(-1);
+            self.pointLifetime(90);
+            self.trackStation(false);
+        }
     };
 }

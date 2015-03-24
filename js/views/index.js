@@ -8,11 +8,11 @@ var TechpireAPRS = require('TechpireAPRS')
     , APRSMessage = require('TechpireAPRS').APRSMessage
     , Datastore = require('nedb')
     , path = require('path')
-    , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db') })
+    , aprsSettings = new APRSSettings(settingsDB)
+    , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
-    , connectionManager = new APRSConnectionManager()
-    , aprsSettings = new APRSSettings(settingsDB, connectionManager, layerManager)
+    , connectionManager = new APRSConnectionManager(aprsSettings)
     ;
 
 layerDB.loadDatabase();

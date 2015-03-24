@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
 <link rel="stylesheet" href="../css/settings.css" />
 <link rel="stylesheet" href="../css/main.css" />
+
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />
+
 </head>
 <body style="opacity: 0;">
 <div id="tabs">
@@ -92,23 +96,31 @@
         <label for="trackStat" class="settingsLabelWidth">Track Station:</label>
         <input name="trackStat" type="checkbox" data-bind="boolean: trackStation"/>
       </div>
+        <div>
+            <input type="button" value="Save" data-bind="click: saveSettings" />
+            <input type="button" value="Cancel" data-bind="click: cancelSave" />
+        </div>
     </div>
-    <!--
+    
     <div class="container">
       <div class="labelInputCont text-center settingsHeader">
         <h4>Data Connections</h4>
       </div>
-      <div class="labelInputCont">
-        <label for="connList" class="settingsLabelWidth">Callsign:</label>
-        <select name="connList" class="settingsWidth">
-          <option>Testing!</option>
-          <option>Testing 2</option>
-        </select>
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <!-- ko foreach: connectionManager.dataConnections -->
+          <div class="panel panel-default">
+              <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.connectionType" />
+              </h4>
+          </div>
+          <!-- /ko -->
       </div>
       <div class="labelInputCont text-center settingsHeader">
         <input type="button" value="Add"/>
       </div>
     </div>
+    
+    <!--
     <div class="filterContainer">
       <div class="labelInputCont text-center settingsHeader" style="width: 100%">
         <h4>Filters</h4>
@@ -198,8 +210,9 @@
 <script type="text/javascript" src="../js/lib/leaflet-0.7.2/leaflet.js"></script> 
 <script type="text/javascript" src="../js/lib/Leaflet.label-master/dist/leaflet.label.js"></script> 
 <script type="text/javascript" src="../js/lib/leaflet-search-master/src/leaflet-search.js"></script> 
-<script type="text/javascript" src="../js/lib/notify.min.js"></script> 
-<script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script> 
+<script type="text/javascript" src="../js/lib/notify.min.js"></script>
+<script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
 
 <!-- These are front end javascript --> 
 <script type="text/javascript" src="../js/techpire/APRSSettings.js"></script>

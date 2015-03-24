@@ -11,77 +11,75 @@ var TechpireAPRS = require('TechpireAPRS')
 var SOFTWARE_NAME = 'testsoftware';
 var SOFTWARE_VERSION = 0;
 
-var instance = null;
-
-function APRSConnectionManager() {
-    instance = this;
+function APRSConnectionManager(aprsSettings) {
+    var self = this;
     
-	this.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
-
-	this.dataConnections = new Array();
-
-	this.messages = new Bacon.Bus();
-	this.mapPackets = new Bacon.Bus();
-	this.sentMessages = new Bacon.Bus();
-}
-
-APRSConnectionManager.prototype.LoadConnections = function() {
-	// TODO: foreach data connection
-	var args = Array();
+    self.aprsSettings = aprsSettings;
     
-    /*
-	args['connectionType'] = 'APRSIS';
-	args['callsign'] = 'N0CALL';
-	args['host'] = '';
-	args['port'] = 10154;
-	args['filter'] = '';
-	args['isEnabled'] = false;
-    args['isTransmitEnabled'] = false;
-	args['isReconnectOnFailure'] = true;
-	args['keepAliveTime'] = 60000;
-	args['softwareName'] = SOFTWARE_NAME;
-	args['softwareVersion'] = SOFTWARE_VERSION;
-    
-    instance.AddConnection(args);
-    */
-};
+	self.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
 
-APRSConnectionManager.prototype.AddConnection = function(args) {
-    var dataConnection = instance.connectionFactory.CreateDataConnection(args);
-    
-    instance.dataConnections.push(dataConnection);
-    
-    instance.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
-	instance.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
-	instance.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
-	instance.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
-    
-	try {
-        if(dataConnection.isEnabled === true) {
-			dataConnection.Connect();
-            
-            //console.log(dataConnection instanceof AGWPEDataConnection);
-            
-            if(args['connectionType'] == 'AGWPE') {
-            //if(dataConnection instanceof AGWPEDataConnection) {
-                console.log('Enable Monitoring');
-                dataConnection.Monitor();
-            }
-		}
-	} catch(e) {
-		console.log(e);
-	}
-};
+	self.dataConnections = ko.observableArray();
 
-APRSConnectionManager.prototype.SendPacket = SendPacket;
+	self.messages = new Bacon.Bus();
+	self.mapPackets = new Bacon.Bus();
+	self.sentMessages = new Bacon.Bus();
+    
+    self.LoadConnections = function() {
+        // TODO: foreach data connection
+        var args = Array();
 
-// Send a packet (of any kind) out to all data connections where sending is enabled
-function SendPacket(packet) {
-    for(var c = 0; c < instance.dataConnections.length; c++) {
-        var connection = instance.dataConnections[c];
         
-        if(connection.isEnabled && connection.isTransmitEnabled) {
-            connection.Send(packet);
+        args['connectionType'] = 'APRSIS';
+        args['callsign'] = 'N0CALL';
+        args['host'] = '';
+        args['port'] = 10154;
+        args['filter'] = '';
+        args['isEnabled'] = false;
+        args['isTransmitEnabled'] = false;
+        args['isReconnectOnFailure'] = true;
+        args['keepAliveTime'] = 60000;
+        args['softwareName'] = SOFTWARE_NAME;
+        args['softwareVersion'] = SOFTWARE_VERSION;
+
+        self.AddConnection(args);
+        
+    };
+    
+    self.AddConnection = function(args) {
+        var dataConnection = self.connectionFactory.CreateDataConnection(args);
+
+        self.dataConnections.push(dataConnection);
+
+        self.sentMessages.plug(Bacon.fromEventTarget(dataConnection, 'sending'));
+        self.messages.plug(Bacon.fromEventTarget(dataConnection, 'message'));
+        self.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'position'));
+        self.mapPackets.plug(Bacon.fromEventTarget(dataConnection, 'object'));
+
+        try {
+            if(dataConnection.isEnabled === true) {
+                dataConnection.Connect();
+
+                //console.log(dataConnection instanceof AGWPEDataConnection);
+
+                if(args['connectionType'] == 'AGWPE') {
+                //if(dataConnection instanceof AGWPEDataConnection) {
+                    console.log('Enable Monitoring');
+                    dataConnection.Monitor();
+                }
+            }
+        } catch(e) {
+            console.log(e);
         }
-    }
+    };
+    
+    // Send a packet (of any kind) out to all data connections where sending is enabled
+    self.SendPacket = function(packet) {
+        for(var c = 0; c < self.dataConnections.length; c++) {
+            var connection = self.dataConnections[c];
+
+            if(connection.isEnabled && connection.isTransmitEnabled) {
+                connection.Send(packet);
+            }
+        }
+    };
 }
