@@ -1,4 +1,4 @@
-.container {
+.settingsContainer {
 	background-color: #CCC;
 	margin: 2px;
 	padding: 5px;
@@ -37,7 +37,7 @@
 	width: 180px;
 }
 
-.settingsLabelWidth {
+.settingsLabel {
 	width: 100px;
 }
 
