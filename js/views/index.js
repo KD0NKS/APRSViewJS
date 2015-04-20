@@ -41,14 +41,14 @@ var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 var mapEle = $('#map');
 var statusBar = $('#statusBar');
 var messagesEle = $('#messages');
-var tabNavBarEle; // set when tabs are created
+var tabNavBarEle = null; // set when tabs are created
 var viewModel = null;
 
 // DOM is already init'd, must create tabs before doing anything with map
 $('#tabs').tabs({
     create: function(event, ui) {
         $('body').css('opacity', '1'); // show body after markup has been enhanced
-        tabNavBarEle = $('.ui-tabs-nav');
+        tabNavBarEle = $('#mainAppTabs');
         resizeDynamicElements();
     },
     beforeActivate: function(event, ui) {

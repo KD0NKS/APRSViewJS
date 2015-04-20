@@ -63,7 +63,6 @@ function APRSConnectionManager(aprsSettings) {
 
                 if(args['connectionType'] == 'AGWPE') {
                 //if(dataConnection instanceof AGWPEDataConnection) {
-                    console.log('Enable Monitoring');
                     dataConnection.Monitor();
                 }
             }
@@ -71,6 +70,14 @@ function APRSConnectionManager(aprsSettings) {
             console.log(e);
         }
     };
+    
+    /*
+    self.DeleteConnection = function(connection) {
+        // TODO: add disconnect functionality to connections!
+        
+        self.dataConnections.remove(connection);
+    }
+    */
     
     // Send a packet (of any kind) out to all data connections where sending is enabled
     self.SendPacket = function(packet) {

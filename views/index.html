@@ -6,126 +6,259 @@
     <link rel="stylesheet" href="../css/leaflet.css" />
     <link rel="stylesheet" href="../css/leaflet.label.css" />
     <link rel="stylesheet" href="../css/leaflet-search.css" />
-    <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+    
+    
+    <!--<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />-->
     <link rel="stylesheet" href="../css/settings.css" />
     <link rel="stylesheet" href="../css/main.css" />
 
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />
+    <!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />-->
 </head>
-<body style="opacity: 0;">
-    <div id="tabs">
-        <ul>
-            <li><a id="mapTab" href="#map">Map</a></li>
-            <li><a id="messagesTab" href="#messages">Messages</a></li>
-            <li><a id="settingsTab" href="#settings">Settings</a></li>
+<body>
+    <div role="tabpanel">
+        <!-- Nav tabs -->
+        <ul id="mainAppTabs" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
         </ul>
-        <div id="map"></div>
-            <div id="messages" style="margin-bottom: 100px;">
-                <div style="margin-top: 5px; margin-bottom: 5px;">
-                    <label for="addressee">To: </label>
-                    <input id="addressee" type="text" data-bind="value: messageAddressee" maxlength="9" />
-                    <label for="messageText">Message: </label>
-                    <input id="messageText" type="text" data-bind="value: messageText" maxlength="67" />
-                    <label for="isRequireAck">Require Ack: </label>
-                    <input id="isRequireAck" type="checkbox" data-bind="checked: messageRequireAck" />
-                    <input type="button" value="Send" data-bind="click: SendMessage" />
+
+        <!-- Tab panes -->
+        <div id="tabs" class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="map"></div>
+            <div role="tabpanel" class="tab-pane" id="messages">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <label for="addressee">To: </label>
+                            <input id="addressee" type="text" data-bind="value: messageAddressee" maxlength="9" />
+                        </div>
+                        <div class="col-xs-2">
+                            <label for="messageText">Message: </label>
+                            <input id="messageText" type="text" data-bind="value: messageText" maxlength="67" />
+                        </div>
+                        <div class="col-xs-1">
+                            <label for="isRequireAck">Require Ack: </label>
+                            <input id="isRequireAck" type="checkbox" data-bind="checked: messageRequireAck" />
+                        </div>
+                        <div class="col-xs-1">
+                            <input type="button" class="btn btn-default" value="Send" data-bind="click: SendMessage" />
+                        </div>
+                    </div>
                 </div>
                 <div class="fixed-table-container">
-                <div class="header-background"></div>
-                <div class="fixed-table-container-inner">
-                    <table id="allMessagesTable" class="messages-table" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th class="first" style="min-width: 50px;">
-                                    <div class="th-inner">Received Time</div>
-                                </th>
-                                <th style="min-width: 65px; max-width: 100px;">
-                                    <div class="th-inner">Message Number</div>
-                                </th>
-                                <th style="min-width: 60px;">
-                                    <div class="th-inner">To/Group Name</div>
-                                </th>
-                                <th style="min-width: 60px;">
-                                    <div class="th-inner">From</div>
-                                </th>
-                                <th style="min-width: 80px;">
-                                    <div class="th-inner">Message</div>
-                                </th>
-                                <th style="width: 50px;">
-                                    <div class="th-inner" style="padding-left: 25px;">
-                                        <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
+                    <div class="header-background"></div>
+                    <div class="fixed-table-container-inner">
+                        <table id="allMessagesTable" class="messages-table" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="first" style="min-width: 50px;">
+                                        <div class="th-inner">Received Time</div>
+                                    </th>
+                                    <th style="min-width: 65px; max-width: 100px;">
+                                        <div class="th-inner">Message Number</div>
+                                    </th>
+                                    <th style="min-width: 60px;">
+                                        <div class="th-inner">To/Group Name</div>
+                                    </th>
+                                    <th style="min-width: 60px;">
+                                        <div class="th-inner">From</div>
+                                    </th>
+                                    <th style="min-width: 80px;">
+                                        <div class="th-inner">Message</div>
+                                    </th>
+                                    <th style="width: 50px;">
+                                        <div class="th-inner" style="padding-left: 25px;">
+                                            <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: messageWindowMessages">
+                                <tr>
+                                    <td class="text-left" style="min-width: 50px; max-width: 100px;">
+                                    <span data-bind="text: receivedTime, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                </td>
+                                    <td class="text-left" style="min-width: 65px; max-width: 100px;">
+                                    <span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                </td>
+                                <td class="text-left">
+                                    <a href="#" data-bind="text: addressee
+                                            , click: function() { messagesTabClick(addressee()) }
+                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                    </a>
+                                <td>
+                                    <a href="#" data-bind="text: groupName
+                                            , click: function() { messagesTabClick(groupName()) }
+                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                    </a>
+                                </td>
+                                <td class="text-left">
+                                    <a href="#" data-bind="text: sourceCall
+                                            , click: function() { messagesTabClick(sourceCall()) }
+                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
+                                    </a>
+                                </td>
+                                <td class="text-left">
+                                    <span data-bind="text: message, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                </td>
+                                    <td class="text-center">
+                                        <a href="#" data-bind="value: $data, click: $root.DeleteMessage">
+                                            <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="settings">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#stationSettings" aria-controls="stationSettings" role="tab" data-toggle="tab">Station Settings</a></li>
+                    <li role="presentation"><a href="#connectionSettings" aria-controls="connectionSettings" role="tab" data-toggle="tab">Connections</a></li>
+                    <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="stationSettings" data-bind="with: aprsSettings">
+                        <div>
+                            <label for="callSign" >Callsign:</label>
+                            <input name="callSign" data-bind="value: callsign" />
+                        </div>
+                        <div>
+                            <label for="ssid">Ext:</label>
+                            <input name="ssid" data-bind="value: ssid" />
+                        </div>
+                        <div>
+                            <label for="passcode">Passcode:</label>
+                            <input name="passcode" type="text" data-bind="value: passcode" />
+                        </div>
+                        <div>
+                            <label for="lifetime">Point Lifetime:</label>
+                            <input name="lifetime" type="number" data-bind="value: pointLifetime" />
+                        </div>
+                        <div>
+                            <label for="trackStat">Track Station:</label>
+                            <input name="trackStat" type="checkbox" data-bind="boolean: trackStation" />
+                        </div>
+                        <div>
+                            <input type="button" class="btn btn-default" value="Save" data-bind="click: saveSettings" />
+                            <input type="button" class="btn btn-default" value="Cancel" data-bind="click: cancelSave" />
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="connectionSettings" data-bind="with: aprsSettings">
+                        <div id="connectionList">
+                            <div class="labelInputCont text-center settingsHeader">
+                                <h4>Data Connections</h4>
+                            </div>
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <!-- ko foreach: connectionManager.dataConnections() -->
+                                <div class="panel panel-default">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.connectionType"></a>
+                                    </h4>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dataConnectionEditModal">
+                                    New Connection
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Add or edit connection modal panel -->
+                        <div id="dataConnectionEditModal" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        
+                                        <h4 class="modal-title">Edit Data Connection</h4>
                                     </div>
-                                </th>
-                            </tr>
-                        </thead>
-                      <tbody data-bind="foreach: messageWindowMessages">
-                        <tr>
-                          <td class="text-left" style="min-width: 50px; max-width: 100px;"><span data-bind="text: receivedTime, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span></td>
-                          <td class="text-left" style="min-width: 65px; max-width: 100px;"><span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span></td>
-                          <td class="text-left"><a href="#" data-bind="text: addressee
-                                                            , click: function() { messagesTabClick(addressee()) }
-                                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"> </a> <a href="#" data-bind="text: groupName
-                                                            , click: function() { messagesTabClick(groupName()) }
-                                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"> </a></td>
-                          <td class="text-left"><a href="#" data-bind="text: sourceCall
-                                                            , click: function() { messagesTabClick(sourceCall()) }
-                                                            , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"> </a></td>
-                          <td class="text-left"><span data-bind="text: message, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span></td>
-                          <td class="text-center"><a href="#" data-bind="value: $data, click: $root.DeleteMessage"> <img src="../css/images/DeleteIcon.png" style="height: 12px; width: 12px;" /> </a></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                                    <div class="modal-body">
+                                        <div>
+                                            <label for="connectionType">Connection Type:</label>
+
+                                            <select name="connectionType">
+                                                <option value='APRS-IS'>APRS-IS</option>
+                                                <option value='AGWPE'>AGWPE</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="host">Host URL:</label>
+                                            <input type="text" name="host" class="settingsWidth" />
+                                        </div>
+                                        <div>
+                                            <label for="port" class="settingsWidth">Host Port:</label>
+                                            <input name="port" type="number" class="settingsWidth" />
+                                        </div>
+                                        <div>
+                                            <label for="isEnabled">Track Station:</label>
+                                            <input name="isEnabled" type="checkbox" />
+                                        </div>
+                                        <div>
+                                            <label for="isTransmitEnabled">Enable Transmit:</label>
+                                            <input name="isTransmitEnabled" type="checkbox" />
+                                        </div>
+                                        <div>
+                                            <label for="isReconnectOnFailure">Reconnect on Failure:</label>
+                                            <input name="isReconnectOnFailure" type="checkbox" />
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                        <!--
+                        <div id="editConnection">
+                            <div class="panel-group">
+                                
+                                
+
+                                <!-- APRS IS -->
+                                <!--
+                                instance.filter = args['filter'];
+                                instance.keepAliveTime = args['keepAliveTime'];
+                                -->
+
+                                <!-- AGW -->
+                                <!--
+                                self.radioPort = args['radioPort'];
+                                --
+                            </div>
+                            <div class="labelInputCont">
+                                <input type="button" class="btn btn-default" value="Add" />
+                                <input type="button" class="btn btn-default" value="Cancel" />
+                            </div>
+                        </div>
+                        -->
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="settings">
-            <div class="settingsContainer" data-bind="with: aprsSettings">
-                <div class="labelInputCont text-center settingsHeader">
-                    <h4>General</h4>
-                </div>
-                <div class="labelInputCont">
-                    <label for="callSign" class="settingsLabel">Callsign:</label>
-                    <input name="callSign" class="settingsWidth" data-bind="value: callsign"/>
-                </div>
-                <div class="labelInputCont">
-                    <label for="ssid" class="settingsLabel">Ext:</label>
-                    <input name="ssid" class="settingsWidth" data-bind="value: ssid"/>
-                </div>
-                <div class="labelInputCont">
-                    <label for="passcode" class="settingsLabel">Passcode:</label>
-                    <input name="passcode" class="settingsWidth" type="text" data-bind="value: passcode"/>
-                </div>
-                <div class="labelInputCont">
-                    <label for="lifetime" class="settingsLabel">Point Lifetime:</label>
-                    <input name="lifetime" class="settingsWidth" type="number" data-bind="value: pointLifetime"/>
-                </div>
-                <div class="labelInputCont">
-                    <label for="trackStat" class="settingsLabel">Track Station:</label>
-                    <input name="trackStat" type="checkbox" data-bind="boolean: trackStation"/>
-                </div>
-                <div class="labelInputCont">
-                    <input type="button" value="Save" data-bind="click: saveSettings" />
-                    <input type="button" value="Cancel" data-bind="click: cancelSave" />
-                </div>
-            </div>
+        
+        
+        <!--
+        <div role="tabpanel" class="tab-pane" id="settings">
+            
 
             <div class="settingsContainer">
-                <div class="labelInputCont text-center settingsHeader">
-                    <h4>Data Connections</h4>
-                </div>
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <!-- ko foreach: connectionManager.dataConnections -->
-                    <div class="panel panel-default">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.connectionType" />
-                        </h4>
-                    </div>
-                    <!-- /ko -->
-                </div>
-                <div class="labelInputCont text-center settingsHeader">
-                    <input type="button" value="Add"/>
-                </div>
+                
             </div>
 
             <!--
@@ -209,16 +342,18 @@
             </div>
             </div>
             -->
+<!--
         </div>
+-->
     </div>
 
     <div id="statusBar">
         Latitude: <span data-bind="text: mouseLatLng().lat.toFixed(4)"></span>
         Longitude: <span data-bind="text: mouseLatLng().lng.toFixed(4)"></span> Last Heard: <span data-bind="text: lastStationHeard"></span> 
     </div>
-
+    
     <script type="text/javascript" src="../js/lib/jquery-2.1.0.min.js"></script> 
-    <script type="text/javascript" src="../js/lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script> 
+    <script type="text/javascript" src="../js/lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
     <script type="text/javascript" src="../js/lib/leaflet-0.7.2/leaflet.js"></script> 
     <script type="text/javascript" src="../js/lib/Leaflet.label-master/dist/leaflet.label.js"></script> 
     <script type="text/javascript" src="../js/lib/leaflet-search-master/src/leaflet-search.js"></script> 
@@ -226,14 +361,14 @@
     <script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- These are front end javascript --> 
+    <!-- These are front end javascript -->
     <script type="text/javascript" src="../js/techpire/APRSSettings.js"></script>
     <script type="text/javascript" src="../js/techpire/LayerManager.js"></script> 
     <script type="text/javascript" src="../js/techpire/APRSConnectionManager.js"></script> 
     <script type="text/javascript" src="../js/techpire/StationMarkerIcon.js"></script> 
     <script type="text/javascript" src="../js/techpire/APRSPositionMarker.js"></script> 
     <script type="text/javascript" src="../js/techpire/TrailColorUtil.js"></script> 
-    <script type="text/javascript" src="../js/views/index.js"></script> 
+    <script type="text/javascript" src="../js/views/index.js"></script>
     <script type="text/javascript">
         var gui = require('nw.gui');
 
