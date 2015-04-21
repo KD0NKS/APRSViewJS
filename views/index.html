@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../css/main.css" />
 
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+    <!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />-->
 </head>
 <body>
     <div role="tabpanel">
@@ -162,9 +163,9 @@
                                 </div>
                                 
                                 <!-- ko foreach: dataConnections() -->
-                                <div class="panel panel-default">
+                                <div class="panel panel-default" data-bind="with: $data" >
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.host"></a>
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: description"></a>
                                     </h4>
                                 </div>
                                 <!-- /ko -->
@@ -177,7 +178,7 @@
                         </div>
                         
                         <!-- Add or edit connection modal panel -->
-                        <div id="dataConnectionEditModal" class="modal fade">
+                        <div id="dataConnectionEditModal" class="modal fade" data-bind="with: $root">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -190,23 +191,31 @@
                                     <div class="modal-body">
                                         <div>
                                             <label for="connectionType">Connection Type:</label>
-                                            
-                                            <select name="connectionType">
-                                                <option value='APRS-IS'>APRS-IS</option>
+											
+                                            <select name="connectionType" data-bind="value: dcConnectionType">
+                                                <option value='APRSIS'>APRS-IS</option>
                                                 <option value='AGWPE'>AGWPE</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label for="connectionName">Connection Name:</label>
-                                            <input type="text" name="connectionName" class="settingsWidth" />
-                                        </div>
+                                            <label for="description">Description:</label>
+                                            <input type="text" name="description" data-bind="value: dcDescription" />
+										</div>
                                         <div>
                                             <label for="host">Host URL:</label>
-                                            <input type="text" name="host" class="settingsWidth" />
+                                            <input type="text" name="host" data-bind="value: dcHost" />
                                         </div>
-                                        <div>
-                                            <label for="port" class="settingsWidth">Host Port:</label>
-                                            <input name="port" type="number" class="settingsWidth" />
+                                        <div id='isServerPort' data-bind='visible: dcConnectionType() == "APRSIS"'>
+                                            <label for="port">Host Port:</label>
+                                            <input name="port" type="number" data-bind="value: dcPort" />
+                                        </div>
+                                        <div data-bind='visible: dcConnectionType() == "APRSIS"'>
+                                            <label for="filter">Filter:</label>
+                                            <input name="filter" type="text" data-bind="value: dcFilter" />
+                                        </div>
+                                        <div data-bind='visible: dcConnectionType() == "AGWPE"'>
+                                            <label for="radioPort">Radio Port:</label>
+                                            <input name="radioPort" type="text" data-bind="value: dcRadioPort" />
                                         </div>
                                         <div>
                                             <label for="isEnabled">Track Station:</label>
@@ -223,7 +232,7 @@
                                         
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: SaveConnection">Save</button>
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>

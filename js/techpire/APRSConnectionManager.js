@@ -8,9 +8,6 @@ var TechpireAPRS = require('TechpireAPRS')
  look into using eep or RxJS.
  */
 
-var SOFTWARE_NAME = 'testsoftware';
-var SOFTWARE_VERSION = 0;
-
 function APRSConnectionManager(aprsSettings) {
     var self = this;
     
@@ -27,9 +24,12 @@ function APRSConnectionManager(aprsSettings) {
     self.LoadConnections = function() {
         // TODO: foreach data connection
         var args = Array();
-
         
+        // load from database and add aprsSettings to each connection where appropriate
+        
+        /*
         args['connectionType'] = 'APRSIS';
+        args['description'] = 'Unnamed Connection';
         args['callsign'] = 'N0CALL';
         args['host'] = '';
         args['port'] = 10154;
@@ -40,12 +40,17 @@ function APRSConnectionManager(aprsSettings) {
         args['keepAliveTime'] = 60000;
         args['softwareName'] = SOFTWARE_NAME;
         args['softwareVersion'] = SOFTWARE_VERSION;
-
-        self.AddConnection(args);
         
+        self.AddConnection(args);
+        */
     };
     
     self.AddConnection = function(args) {
+        args['callsign'] = self.aprsSettings.callsign();
+        args['passcode'] = self.aprsSettings.passcode();
+        args['softwareName'] = self.aprsSettings.SOFTWARE_NAME;
+        args['softwareVersion'] = self.aprsSettings.SOFTWARE_VERSION;
+        
         var dataConnection = self.connectionFactory.CreateDataConnection(args);
 
         self.dataConnections.push(dataConnection);
@@ -72,6 +77,8 @@ function APRSConnectionManager(aprsSettings) {
     };
     
     /*
+    
+    
     self.DeleteConnection = function(connection) {
         // TODO: add disconnect functionality to connections!
         

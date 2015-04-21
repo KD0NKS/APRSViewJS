@@ -140,6 +140,7 @@ function MessageObject(data) {
 function pageViewModel() {
 	var self = this;
     
+    // map - status bar
     self.mouseLatLng = ko.observable(L.latLng(39, -99));
     self.lastStationHeard = ko.observable('');
 	
@@ -151,6 +152,18 @@ function pageViewModel() {
     self.aprsSettings = aprsSettings;
     self.aprsSettings.reloadSettings();
     
+    // Data Connection Form - See DataConnection Form
+    self.dcDescription = '';
+    self.dcConnectionType = ko.observable('APRS-IS');
+    self.dcHost = '';
+    self.dcPort = 0;
+    self.dcFilter = '';
+    self.dcRadioPort = '';
+    
+    
+    
+    
+    // MESSAGES
 	self.DeleteMessage = function(m) {
 		self.messageWindowMessages.remove(m);
 	};
@@ -231,10 +244,16 @@ function pageViewModel() {
     
     
     self.SendMessage = function() {
-        if(self.messageAddressee() != '' && self.messageText() != '' && self.messageText().length < 67) {
-            /*
+        // TODO: Validate callsign
+        if(self.messageAddressee() != '' && self.messageText() != '' && self.messageText().length < 67 && aprsSettings.callsign() != '' && aprsSettings.callsign() != 'N0CALL') {
             var msg = new APRSMessage();
-            msg.callsign = '';
+            
+            msg.callsign = self.aprsSettings.callsign();
+            
+            if(self.aprsSettings.ssid && self.aprsSettings.ssid != '') {
+                msg.callsign = msg.callsign + '-' + self.aprsSettings.ssid;
+            }
+            
             msg.destination = 'APZ678';
             msg.addressee = self.messageAddressee().trim();
             msg.messageType = ':';
@@ -244,9 +263,35 @@ function pageViewModel() {
             connectionManager.SendPacket(msg);
             
             self.messageText('');
-            */
         }
     };
+    
+    // DataConnection Form
+    self.SaveConnection = function() {
+        var args = new Array();
+        
+        //r/39.2575/-94.6326/500
+        console.log(self.dcConnectionType());
+        
+        args['connectionType'] = self.dcConnectionType();
+        args['description'] = self.dcDescription;
+        args['host'] = self.dcHost;
+        args['port'] = self.dcPort;
+        args['filter'] = self.dcFilter;
+        args['isEnabled'] = true;
+        args['isTransmitEnabled'] = false;
+        args['isReconnectOnFailure'] = true;
+        args['keepAliveTime'] = 60000;
+        
+        self.dcDescription = '';
+        self.dcConnectionType = ko.observable('APRSIS');
+        self.dcHost = '';
+        self.dcPort = 0;
+        self.dcFilter = '';
+        self.dcRadioPort = '';
+        
+        connectionManager.AddConnection(args);
+    }
 };
 
 function createMap(baseLayer) {

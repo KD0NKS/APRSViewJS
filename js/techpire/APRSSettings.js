@@ -37,6 +37,9 @@ function APRSSettings(appSettingsDB) {
     
     self.db = appSettingsDB;
     
+    self.SOFTWARE_NAME = 'testsoftware';
+    self.SOFTWARE_VERSION = 0;
+    
 	//Storage of defaults here
 	self.callsign = ko.observable('N0CALL');
 	self.ssid = ko.observable('');
