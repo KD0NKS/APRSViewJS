@@ -10,9 +10,9 @@ var TechpireAPRS = require('TechpireAPRS')
     , path = require('path')
     , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db') })
     , aprsSettings = new APRSSettings(settingsDB)
+    , connectionManager = new APRSConnectionManager(aprsSettings, settingsDB)
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
-    , connectionManager = new APRSConnectionManager(aprsSettings)
     ;
 
 layerDB.loadDatabase();
@@ -271,8 +271,6 @@ function pageViewModel() {
         var args = new Array();
         
         //r/39.2575/-94.6326/500
-        console.log(self.dcConnectionType());
-        
         args['connectionType'] = self.dcConnectionType();
         args['description'] = self.dcDescription;
         args['host'] = self.dcHost;
@@ -290,6 +288,7 @@ function pageViewModel() {
         self.dcFilter = '';
         self.dcRadioPort = '';
         
+        // TODO: OR UPDATE
         connectionManager.AddConnection(args);
     }
 };

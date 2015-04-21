@@ -8,10 +8,11 @@ var TechpireAPRS = require('TechpireAPRS')
  look into using eep or RxJS.
  */
 
-function APRSConnectionManager(aprsSettings) {
+function APRSConnectionManager(aprsSettings, appSettingsDB) {
     var self = this;
     
     self.aprsSettings = aprsSettings;
+    self.db = appSettingsDB;
     
 	self.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
 
@@ -52,6 +53,8 @@ function APRSConnectionManager(aprsSettings) {
         args['softwareVersion'] = self.aprsSettings.SOFTWARE_VERSION;
         
         var dataConnection = self.connectionFactory.CreateDataConnection(args);
+        
+        // TODO: Save the connection
 
         self.dataConnections.push(dataConnection);
 
@@ -76,15 +79,17 @@ function APRSConnectionManager(aprsSettings) {
         }
     };
     
-    /*
-    
+    self.UpdateConnection(args) {
+        
+    }
     
     self.DeleteConnection = function(connection) {
         // TODO: add disconnect functionality to connections!
         
-        self.dataConnections.remove(connection);
+        // disable the connection
+        //self.dataConnections.remove(connection);
     }
-    */
+    
     
     // Send a packet (of any kind) out to all data connections where sending is enabled
     self.SendPacket = function(packet) {
@@ -96,4 +101,39 @@ function APRSConnectionManager(aprsSettings) {
             }
         }
     };
+    
+    // CHANGE LISTENERS
+    self.aprsSettings.callsign.subscribe(function(newVal) {
+        for(var c = 0; c < self.dataConnections.length; c++) {
+            var connection = self.dataConnections[c];
+            
+            connection.callsign = newVal;
+            
+            
+            // TODO: if aprsis connection send login
+            //SendLogin
+        }
+    });
+    
+    self.aprsSettings.ssid.subscribe(function(newVal) {
+        for(var c = 0; c < self.dataConnections.length; c++) {
+            var connection = self.dataConnections[c];
+            
+            connection.ssid = newVal;
+            
+            // TODO: if aprsis connection send login
+            //SendLogin
+        }
+    });
+    
+    self.aprsSettings.passcode.subscribe(function(newVal) {
+        for(var c = 0; c < self.dataConnections.length; c++) {
+            var connection = self.dataConnections[c];
+            
+            console.log(connection instanceof AGWPEDataConnection);
+            
+            // TODO: If it's an AGWPEDataConnection, set the passcode and send login
+            //SendLogin
+        }
+    });
 }
