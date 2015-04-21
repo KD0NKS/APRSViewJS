@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="../css/main.css" />
 
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
-    <!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />-->
 </head>
 <body>
     <div role="tabpanel">
@@ -150,16 +149,22 @@
                             <input type="button" class="btn btn-default" value="Cancel" data-bind="click: cancelSave" />
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane active" id="connectionSettings" data-bind="with: aprsSettings">
+                    <div role="tabpanel" class="tab-pane active" id="connectionSettings" data-bind="with: connectionManager">
                         <div id="connectionList">
                             <div class="labelInputCont text-center settingsHeader">
                                 <h4>Data Connections</h4>
                             </div>
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <!-- ko foreach: connectionManager.dataConnections() -->
+                                <div class="panel panel-default" data-bind="visible: dataConnections().length < 1">
+                                    <h4 class="panel-title">
+                                        No Connections Found
+                                    </h4>
+                                </div>
+                                
+                                <!-- ko foreach: dataConnections() -->
                                 <div class="panel panel-default">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.connectionType"></a>
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: $data.host"></a>
                                     </h4>
                                 </div>
                                 <!-- /ko -->
@@ -185,11 +190,15 @@
                                     <div class="modal-body">
                                         <div>
                                             <label for="connectionType">Connection Type:</label>
-
+                                            
                                             <select name="connectionType">
                                                 <option value='APRS-IS'>APRS-IS</option>
                                                 <option value='AGWPE'>AGWPE</option>
                                             </select>
+                                        </div>
+                                        <div>
+                                            <label for="connectionName">Connection Name:</label>
+                                            <input type="text" name="connectionName" class="settingsWidth" />
                                         </div>
                                         <div>
                                             <label for="host">Host URL:</label>
@@ -369,6 +378,7 @@
     <script type="text/javascript" src="../js/techpire/APRSPositionMarker.js"></script> 
     <script type="text/javascript" src="../js/techpire/TrailColorUtil.js"></script> 
     <script type="text/javascript" src="../js/views/index.js"></script>
+    
     <script type="text/javascript">
         var gui = require('nw.gui');
 
