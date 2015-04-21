@@ -140,6 +140,7 @@ function MessageObject(data) {
 function pageViewModel() {
 	var self = this;
     
+    // map - status bar
     self.mouseLatLng = ko.observable(L.latLng(39, -99));
     self.lastStationHeard = ko.observable('');
 	
@@ -151,6 +152,18 @@ function pageViewModel() {
     self.aprsSettings = aprsSettings;
     self.aprsSettings.reloadSettings();
     
+    // Data Connection Form - See DataConnection Form
+    self.dcDescription = '';
+    self.dcConnectionType = ko.observable('APRS-IS');
+    self.dcHost = '';
+    self.dcPort = 0;
+    self.dcFilter = '';
+    self.dcRadioPort = '';
+    
+    
+    
+    
+    // MESSAGES
 	self.DeleteMessage = function(m) {
 		self.messageWindowMessages.remove(m);
 	};
@@ -247,6 +260,36 @@ function pageViewModel() {
             */
         }
     };
+    
+    // DataConnection Form
+    self.SaveConnection = function() {
+        var args = new Array();
+        
+        self.dcDescription = '';
+        self.dcConnectionType = ko.observable('APRS-IS');
+        self.dcHost = '';
+        self.dcPort = 0;
+        self.dcFilter = '';
+        self.dcRadioPort = '';
+        
+        
+        
+        args['connectionType'] = self.dcConnectionType();
+        args['description'] = self.dcDescription;
+        args['callsign'] = self.;
+        args['host'] = '';
+        args['port'] = 10154;
+        args['filter'] = '';
+        args['isEnabled'] = false;
+        args['isTransmitEnabled'] = false;
+        args['isReconnectOnFailure'] = true;
+        args['keepAliveTime'] = 60000;
+        args['softwareName'] = SOFTWARE_NAME;
+        args['softwareVersion'] = SOFTWARE_VERSION;
+        
+        
+        
+    }
 };
 
 function createMap(baseLayer) {

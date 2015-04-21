@@ -150,7 +150,7 @@
                             <input type="button" class="btn btn-default" value="Cancel" data-bind="click: cancelSave" />
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane active" id="connectionSettings" data-bind="with: aprsSettings">
+                    <div role="tabpanel" class="tab-pane active" id="connectionSettings" data-bind="with: connectionManager">
                         <div id="connectionList">
                             <div class="labelInputCont text-center settingsHeader">
                                 <h4>Data Connections</h4>
@@ -172,7 +172,7 @@
                         </div>
                         
                         <!-- Add or edit connection modal panel -->
-                        <div id="dataConnectionEditModal" class="modal fade">
+                        <div id="dataConnectionEditModal" class="modal fade" data-bind="with: $root">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -186,18 +186,30 @@
                                         <div>
                                             <label for="connectionType">Connection Type:</label>
 
-                                            <select name="connectionType">
+                                            <select name="connectionType" data-bind="value: dcConnectionType">
                                                 <option value='APRS-IS'>APRS-IS</option>
                                                 <option value='AGWPE'>AGWPE</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label for="host">Host URL:</label>
-                                            <input type="text" name="host" class="settingsWidth" />
+                                            <label for="description">Description:</label>
+                                            <input type="text" name="description" data-bind="value: dcDescription" />
                                         </div>
                                         <div>
-                                            <label for="port" class="settingsWidth">Host Port:</label>
-                                            <input name="port" type="number" class="settingsWidth" />
+                                            <label for="host">Host URL:</label>
+                                            <input type="text" name="host" data-bind="value: dcHost" />
+                                        </div>
+                                        <div id='isServerPort' data-bind='visible: dcConnectionType() == "APRS-IS"'>
+                                            <label for="port">Host Port:</label>
+                                            <input name="port" type="number" data-bind="value: dcPort" />
+                                        </div>
+                                        <div data-bind='visible: dcConnectionType() == "APRS-IS"'>
+                                            <label for="filter">Filter:</label>
+                                            <input name="filter" type="text" data-bind="value: dcFilter" />
+                                        </div>
+                                        <div data-bind='visible: dcConnectionType() == "AGWPE"'>
+                                            <label for="radioPort">Radio Port:</label>
+                                            <input name="radioPort" type="text" data-bind="value: dcRadioPort" />
                                         </div>
                                         <div>
                                             <label for="isEnabled">Track Station:</label>
@@ -214,7 +226,7 @@
                                         
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: SaveConnection">Save</button>
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>

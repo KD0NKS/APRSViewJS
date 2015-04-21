@@ -27,9 +27,10 @@ function APRSConnectionManager(aprsSettings) {
     self.LoadConnections = function() {
         // TODO: foreach data connection
         var args = Array();
-
         
+        /*
         args['connectionType'] = 'APRSIS';
+        args['description'] = 'Unnamed Connection';
         args['callsign'] = 'N0CALL';
         args['host'] = '';
         args['port'] = 10154;
@@ -40,9 +41,9 @@ function APRSConnectionManager(aprsSettings) {
         args['keepAliveTime'] = 60000;
         args['softwareName'] = SOFTWARE_NAME;
         args['softwareVersion'] = SOFTWARE_VERSION;
-
-        self.AddConnection(args);
         
+        self.AddConnection(args);
+        */
     };
     
     self.AddConnection = function(args) {
@@ -72,6 +73,8 @@ function APRSConnectionManager(aprsSettings) {
     };
     
     /*
+    
+    
     self.DeleteConnection = function(connection) {
         // TODO: add disconnect functionality to connections!
         
