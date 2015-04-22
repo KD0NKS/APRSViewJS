@@ -271,15 +271,17 @@ function pageViewModel() {
         var args = new Array();
         
         //r/39.2575/-94.6326/500
-        args['connectionType'] = self.dcConnectionType();
-        args['description'] = self.dcDescription;
-        args['host'] = self.dcHost;
-        args['port'] = self.dcPort;
-        args['filter'] = self.dcFilter;
-        args['isEnabled'] = true;
-        args['isTransmitEnabled'] = false;
-        args['isReconnectOnFailure'] = true;
-        args['keepAliveTime'] = 60000;
+        args = {
+            'connectionType': self.dcConnectionType()
+            , 'description': self.dcDescription
+            , 'host': self.dcHost
+            , 'port': self.dcPort
+            , 'filter': self.dcFilter
+            , 'isEnabled': true
+            , 'isTransmitEnabled': false
+            , 'isReconnectOnFailure': true
+            , 'keepAliveTime': 60000
+        };
         
         self.dcDescription = '';
         self.dcConnectionType = ko.observable('APRSIS');

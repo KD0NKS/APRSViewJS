@@ -46,13 +46,13 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         */
     };
     
-    self.AddConnection = function(args) {
-        args['callsign'] = self.aprsSettings.callsign();
-        args['passcode'] = self.aprsSettings.passcode();
-        args['softwareName'] = self.aprsSettings.SOFTWARE_NAME;
-        args['softwareVersion'] = self.aprsSettings.SOFTWARE_VERSION;
+    self.AddConnection = function(connection) {
+        connection.data.set({'callsign': self.aprsSettings.callsign()});
+        connection.data.push({'passcode': self.aprsSettings.passcode()});
+        connection.data.push({'softwareName': self.aprsSettings.SOFTWARE_NAME});
+        connection.data.push({'softwareVersion': self.aprsSettings.SOFTWARE_VERSION});
         
-        var dataConnection = self.connectionFactory.CreateDataConnection(args);
+        var dataConnection = self.connectionFactory.CreateDataConnection(connection);
         
         // TODO: Save the connection
 
@@ -69,7 +69,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
 
                 //console.log(dataConnection instanceof AGWPEDataConnection);
 
-                if(args['connectionType'] == 'AGWPE') {
+                if(connection.connectionType == 'AGWPE') {
                 //if(dataConnection instanceof AGWPEDataConnection) {
                     dataConnection.Monitor();
                 }
@@ -79,7 +79,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         }
     };
     
-    self.UpdateConnection(args) {
+    self.UpdateConnection = function(connection) {
         
     }
     
