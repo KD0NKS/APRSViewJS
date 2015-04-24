@@ -82,6 +82,7 @@ Navigate to the project directory
 - NeDB
 - OfflineMap (precache with filereader) https://github.com/tbicr/OfflineMap/blob/master/leaflet_base64fr_precache_site/map.js#L71
 -- This was heavily modified
+- Knockout-ES5
 
 ##Overlay Sources
 - http://nowcoast.noaa.gov/help/mapservices.shtml?name=mapservices

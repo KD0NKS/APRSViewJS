@@ -267,22 +267,19 @@ function pageViewModel() {
     
     // DataConnection Form
     self.EditConnection = function(dataConnection) {
-        console.log(dataConnection.isEnabled);
-        
         self.dcId(dataConnection.id);
         self.dcDescription(dataConnection.description);
         self.dcHost(dataConnection.host);
         self.dcPort(dataConnection.port);
         self.dcFilter(dataConnection.filter);
-        self.dcRadioPort(dataConnection.radioPort);
         self.dcIsEnabled(dataConnection.isEnabled);
         
         $('#dataConnectionEditModal').modal('show');
     };
     
     self.SaveConnection = function() {
+        console.log(self.dcHost());
         console.log(self.dcPort());
-        console.log(self.dcId());
         
         //r/39.2575/-94.6326/500
         var args = {
@@ -316,6 +313,15 @@ function pageViewModel() {
         self.dcFilter('');
         self.dcRadioPort('');
         self.dcIsEnabled(false);
+    };
+    
+    self.DeleteConnection = function(connection) {
+        // hacks around the backdrop not disappearing when the confirm dialog cloased.
+        $('#confirm-delete' + connection.id).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        
+        connectionManager.DeleteConnection(connection);
     };
 };
 

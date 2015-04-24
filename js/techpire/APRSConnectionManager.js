@@ -7,6 +7,10 @@ var TechpireAPRS = require('TechpireAPRS')
 /*
  As we add support for message filtering or station filtering (on position reports)
  look into using eep or RxJS.
+ 
+ Data connetions themselves are intentionally non-observable objects.
+ This is to prevent requiring KnockoutJS as a dependency in the TechpireAPRS module.
+ To work around this, we all connections are wrapped as observables before being added to dataConnections.
  */
 
 function APRSConnectionManager(aprsSettings, appSettingsDB) {
@@ -36,6 +40,10 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     // build the physical connection
                     var dataConnection = self.connectionFactory.CreateDataConnection(connection);
                     
+                    ko.track(dataConnection);
+                    
+                    console.log(dataConnection);
+                    
                     // connection event listeners
                     dataConnection.on('connectionChange', function() {
                         self.UpdateConnection(dataConnection);
@@ -45,6 +53,9 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     self.dataConnections.push(dataConnection);
 
                     self.MonitorConnection(dataConnection);
+                    
+                    
+                    console.log(dataConnection);
                 });
             } else {
                 console.log('No data connections found, please check your station and data connection settings');   
@@ -87,19 +98,26 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 console.log(connection);
                 
                 connection = newConn;
+                
+                // build the physical connection
+                //var dataConnection = self.connectionFactory.CreateDataConnection(connection);
+                console.log('creating connection');
+                var dataConnection = self.connectionFactory.CreateDataConnection(connection);
+                ko.track(dataConnection);
+                console.log(dataConnection);
+
+                // add the connection to our list of connections
+                self.dataConnections.push(dataConnection);
+
+                self.MonitorConnection(dataConnection);
             }
         });
-        
-        // build the physical connection
-        var dataConnection = self.connectionFactory.CreateDataConnection(connection);
-
-        // add the connection to our list of connections
-        self.dataConnections.push(dataConnection);
-        self.dataConnections.refresh(dataConnection);
-
-        self.MonitorConnection(dataConnection);
     };
     
+    /**
+      * DO NOT UPDATE THE ISENABLED PROPERTY IN HERE!!!
+      * It will result in an endliess recursive cycle.
+      */
     self.UpdateConnection = function(connection) {
         connection.callsign = self.aprsSettings.callsign();
         
@@ -117,6 +135,8 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
             , {
                 $set: {
                     description: connection.description
+                    , host: connection.host
+                    , port: (connection.port ? connection.port : undefined)
                     , callsign: connection.callsign
                     , passcode: connection.passcode
                     , isEnabled: connection.isEnabled
@@ -129,35 +149,45 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 if(err) {
                     console.log('Failed to upsert station settings.');
                     console.log(err);
-                } else {
-                    // TODO: find connection in list and update values
-                    
-                    var conn = ko.utils.arrayFirst(self.dataConnections(), function(c) {
-                        return c.id === connection.id;
-                    });
-                    
-                    //var e = connection.isEnabled;
-                    
-                    conn.description = connection.description;
-                    conn.callsign = connection.callsign;
-                    conn.passcode = connection.passcode;
-                    //conn.isEnabled = e;
-                    conn.isTransmitEnabled = connection.isTransmitEnabled;
-                    conn.filter = connection.filter;
                 }
             }
         );
+        
+        // TODO: find connection in list and update values
+                    
+        var conn = ko.utils.arrayFirst(self.dataConnections(), function(c) {
+            return c.id === connection.id;
+        });
+        
+        conn.callsign = connection.callsign;
+        conn.passcode = connection.passcode;
+        conn.port = connection.port;
+        conn.isTransmitEnabled = connection.isTransmitEnabled;
+        conn.isReconnectOnFailure = connection.isReconnectOnFailure;
+        conn.reconnectInterval = connection.reconnectInterval;
+        conn.host = connection.host
+        conn.description = connection.description;
+        conn.callsign = connection.callsign;
+        conn.passcode = connection.passcode;
+        conn.isTransmitEnabled = connection.isTransmitEnabled;
+        conn.filter = connection.filter;
+        
+        conn.isEnabled = connection.isEnabled;
     }
     
     self.DeleteConnection = function(connection) {
-        // TODO: add disconnect functionality to connections!
-        
         // disable the connection
-        //set connection to isenabled = false
-        //remove from database
-        //self.dataConnections.remove(connection);
-        // at this point we could leave it as disabled in memory since baconjs is still using it
-        // or we could be nice to our ram and remove it
+        connection.isEnabled = false;
+        
+        // remove from database
+        self.db.remove({ _id: connection.id }, function(err, numRemoved) {
+            if(numRemoved > 0) {
+                // if we deleted a connection, remove it from the list of connections
+                self.dataConnections.remove(connection);
+                
+                // TODO: unplug from baconjs?
+            }
+        });
     }
     
     // Send a packet (of any kind) out to all data connections where sending is enabled

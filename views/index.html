@@ -162,7 +162,7 @@
                                     </h4>
                                 </div>
                                 
-                                <!-- ko foreach: dataConnections() -->
+                                <!-- ko foreach: dataConnections -->
                                 <div class="panel panel-default" data-bind="value: $data">
                                     <a class="panel-default" data-toggle="collapse" data-parent="#accordion" data-bind="attr: { href: ('#' + $data.id), 'aria-controls': $data.id }" aria-expanded="true">
                                         <div class="panel-heading">
@@ -205,12 +205,35 @@
                                                 <input name="isEnabled" type="checkbox" data-bind="checked: $data.isEnabled" />
                                             </div>
                                         </div>
+                                        
                                         <div class="panel-footer">
                                             <input type="button" class="btn btn-default" value="Edit"
                                                    data-bind="click: $root.EditConnection"
                                                    />
-                                            <input type="button" class="btn btn-default" value="Delete" />
+                                            <button type="button" class="btn btn-default"
+                                                   data-toggle="modal"
+                                                   data-bind="attr: { 'data-target': ('#confirm-delete' + $data.id) }">
+                                                Delete
+                                            </button>
+                                            
+                                            <div class="modal fade" data-bind="attr: { id: ('confirm-delete' + $data.id) }" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            Confirmation
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Click Delete to confirm.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn btn-danger btn-ok" data-bind="click: $root.DeleteConnection">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>    
                                         </div>
+                                        
                                     </div>
                                 </div>
                                 <!-- /ko -->
@@ -426,6 +449,8 @@
     <script type="text/javascript" src="../js/lib/leaflet-search-master/src/leaflet-search.js"></script> 
     <script type="text/javascript" src="../js/lib/notify.min.js"></script>
     <script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
+    <script type="text/javascript" src="../js/lib/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src='../js/lib/bower_components/knockout-es5/dist/knockout-es5.min.js'></script>
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
 
     <!-- These are front end javascript -->
