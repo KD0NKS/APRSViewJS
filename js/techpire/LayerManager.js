@@ -140,13 +140,13 @@ function LayerManager(cachedTilesDatabase) {
 	}, self);
 	
 	self.ReloadBaseLayers = function() {
-		var l = new L.NamedCachedTileLayer(
+        var l = new L.NamedCachedTileLayer(
 			'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			, {
 				'attribution': '© {y} OpenStreetMap Contributors, CC-BY-SA'
 				, 'maxZoom': 18
 				, 'reuseTiles': true
-				, 'displayName': 'OSM'
+				, 'displayName': 'OSM - Cached'
 				, 'visible': true
                 , 'storage': db
 			});
@@ -154,6 +154,18 @@ function LayerManager(cachedTilesDatabase) {
 		self.baseLayers.push(l);
 		self.baseLayer(l);
 		
+        self.baseLayers.push(new L.NamedTileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+			, {
+				'attribution': '© {y} OpenStreetMap Contributors, CC-BY-SA'
+				, 'maxZoom': 18
+				, 'reuseTiles': true
+				, 'displayName': 'OSM - Online'
+				, 'visible': true
+                , 'storage': db
+			})
+        );
+        
 		self.baseLayers.push(new L.NamedCachedTileLayer(
 			'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
 			, {

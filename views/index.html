@@ -163,10 +163,55 @@
                                 </div>
                                 
                                 <!-- ko foreach: dataConnections() -->
-                                <div class="panel panel-default" data-bind="with: $data" >
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-bind="text: description"></a>
-                                    </h4>
+                                <div class="panel panel-default" data-bind="value: $data">
+                                    <a class="panel-default" data-toggle="collapse" data-parent="#accordion" data-bind="attr: { href: ('#' + $data.id), 'aria-controls': $data.id }" aria-expanded="true">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <span data-bind="text: $data.description"></span>
+                                                <!-- ko if: socket -->
+                                                <span data-bind="text: $data.socket.writable"></span>
+                                                <!-- /ko -->
+                                            </h4>
+                                        </div>
+                                    </a>
+                                    <div class="panel-collapse collapse" data-bind="attr: { id: $data.id }">
+                                        <div class="panel-body">
+                                            <div>
+                                                <label for="host">Host:</label>
+                                                <span name="host" data-bind="text: $data.host" />
+                                            </div>
+                                            <div data-bind="visibility: $data.port">
+                                                <label for="port">Port:</label>
+                                                <span name="port" data-bind="text: $data.port" />
+                                            </div>
+                                            <div data-bind="visibility: $data.filter">
+                                                <label for="filter">Filter:</label>
+                                                <span name="filter" data-bind="text: $data.filter" />
+                                            </div>
+                                            <div>
+                                                <label for="transmitEnabled">Transmission Enabled:</label>
+                                                <span name="transmitEnabled" data-bind="text: $data.isTransmitEnabled"></span>
+                                            </div>
+                                            <div>
+                                                <label for="reconnectOnFailure">Reconnect on Failure:</label>
+                                                <span name="reconnectOnFailure" data-bind="text: $data.isReconnectOnFailure" />
+                                            </div>
+                                            <div>
+                                                <label for="reconnectInterval">Time until Reconnect:</label>
+                                                <span name="reconnectInterval" data-bind="text: $data.reconnectInterval">ms</span>
+                                            </div>
+                                            <div>
+                                                <label for="isEnabled">Connection Enabled:</label>
+                                                <input name="isEnabled" type="checkbox" data-bind="checked: $data.isEnabled" />
+                                            </div>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <input type="button" class="btn btn-default" value="Edit"
+                                                   data-bind="click: $root.EditConnection"
+                                                   />
+                                            <input type="button" class="btn btn-default" value="Delete" />
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- /ko -->
                             </div>
@@ -218,12 +263,16 @@
                                             <input name="radioPort" type="text" data-bind="value: dcRadioPort" />
                                         </div>
                                         <div>
-                                            <label for="isEnabled">Track Station:</label>
+                                            <label for="isEnabled">Connection Enabled:</label>
                                             <input name="isEnabled" type="checkbox" />
                                         </div>
                                         <div>
                                             <label for="isTransmitEnabled">Enable Transmit:</label>
                                             <input name="isTransmitEnabled" type="checkbox" />
+                                        </div>
+                                        <div>
+                                            <label for="isEnabled">Track Station:</label>
+                                            <input name="trackStation" type="checkbox" />
                                         </div>
                                         <div>
                                             <label for="isReconnectOnFailure">Reconnect on Failure:</label>

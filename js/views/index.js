@@ -153,15 +153,13 @@ function pageViewModel() {
     self.aprsSettings.reloadSettings();
     
     // Data Connection Form - See DataConnection Form
-    self.dcDescription = '';
-    self.dcConnectionType = ko.observable('APRS-IS');
-    self.dcHost = '';
-    self.dcPort = 0;
-    self.dcFilter = '';
-    self.dcRadioPort = '';
-    
-    
-    
+    self.dcId = ko.observable();
+    self.dcDescription = ko.observable('');
+    self.dcConnectionType = ko.observable('APRSIS');
+    self.dcHost = ko.observable('');
+    self.dcPort = ko.observable(0);
+    self.dcFilter = ko.observable();
+    self.dcRadioPort = ko.observable('');
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -267,32 +265,53 @@ function pageViewModel() {
     };
     
     // DataConnection Form
+    self.EditConnection = function(dataConnection) {
+        self.dcId(dataConnection.id);
+        self.dcDescription(dataConnection.description);
+        self.dcHost(dataConnection.host);
+        self.dcPort(dataConnection.port);
+        self.dcFilter(dataConnection.filter);
+        self.dcRadioPort(dataConnection.radioPort);
+        
+        $('#dataConnectionEditModal').modal({ show: true });
+    };
+    
     self.SaveConnection = function() {
-        var args = new Array();
+        console.log(self.dcPort());
+        console.log(self.dcId());
         
         //r/39.2575/-94.6326/500
-        args = {
+        var args = {
             'connectionType': self.dcConnectionType()
-            , 'description': self.dcDescription
-            , 'host': self.dcHost
-            , 'port': self.dcPort
-            , 'filter': self.dcFilter
+            , 'description': self.dcDescription()
+            , 'host': self.dcHost()
+            , 'port': parseInt(self.dcPort())
+            , 'filter': self.dcFilter()
             , 'isEnabled': true
             , 'isTransmitEnabled': false
             , 'isReconnectOnFailure': true
             , 'keepAliveTime': 60000
         };
         
-        self.dcDescription = '';
-        self.dcConnectionType = ko.observable('APRSIS');
-        self.dcHost = '';
-        self.dcPort = 0;
-        self.dcFilter = '';
-        self.dcRadioPort = '';
+        if(self.dcId()) {
+            args.id = self.dcId();   
+            
+            connectionManager.UpdateConnection(args);
+        } else {
+            // TODO: OR UPDATE
+            connectionManager.AddConnection(args);   
+        }
         
-        // TODO: OR UPDATE
-        connectionManager.AddConnection(args);
-    }
+        $('#dataConnectionEditModal').modal({ show: false });
+        
+        self.dcId(null);
+        self.dcDescription('');
+        self.dcConnectionType = ko.observable('APRSIS');
+        self.dcHost('');
+        self.dcPort(0);
+        self.dcFilter();
+        self.dcRadioPort('');
+    };
 };
 
 function createMap(baseLayer) {
