@@ -158,8 +158,9 @@ function pageViewModel() {
     self.dcConnectionType = ko.observable('APRSIS');
     self.dcHost = ko.observable('');
     self.dcPort = ko.observable(0);
-    self.dcFilter = ko.observable();
+    self.dcFilter = ko.observable('');
     self.dcRadioPort = ko.observable('');
+    self.dcIsEnabled = ko.observable(false);
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -266,14 +267,17 @@ function pageViewModel() {
     
     // DataConnection Form
     self.EditConnection = function(dataConnection) {
+        console.log(dataConnection.isEnabled);
+        
         self.dcId(dataConnection.id);
         self.dcDescription(dataConnection.description);
         self.dcHost(dataConnection.host);
         self.dcPort(dataConnection.port);
         self.dcFilter(dataConnection.filter);
         self.dcRadioPort(dataConnection.radioPort);
+        self.dcIsEnabled(dataConnection.isEnabled);
         
-        $('#dataConnectionEditModal').modal({ show: true });
+        $('#dataConnectionEditModal').modal('show');
     };
     
     self.SaveConnection = function() {
@@ -287,7 +291,7 @@ function pageViewModel() {
             , 'host': self.dcHost()
             , 'port': parseInt(self.dcPort())
             , 'filter': self.dcFilter()
-            , 'isEnabled': true
+            , 'isEnabled': self.dcIsEnabled()
             , 'isTransmitEnabled': false
             , 'isReconnectOnFailure': true
             , 'keepAliveTime': 60000
@@ -302,15 +306,16 @@ function pageViewModel() {
             connectionManager.AddConnection(args);   
         }
         
-        $('#dataConnectionEditModal').modal({ show: false });
+        $('#dataConnectionEditModal').modal('hide');
         
         self.dcId(null);
         self.dcDescription('');
-        self.dcConnectionType = ko.observable('APRSIS');
+        self.dcConnectionType('APRSIS');
         self.dcHost('');
         self.dcPort(0);
-        self.dcFilter();
+        self.dcFilter('');
         self.dcRadioPort('');
+        self.dcIsEnabled(false);
     };
 };
 

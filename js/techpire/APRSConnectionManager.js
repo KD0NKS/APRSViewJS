@@ -95,6 +95,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
 
         // add the connection to our list of connections
         self.dataConnections.push(dataConnection);
+        self.dataConnections.refresh(dataConnection);
 
         self.MonitorConnection(dataConnection);
     };
@@ -128,6 +129,21 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 if(err) {
                     console.log('Failed to upsert station settings.');
                     console.log(err);
+                } else {
+                    // TODO: find connection in list and update values
+                    
+                    var conn = ko.utils.arrayFirst(self.dataConnections(), function(c) {
+                        return c.id === connection.id;
+                    });
+                    
+                    //var e = connection.isEnabled;
+                    
+                    conn.description = connection.description;
+                    conn.callsign = connection.callsign;
+                    conn.passcode = connection.passcode;
+                    //conn.isEnabled = e;
+                    conn.isTransmitEnabled = connection.isTransmitEnabled;
+                    conn.filter = connection.filter;
                 }
             }
         );
@@ -143,7 +159,6 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         // at this point we could leave it as disabled in memory since baconjs is still using it
         // or we could be nice to our ram and remove it
     }
-    
     
     // Send a packet (of any kind) out to all data connections where sending is enabled
     self.SendPacket = function(packet) {
