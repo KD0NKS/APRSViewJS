@@ -9,6 +9,9 @@ function StationSettings(data) {
     this.passcode = ko.observable(data.passcode);                 // APRS-IS passcode
     this.pointLifetime = ko.observable(data.pointLifetime);    // must be in milliseconds
     this.trackStation = ko.observable(data.trackStation);      // re-center the map on the user's station when it's heard
+    this.stationLatitude = ko.observable(data.stationLatitude);
+    this.stationLongitude = ko.observable(data.stationLongitude);
+    this.stationAutoPosition = ko.observable(data.stationAutoPosition);
 };
 
 function PacketFilterSettings(data) {
@@ -39,6 +42,7 @@ function APRSSettings(appSettingsDB) {
     
     self.SOFTWARE_NAME = 'testsoftware';
     self.SOFTWARE_VERSION = 0;
+    self.AX_25_SOFTWAREVERSION = 'APZ678';
     
 	//Storage of defaults here
 	self.callsign = ko.observable('N0CALL');
@@ -46,6 +50,9 @@ function APRSSettings(appSettingsDB) {
 	self.passcode = ko.observable(-1);
 	self.pointLifetime = ko.observable(90);
 	self.trackStation = ko.observable(false);
+    self.stationLatitude = ko.observable();
+    self.stationLongitude = ko.observable();
+    self.stationAutoPosition = ko.observable(false);
     
     // Observable settings objects
     self.stationSettings = null;
@@ -67,6 +74,9 @@ function APRSSettings(appSettingsDB) {
                     self.passcode(dbStationSettings.passcode);
                     self.pointLifetime(dbStationSettings.pointLifetime);
                     self.trackStation(dbStationSettings.trackStation);
+                    self.stationLatitude(dbStationSettings.stationLatitude);
+                    self.stationLongitude(dbStationSettings.stationLongitude);
+                    self.stationAutoPosition(dbStationSettings.stationAutoPosition);
                     
                     self.stationSettings = new StationSettings(dbStationSettings);
                 } else {
@@ -87,6 +97,9 @@ function APRSSettings(appSettingsDB) {
                 , passcode: self.passcode()
                 , pointLifetime: self.pointLifetime()
                 , trackStation: self.trackStation()
+                , stationLatitude: self.stationLatitude()
+                , stationLongitude: self.stationLongitude()
+                , stationAutoPosition: self.stationAutoPosition()
             }
             , { upsert: true }
             , function(err, updatedRecord) {
@@ -100,6 +113,9 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.passcode(updatedRecord.passcode);
                         self.stationSettings.pointLifetime(updatedRecord.pointLifetime);
                         self.stationSettings.trackStation(updatedRecord.trackStation);
+                        self.stationSettings.stationLatitude(updatedRecord.stationLatitude);
+                        self.stationSettings.stationLongitude(updatedRecord.stationLongitude);
+                        self.stationSettings.stationAutoPosition(updatedRecord.stationAutoPosition);
                     } else {
                         self.stationSettings = new StationSettings(updatedRecord);
                     }
@@ -115,12 +131,18 @@ function APRSSettings(appSettingsDB) {
             self.passcode(self.stationSettings.passcode());
             self.pointLifetime(self.stationSettings.pointLifetime());
             self.trackStation(self.stationSettings.trackStation());
+            self.stationLatitude(self.stationSettings.stationLatitude);
+            self.stationLongitude(self.stationSettings.stationLongitude);
+            self.stationAutoPosition(self.stationSettings.stationAutoPosition);
         } else {
             self.callsign('N0CALL');
             self.ssid('');
             self.passcode(-1);
             self.pointLifetime(90);
             self.trackStation(false);
+            self.stationLatitude();
+            self.stationLongitude();
+            self.stationAutoPosition(false);
         }
     };
 }

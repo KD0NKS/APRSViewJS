@@ -4,6 +4,7 @@ html, body {
     height: 100%;
 }
 
+
 #statusBar {
     position: absolute;
     bottom: 0;
@@ -15,7 +16,7 @@ html, body {
 }
 
 .leaflet-bottom {
-    margin-bottom: -55px;
+    margin-bottom: -65px;
 }
 
 /*

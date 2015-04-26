@@ -13,6 +13,7 @@ var TechpireAPRS = require('TechpireAPRS')
     , connectionManager = new APRSConnectionManager(aprsSettings, settingsDB)
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
+    , gui = require('nw.gui');
     ;
 
 layerDB.loadDatabase();
@@ -52,12 +53,14 @@ $('#tabs').tabs({
         resizeDynamicElements();
     },
     beforeActivate: function(event, ui) {
+        /*
         if (ui.newTab.text() === 'Map') {
             statusBar.show() 
             map._onResize(); // needed in case window is resized in other tabs
         } else {
             statusBar.hide();
         }
+        */
     }
 });
 
@@ -161,6 +164,7 @@ function pageViewModel() {
     self.dcFilter = ko.observable('');
     self.dcRadioPort = ko.observable('');
     self.dcIsEnabled = ko.observable(false);
+    self.dcIsTransmitEnabled = ko.observable(false);
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -243,7 +247,7 @@ function pageViewModel() {
     
     
     self.SendMessage = function() {
-        // TODO: Validate callsign
+        // TODO: Validate callsign?
         if(self.messageAddressee() != '' && self.messageText() != '' && self.messageText().length < 67 && aprsSettings.callsign() != '' && aprsSettings.callsign() != 'N0CALL') {
             var msg = new APRSMessage();
             
@@ -253,7 +257,7 @@ function pageViewModel() {
                 msg.callsign = msg.callsign + '-' + self.aprsSettings.ssid;
             }
             
-            msg.destination = 'APZ678';
+            msg.destination = self.aprsSettings.AX_25_SOFTWAREVERSION;
             msg.addressee = self.messageAddressee().trim();
             msg.messageType = ':';
             msg.message = self.messageText().trim();
@@ -273,6 +277,7 @@ function pageViewModel() {
         self.dcPort(dataConnection.port);
         self.dcFilter(dataConnection.filter);
         self.dcIsEnabled(dataConnection.isEnabled);
+        self.dcIsTransmitEnabled(dataConnection.isTransmitEnabled);
         
         $('#dataConnectionEditModal').modal('show');
     };
@@ -289,7 +294,7 @@ function pageViewModel() {
             , 'port': parseInt(self.dcPort())
             , 'filter': self.dcFilter()
             , 'isEnabled': self.dcIsEnabled()
-            , 'isTransmitEnabled': false
+            , 'isTransmitEnabled': self.dcIsTransmitEnabled()
             , 'isReconnectOnFailure': true
             , 'keepAliveTime': 60000
         };
@@ -313,6 +318,7 @@ function pageViewModel() {
         self.dcFilter('');
         self.dcRadioPort('');
         self.dcIsEnabled(false);
+        self.dcIsTransmitEnabled(false);
     };
     
     self.DeleteConnection = function(connection) {
@@ -330,6 +336,14 @@ function createMap(baseLayer) {
 		center: [39, -99]
 		, zoom: 5
 		, layers: [ baseLayer ]
+        , contextmenu: true
+        , contextMenuWidth: 140
+        , contextmenuItems: [
+            {
+                text: 'Set my station position to here.'
+                , callback: setStationPosition
+            }
+        ]
 	});
 	
 	try {
@@ -355,7 +369,18 @@ function createMap(baseLayer) {
 			, zoom: 13
 		})
 	);
-}
+};
+
+function setStationPosition(e) {
+    if(!viewModel.aprsSettings.stationAutoPosition()) {
+        viewModel.aprsSettings.stationLatitude(e.latlng.lat.toFixed(4));
+        viewModel.aprsSettings.stationLongitude(e.latlng.lng.toFixed(4));
+        
+        viewModel.aprsSettings.saveSettings();
+    } else {
+        // TODO: alert user position cannot be set because they're using auto position.   
+    }
+};
 
 function readServerData() {
 	connectionManager.sentMessages.onValue(function(value) {
@@ -595,9 +620,10 @@ function readServerData() {
 	});
 }
 
+/****************** UI SCRIPTS ******************/
 /*
-    Resizes the leaflet map and messages div (the CSS3 vw/vh does not cut the mustard)
-*/
+ *   Resizes the leaflet map and messages div (the CSS3 vw/vh does not cut the mustard)
+ */
 function resizeDynamicElements() {
     var h = $(window).height() - tabNavBarEle.height() - 10; // ~45px
     var w = $(window).width();
@@ -611,3 +637,12 @@ function messagesTabClick(sendTo) {
     viewModel.messageAddressee(sendTo);
     $('#messagesTab').trigger("click");
 }
+
+$(document).keydown(function(e) {
+    if (e.which == 123 /*F12*/) {                           
+        e.preventDefault();              
+        gui.Window.get().showDevTools();
+
+        return true;
+    }
+});

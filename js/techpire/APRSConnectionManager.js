@@ -27,7 +27,6 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
 	self.mapPackets = new Bacon.Bus();
 	self.sentMessages = new Bacon.Bus();
     
-    // TODO: data connections need to be observables
     self.LoadConnections = function() {
         var args = Array();
         
@@ -40,9 +39,8 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     // build the physical connection
                     var dataConnection = self.connectionFactory.CreateDataConnection(connection);
                     
+                    // Data connections do not have observable properties.  This is intentional!  Use ES5 to bind the connection to knockout
                     ko.track(dataConnection);
-                    
-                    console.log(dataConnection);
                     
                     // connection event listeners
                     dataConnection.on('connectionChange', function() {
@@ -51,15 +49,18 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     
                     // add the connection to our list of connections
                     self.dataConnections.push(dataConnection);
-
                     self.MonitorConnection(dataConnection);
-                    
-                    
-                    console.log(dataConnection);
                 });
             } else {
                 console.log('No data connections found, please check your station and data connection settings');   
             }
+        });
+    };
+    
+    self.UnloadConnections = function() {
+        self.dataConnections.forEach(function(connection) {
+            console.log('Disconnecting connection');
+            connection.Disconnect();
         });
     };
     
@@ -73,7 +74,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         if(connection.connectionType == 'AGWPE') {
             connection.Monitor();
         }
-    }
+    };
     
     self.AddConnection = function(connection) {
         // save the connection info
@@ -173,7 +174,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         conn.filter = connection.filter;
         
         conn.isEnabled = connection.isEnabled;
-    }
+    };
     
     self.DeleteConnection = function(connection) {
         // disable the connection
@@ -188,7 +189,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 // TODO: unplug from baconjs?
             }
         });
-    }
+    };
     
     // Send a packet (of any kind) out to all data connections where sending is enabled
     self.SendPacket = function(packet) {
