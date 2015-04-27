@@ -28,7 +28,7 @@
         <!-- Tab panes -->
         <div id="tabs" class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="map">
-                <div id="statusBar">
+                <div id="statusBar" style="z-index: 1000">
                     Latitude: <span data-bind="text: mouseLatLng().lat.toFixed(4)"></span>
                     Longitude: <span data-bind="text: mouseLatLng().lng.toFixed(4)"></span> Last Heard: <span data-bind="text: lastStationHeard"></span> 
                 </div>
@@ -146,6 +146,27 @@
                         <div>
                             <label for="stationLatitude">Station Longitude</label>
                             <input name="stationLatitude" type="number" data-bind="value: stationLongitude, enable: !stationAutoPosition()" />
+                        </div>
+                        <div>
+                            <label for="stationIcon">Station Icon:</label>
+				            
+                            <div name="stationIcon" class="dropdown" >
+                                <button class="btn btn-default dropdown-toggle"
+                                        type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                                    Dropdown <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu scrollable-menu" 
+                                        role="menu"
+                                        aria-labelledby="dropdownMenu1"
+                                        data-bind="foreach: stationMarkerIcon.getPrimaryIcons()">
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="#">
+                                            <img data-bind="attr: { src: '../css/images/station' + value }" />
+                                            <span data-bind="text: name"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div>
                             <input type="button" class="btn btn-default" value="Save" data-bind="click: saveSettings" />

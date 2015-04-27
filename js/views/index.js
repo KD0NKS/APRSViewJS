@@ -13,7 +13,8 @@ var TechpireAPRS = require('TechpireAPRS')
     , connectionManager = new APRSConnectionManager(aprsSettings, settingsDB)
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
-    , gui = require('nw.gui');
+    , gui = require('nw.gui')
+    , stationMarkerIcon = new StationMarkerIcon()
     ;
 
 layerDB.loadDatabase();
@@ -283,9 +284,6 @@ function pageViewModel() {
     };
     
     self.SaveConnection = function() {
-        console.log(self.dcHost());
-        console.log(self.dcPort());
-        
         //r/39.2575/-94.6326/500
         var args = {
             'connectionType': self.dcConnectionType()
@@ -431,12 +429,12 @@ function readServerData() {
 						lastMarker.setIcon(oldIcon);
 						lastMarker.options.angle = 0;
 					}
-					
+                    
 					var marker = new L.APRSPositionMarker(
 						[data.latitude, data.longitude]
 						, { 
 							icon: L.icon({
-								iconUrl: '../css/images/station' + getSymbolPath(data.symbolTableId, data.symbolCode)
+								iconUrl: '../css/images/station' + stationMarkerIcon.getSymbolPath(data.symbolTableId, data.symbolCode)
 							})
 							, receivedTime: Date.parse(data.receivedTime)
 							, callsign: data.name
@@ -508,12 +506,12 @@ function readServerData() {
 					lastMarker.setIcon(oldIcon);
 					lastMarker.options.angle = 0;
 				}
-				
+                
 				var marker = new L.APRSPositionMarker(
 					[data.latitude, data.longitude]
 					, { 
 						icon: L.icon({
-							iconUrl: '../css/images/station' + getSymbolPath(data.symbolTableId, data.symbolCode)
+							iconUrl: '../css/images/station' + stationMarkerIcon.getSymbolPath(data.symbolTableId, data.symbolCode)
 						})
 						, receivedTime: Date.parse(data.receivedTime)
 						, callsign: data.callsign
