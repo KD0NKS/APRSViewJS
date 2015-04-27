@@ -54,6 +54,7 @@ Navigate to the project directory
 * [OfflineMap (precache with filereader)](https://github.com/tbicr/OfflineMap/blob/master/leaflet_base64fr_precache_site/map.js#L71)
     * This was heavily modified
 * [Knockout-ES5](https://github.com/SteveSanderson/knockout-es5)
+* [Leaflet.contextmenu](https://github.com/aratcliffe/Leaflet.contextmenu)
 
 ##Overlay Sources
 * [http://nowcoast.noaa.gov/help/mapservices.shtml?name=mapservices](http://nowcoast.noaa.gov/help/mapservices.shtml?name=mapservices)
