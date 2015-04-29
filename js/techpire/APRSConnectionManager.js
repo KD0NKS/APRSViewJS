@@ -193,9 +193,9 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     
     // Send a packet (of any kind) out to all data connections where sending is enabled
     self.SendPacket = function(packet) {
-        for(var c = 0; c < self.dataConnections.length; c++) {
-            var connection = self.dataConnections[c];
-
+        for(var c = 0; c < self.dataConnections().length; c++) {
+            var connection = self.dataConnections()[c];
+            
             if(connection.isEnabled && connection.isTransmitEnabled) {
                 connection.Send(packet);
             }

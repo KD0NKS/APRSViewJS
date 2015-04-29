@@ -2,16 +2,37 @@
 	Settings for APRSView
 ****/
 function StationSettings(data) {
-    this.settingsName = 'STATION_SETTINGS';
+    var self = this;
     
-    this.callsign = ko.observable(data.callsign);       // Station callsign
-    this.ssid = ko.observable(data.ssid);            // SSID
-    this.passcode = ko.observable(data.passcode);                 // APRS-IS passcode
-    this.pointLifetime = ko.observable(data.pointLifetime);    // must be in milliseconds
-    this.trackStation = ko.observable(data.trackStation);      // re-center the map on the user's station when it's heard
-    this.stationLatitude = ko.observable(data.stationLatitude);
-    this.stationLongitude = ko.observable(data.stationLongitude);
-    this.stationAutoPosition = ko.observable(data.stationAutoPosition);
+    self.settingsName = 'STATION_SETTINGS';
+    
+    self.callsign = ko.observable(data.callsign);       // Station callsign
+    self.ssid = ko.observable(data.ssid);            // SSID
+    self.passcode = ko.observable(data.passcode);                 // APRS-IS passcode
+    self.pointLifetime = ko.observable(data.pointLifetime);    // must be in milliseconds
+    self.trackStation = ko.observable(data.trackStation);      // re-center the map on the user's station when it's heard
+    self.stationLatitude = ko.observable(data.stationLatitude);
+    self.stationLongitude = ko.observable(data.stationLongitude);
+    self.stationAutoPosition = ko.observable(data.stationAutoPosition);
+    self.stationIcon = ko.observable(data.stationIcon);
+    
+    self.stationSymbolTable = ko.computed(function() {
+        if(self.stationIcon()) {
+            return self.stationIcon()[0];
+        } else {
+            return '/';   
+        }
+    });
+    
+    self.stationSymbolCode = ko.computed(function() {
+        if(self.stationIcon()) {
+            return self.stationIcon()[1];
+        } else {
+            return '-';   
+        }
+    });
+    
+    self.sendPosition = ko.observable(true);
 };
 
 function PacketFilterSettings(data) {
@@ -53,6 +74,23 @@ function APRSSettings(appSettingsDB) {
     self.stationLatitude = ko.observable();
     self.stationLongitude = ko.observable();
     self.stationAutoPosition = ko.observable(false);
+    self.stationIcon = ko.observable('/-');
+    
+    self.stationSymbolTable = ko.computed(function() {
+        if(self.stationIcon()) {
+            return self.stationIcon()[0];
+        } else {
+            return '/';   
+        }
+    });
+    
+    self.stationSymbolCode = ko.computed(function() {
+        if(self.stationIcon()) {
+            return self.stationIcon()[1];
+        } else {
+            return '-';   
+        }
+    });
     
     // Observable settings objects
     self.stationSettings = null;
@@ -77,6 +115,7 @@ function APRSSettings(appSettingsDB) {
                     self.stationLatitude(dbStationSettings.stationLatitude);
                     self.stationLongitude(dbStationSettings.stationLongitude);
                     self.stationAutoPosition(dbStationSettings.stationAutoPosition);
+                    self.stationIcon(dbStationSettings.stationIcon);
                     
                     self.stationSettings = new StationSettings(dbStationSettings);
                 } else {
@@ -100,6 +139,7 @@ function APRSSettings(appSettingsDB) {
                 , stationLatitude: self.stationLatitude()
                 , stationLongitude: self.stationLongitude()
                 , stationAutoPosition: self.stationAutoPosition()
+                , stationIcon: self.stationIcon()
             }
             , { upsert: true }
             , function(err, updatedRecord) {
@@ -116,6 +156,7 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.stationLatitude(updatedRecord.stationLatitude);
                         self.stationSettings.stationLongitude(updatedRecord.stationLongitude);
                         self.stationSettings.stationAutoPosition(updatedRecord.stationAutoPosition);
+                        self.stationSettings.stationIcon(updatedRecord.stationIcon);
                     } else {
                         self.stationSettings = new StationSettings(updatedRecord);
                     }
@@ -134,6 +175,7 @@ function APRSSettings(appSettingsDB) {
             self.stationLatitude(self.stationSettings.stationLatitude);
             self.stationLongitude(self.stationSettings.stationLongitude);
             self.stationAutoPosition(self.stationSettings.stationAutoPosition);
+            self.stationIcon(self.stationSettings.stationIcon)
         } else {
             self.callsign('N0CALL');
             self.ssid('');
@@ -143,6 +185,7 @@ function APRSSettings(appSettingsDB) {
             self.stationLatitude();
             self.stationLongitude();
             self.stationAutoPosition(false);
+            self.stationIcon = ko.observable('/-');
         }
     };
 }

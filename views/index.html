@@ -153,14 +153,18 @@
                             <div name="stationIcon" class="dropdown" >
                                 <button class="btn btn-default dropdown-toggle"
                                         type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                                    Dropdown <span class="caret"></span>
+                                    <img data-bind="attr:{src: ('../css/images/station' + stationMarkerIcon.getSymbolPath(stationSymbolTable(), stationSymbolCode()))}" />
+                                    <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" 
                                         role="menu"
                                         aria-labelledby="dropdownMenu1"
                                         data-bind="foreach: stationMarkerIcon.getPrimaryIcons()">
                                     <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#">
+                                        <a role="menuitem"
+                                                tabindex="-1"
+                                                href="#"
+                                                data-bind="click: function() { $parent.stationIcon(key) }">
                                             <img data-bind="attr: { src: '../css/images/station' + value }" />
                                             <span data-bind="text: name"></span>
                                         </a>

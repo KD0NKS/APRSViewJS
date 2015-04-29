@@ -1,7 +1,6 @@
 /*
 historical data layers... https://github.com/calvinmetcalf/leaflet.pouch
 */
-
 var TechpireAPRS = require('TechpireAPRS')
     , ObjectReport = require('TechpireAPRS').ObjectReport
 	, APRSPositionReport = require('TechpireAPRS').APRSPositionReport
@@ -74,8 +73,9 @@ $.when(
 
     viewModel = new pageViewModel();
     ko.applyBindings(viewModel);
+    viewModel.SendPositionPacket();
     
-    window.setInterval(viewModel.RemoveOldPositions, 60000);
+    window.setInterval(viewModel.RemoveOldPositions, 60000); //600000
     
     // Set a mouse listener to update the status bar with the current latitude and longitude.
     // Set a timer to prevent the action event from executing for every pixel the mouse moves
@@ -97,21 +97,9 @@ $.when(
         connectionManager.LoadConnections()
         , readServerData(viewModel)
     ).done(function() {
-        //SendPositionPacket();
+        
     });
 });
-
-function SendPositionPacket() {
-    /*
-    connectionManager.SendPacket(posRpt);
-    
-    if(sendMessageInterval != null) {
-        clearInterval(self.sendMessageInterval);
-    }
-    
-    sendMessageInterval = setInterval(SendPositionPacket, 600000, posRpt);
-    */
-}
 
 /*
  * Object containing all the points from which an individual station has reported from - location packet specific
@@ -166,6 +154,7 @@ function pageViewModel() {
     self.dcRadioPort = ko.observable('');
     self.dcIsEnabled = ko.observable(false);
     self.dcIsTransmitEnabled = ko.observable(false);
+    self.sendMessageInterval = null;
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -252,10 +241,10 @@ function pageViewModel() {
         if(self.messageAddressee() != '' && self.messageText() != '' && self.messageText().length < 67 && aprsSettings.callsign() != '' && aprsSettings.callsign() != 'N0CALL') {
             var msg = new APRSMessage();
             
-            msg.callsign = self.aprsSettings.callsign();
+            msg.callsign = self.aprsSettings.stationSettings.callsign();
             
-            if(self.aprsSettings.ssid && self.aprsSettings.ssid != '') {
-                msg.callsign = msg.callsign + '-' + self.aprsSettings.ssid;
+            if(self.aprsSettings.stationSettings.ssid && self.aprsSettings.stationSettings.ssid != '') {
+                msg.callsign = msg.callsign + '-' + self.aprsSettings.stationSettings.ssid;
             }
             
             msg.destination = self.aprsSettings.AX_25_SOFTWAREVERSION;
@@ -267,6 +256,52 @@ function pageViewModel() {
             connectionManager.SendPacket(msg);
             
             self.messageText('');
+        }
+    };
+    
+    self.SendPositionPacket = function() {
+        console.log("Send Position");
+        
+        try {
+            if(aprsSettings.stationSettings 
+                    && aprsSettings.stationSettings.callsign
+                    && aprsSettings.stationSettings.callsign() != null
+                    && self.aprsSettings.stationSettings.stationLatitude() != null
+                    && self.aprsSettings.stationSettings.stationLongitude() != null) {
+                console.log("Send Position");
+                
+                var posRpt = new APRSPositionReport();
+
+                posRpt.callsign = aprsSettings.stationSettings.callsign();
+
+                if(self.aprsSettings.stationSettings.ssid 
+                        && self.aprsSettings.stationSettings.ssid() != null
+                        && self.aprsSettings.stationSettings.ssid() != '') {
+                    posRpt.callsign = posRpt.callsign + '-' + self.aprsSettings.stationSettings.ssid();
+                }
+
+                posRpt.symbolTableId = aprsSettings.stationSettings.stationSymbolTable();
+                posRpt.symbolCode = aprsSettings.stationSettings.stationSymbolCode();
+                posRpt.destination = self.aprsSettings.AX_25_SOFTWAREVERSION;
+
+                posRpt.messageType = '!';
+
+                posRpt.latitude = self.aprsSettings.stationSettings.stationLatitude();
+                posRpt.longitude = self.aprsSettings.stationSettings.stationLongitude();
+
+                posRpt.message = 'Testing a new software.';
+                
+                connectionManager.SendPacket(posRpt);
+                
+                if(self.sendMessageInterval != null) {
+                    clearInterval(self.sendMessageInterval);
+                }
+            }
+
+            self.sendMessageInterval = setInterval(self.SendPositionPacket, 60000, posRpt);
+        } catch(e) {
+            console.log(e);
+            self.sendMessageInterval = setInterval(self.SendPositionPacket, 60000, posRpt);
         }
     };
     
