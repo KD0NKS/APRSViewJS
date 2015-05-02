@@ -283,6 +283,7 @@ function pageViewModel() {
                 posRpt.symbolTableId = aprsSettings.stationSettings.stationSymbolTable();
                 posRpt.symbolCode = aprsSettings.stationSettings.stationSymbolCode();
                 posRpt.destination = self.aprsSettings.AX_25_SOFTWAREVERSION;
+                posRpt.digipeaters.push('WIDE2-1');
 
                 posRpt.messageType = '!';
 
