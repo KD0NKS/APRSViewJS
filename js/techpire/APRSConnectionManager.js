@@ -204,11 +204,12 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     
     // CHANGE LISTENERS
     self.aprsSettings.callsign.subscribe(function(newVal) {
-        for(var c = 0; c < self.dataConnections.length; c++) {
-            var connection = self.dataConnections[c];
+        for(var c = 0; c < self.dataConnections().length; c++) {
+            var connection = self.dataConnections()[c];
             
             connection.callsign = newVal;
             
+            self.UpdateConnection(connection);
             
             // TODO: if aprsis connection send login
             //SendLogin
@@ -216,7 +217,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     });
     
     self.aprsSettings.ssid.subscribe(function(newVal) {
-        for(var c = 0; c < self.dataConnections.length; c++) {
+        for(var c = 0; c < self.dataConnections().length; c++) {
             var connection = self.dataConnections[c];
             
             connection.ssid = newVal;
@@ -229,12 +230,15 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     });
     
     self.aprsSettings.passcode.subscribe(function(newVal) {
-        for(var c = 0; c < self.dataConnections.length; c++) {
-            var connection = self.dataConnections[c];
+        for(var c = 0; c < self.dataConnections().length; c++) {
+            var connection = self.dataConnections()[c];
             
-            console.log(connection instanceof AGWPEDataConnection);
+            connection.passcode = newVal;
             
             self.UpdateConnection(connection);
+            
+            // TODO: if aprsis connection send login
+            //SendLogin
         }
     });
 }

@@ -15,6 +15,8 @@
 
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
     <!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />-->
+    
+    <link rel="stylesheet" href="../js/lib/bower_components/clusterize/clusterize.css">
 </head>
 <body>
     <div role="tabpanel">
@@ -53,6 +55,34 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="clusterize">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Received Time</th>
+                                <th>Message Number</th>
+                                <th>To/Group Name</th>
+                                <th>From</th>
+                                <th>Message</th>
+                                <th>
+                                    <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="scrollArea" class="clusterize-scroll">
+                        <table>
+                            <tbody id="contentArea" class="clusterize-content">
+                                <tr class="clusterize-no-data">
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!--
                 <div class="fixed-table-container">
                     <div class="header-background"></div>
                     <div class="fixed-table-container-inner">
@@ -78,7 +108,7 @@
                                         <span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
                                     </td>
                                     <td>
-                                        <!-- ADDRESSEE AND GROUP NAME SHOULD BE IN THE SAME COLUMN -->
+                                        <!-- ADDRESSEE AND GROUP NAME SHOULD BE IN THE SAME COLUMN --
                                         <a href="#" data-bind="text: addressee
                                                 , click: function() { messagesTabClick(addressee()) }
                                                 , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
@@ -107,6 +137,7 @@
                         </table>
                     </div>
                 </div>
+                -->
             </div>
             <div role="tabpanel" class="tab-pane" id="settings">
                 <!-- Nav tabs -->
@@ -473,6 +504,8 @@
     <script type="text/javascript" src="../js/lib/notify.min.js"></script>
     <script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
     <script type="text/javascript" src='../js/lib/bower_components/knockout-es5/dist/knockout-es5.min.js'></script>
+    <script type="text/javascript" src="../js/lib/bower_components/clusterize/clusterize.min.js"></script>
+    
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
 
     <!-- These are front end javascript -->
