@@ -274,7 +274,7 @@ function pageViewModel() {
 
                 posRpt.callsign = aprsSettings.stationSettings.callsign();
 
-                if(self.aprsSettings.stationSettings.ssid 
+                if(self.aprsSettings.stationSettings.ssid
                         && self.aprsSettings.stationSettings.ssid() != null
                         && self.aprsSettings.stationSettings.ssid() != '') {
                     posRpt.callsign = posRpt.callsign + '-' + self.aprsSettings.stationSettings.ssid();
@@ -293,15 +293,20 @@ function pageViewModel() {
                 posRpt.message = 'Testing a new software.';
                 
                 connectionManager.SendPacket(posRpt);
-                
-                if(self.sendMessageInterval != null) {
-                    clearInterval(self.sendMessageInterval);
-                }
             }
-
-            self.sendMessageInterval = setInterval(self.SendPositionPacket, 60000, posRpt);
+            
+            if(self.sendMessageInterval != null) {
+                clearInterval(self.sendMessageInterval);
+            }
+            
+            self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval(), posRpt);
         } catch(e) {
             console.log(e);
+            
+            if(self.sendMessageInterval != null) {
+                clearInterval(self.sendMessageInterval);
+            }
+            
             self.sendMessageInterval = setInterval(self.SendPositionPacket, 60000, posRpt);
         }
     };

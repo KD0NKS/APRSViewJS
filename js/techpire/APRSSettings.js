@@ -15,12 +15,13 @@ function StationSettings(data) {
     self.stationLongitude = ko.observable(data.stationLongitude);
     self.stationAutoPosition = ko.observable(data.stationAutoPosition);
     self.stationIcon = ko.observable(data.stationIcon);
+    self.stationSendPositionInterval = ko.observable(600000); //ko.observable(data.stationSendPositionInterval); // in milliseconds
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
             return self.stationIcon()[0];
         } else {
-            return '/';   
+            return '/';
         }
     });
     
@@ -28,7 +29,7 @@ function StationSettings(data) {
         if(self.stationIcon()) {
             return self.stationIcon()[1];
         } else {
-            return '-';   
+            return '-';
         }
     });
     
@@ -75,6 +76,7 @@ function APRSSettings(appSettingsDB) {
     self.stationLongitude = ko.observable();
     self.stationAutoPosition = ko.observable(false);
     self.stationIcon = ko.observable('/-');
+    self.stationSendPositionInterval = ko.observable(600000);
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -116,6 +118,7 @@ function APRSSettings(appSettingsDB) {
                     self.stationLongitude(dbStationSettings.stationLongitude);
                     self.stationAutoPosition(dbStationSettings.stationAutoPosition);
                     self.stationIcon(dbStationSettings.stationIcon);
+                    self.stationSendPositionInterval(600000);
                     
                     self.stationSettings = new StationSettings(dbStationSettings);
                 } else {
@@ -140,6 +143,7 @@ function APRSSettings(appSettingsDB) {
                 , stationLongitude: self.stationLongitude()
                 , stationAutoPosition: self.stationAutoPosition()
                 , stationIcon: self.stationIcon()
+                , stationSendPositionInterval: 600000
             }
             , { upsert: true }
             , function(err, updatedRecord) {
@@ -157,6 +161,7 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.stationLongitude(updatedRecord.stationLongitude);
                         self.stationSettings.stationAutoPosition(updatedRecord.stationAutoPosition);
                         self.stationSettings.stationIcon(updatedRecord.stationIcon);
+                        self.stationSettings.stationSendPositionInterval(600000);
                     } else {
                         self.stationSettings = new StationSettings(updatedRecord);
                     }
@@ -175,7 +180,8 @@ function APRSSettings(appSettingsDB) {
             self.stationLatitude(self.stationSettings.stationLatitude);
             self.stationLongitude(self.stationSettings.stationLongitude);
             self.stationAutoPosition(self.stationSettings.stationAutoPosition);
-            self.stationIcon(self.stationSettings.stationIcon)
+            self.stationIcon(self.stationSettings.stationIcon);
+            self.stationSendPositionInterval(self.stationSettings.stationSendPositionInterval);
         } else {
             self.callsign('N0CALL');
             self.ssid('');
@@ -186,6 +192,7 @@ function APRSSettings(appSettingsDB) {
             self.stationLongitude();
             self.stationAutoPosition(false);
             self.stationIcon = ko.observable('/-');
+            self.stationSendPositionInterval(600000);
         }
     };
 }
