@@ -249,6 +249,7 @@ function LayerManager(cachedTilesDatabase) {
 			}
 		));
         
+        /*
         self.overlays.push(new L.TileLayer.NamedWMS(
             "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
             , {
@@ -272,6 +273,7 @@ function LayerManager(cachedTilesDatabase) {
                 , opacity: 0.5
             }
         ));
+        */
 	};
 	
 	self.LoadMapLayers = function() {

@@ -66,40 +66,90 @@ var viewModel = null;
 
 //$(window).on('resize', resizeDynamicElements);
 
-$.when(
-    layerManager.LoadMapLayers()
-).done(function() {
-    createMap(layerManager.baseLayer());
 
-    viewModel = new pageViewModel();
-    ko.applyBindings(viewModel);
-    viewModel.SendPositionPacket();
-    
-    window.setInterval(viewModel.RemoveOldPositions, 60000); //600000
-    
-    // Set a mouse listener to update the status bar with the current latitude and longitude.
-    // Set a timer to prevent the action event from executing for every pixel the mouse moves
-    // this prevents spikes on the processor.
-    var latLngUpdateDelay = 8;
-    var executionTimer;
-    
-    map.on('mousemove', function(e) {
-        if(executionTimer) {
-            clearTimeout(executionTimer);   
-        }
-        
-        executionTimer = setTimeout(function() {
-            viewModel.mouseLatLng(e.latlng);    
-        }, latLngUpdateDelay);
-    });
+var mapEle = null;
+var msgPanel = null;
+var tabEle = null;
+
+$(document).ready(function() {
+    mapEle = $('#map');
+    msgPanel = $('#allMessagesTable');
     
     $.when(
-        connectionManager.LoadConnections()
-        , readServerData(viewModel)
+        layerManager.LoadMapLayers()
     ).done(function() {
+        createMap(layerManager.baseLayer());
+
+        viewModel = new pageViewModel();
+        ko.applyBindings(viewModel);
+        viewModel.SendPositionPacket();
+
+        window.setInterval(viewModel.RemoveOldPositions, 60000); //600000
+
+        // Set a mouse listener to update the status bar with the current latitude and longitude.
+        // Set a timer to prevent the action event from executing for every pixel the mouse moves
+        // this prevents spikes on the processor.
+        var latLngUpdateDelay = 8;
+        var resizeDelay = 500;
+        var executionTimer;
+        var resizeTimer;
         
+        map.on('mousemove', function(e) {
+            if(executionTimer) {
+                clearTimeout(executionTimer);   
+            }
+
+            executionTimer = setTimeout(function() {
+               viewModel.mouseLatLng(e.latlng);    
+            }, latLngUpdateDelay);
+        });
+        
+        // Lets not kill our cpu by resizing with every pixel change!
+        $(window).on('resize', function(e) {
+            if(resizeTimer) {
+                clearTimeout(resizeTimer);   
+            }
+            
+            resizeTimer = setTimeout(function() {
+                resizeDynamicElements();
+            }, resizeDelay);
+        });
+        
+        resizeDynamicElements();
+
+        $.when(
+            connectionManager.LoadConnections()
+            , readServerData(viewModel)
+        ).done(function() {
+
+        });
     });
 });
+
+function resizeDynamicElements() {
+    console.log('resize');
+    
+    var h = $(window).innerHeight() - 43;
+    
+    map.invalidateSize();
+    mapEle.height(h);
+    map._onResize();
+    
+    
+    h = $(window).innerHeight() - $('#messages').height() - $('mainAppTabs').height() - 74;
+    
+    msgPanel.height(h);
+};
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href") // activated tab
+
+    if((target == '#mapTab')) {
+        $(window).trigger('resize');
+    }
+});
+
+
 
 /*
  * Object containing all the points from which an individual station has reported from - location packet specific

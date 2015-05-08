@@ -218,7 +218,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     
     self.aprsSettings.ssid.subscribe(function(newVal) {
         for(var c = 0; c < self.dataConnections().length; c++) {
-            var connection = self.dataConnections[c];
+            var connection = self.dataConnections()[c];
             
             connection.ssid = newVal;
             
