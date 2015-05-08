@@ -87,11 +87,13 @@ html, body {
     top: 0;
     line-height: 30px; /* height of header */
     text-align: left;
+    word-wrap: normal;
 }
 
 
 .first .th-inner {
     border: none;
+    word-wrap: normal;
 }
 
 

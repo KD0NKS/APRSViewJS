@@ -39,34 +39,7 @@ var markersLayer = null;
 var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
 // do DOM lookups once
-//var mapEle = $('#map');
-//var statusBar = $('#statusBar');
-//var messagesEle = $('#messages');
-//var tabNavBarEle = null; // set when tabs are created
 var viewModel = null;
-
-// DOM is already init'd, must create tabs before doing anything with map
-//$('#tabs').tabs({
-//    create: function(event, ui) {
-//        $('body').css('opacity', '1'); // show body after markup has been enhanced
-//        tabNavBarEle = $('#mainAppTabs');
-//        resizeDynamicElements();
-//    },
-//    beforeActivate: function(event, ui) {
-        /*
-        if (ui.newTab.text() === 'Map') {
-            statusBar.show() 
-            map._onResize(); // needed in case window is resized in other tabs
-        } else {
-            statusBar.hide();
-        }
-        */
-//    }
-//});
-
-//$(window).on('resize', resizeDynamicElements);
-
-
 var mapEle = null;
 var msgPanel = null;
 var tabEle = null;
@@ -715,8 +688,11 @@ function readServerData() {
  */
 
 function messagesTabClick(sendTo) {
+    console.log('messages tab click');
+    
     viewModel.messageAddressee(sendTo);
-    $('#messages').trigger("click");
+    //$('#messages').trigger("click");
+    $('a[href="#messages"]').trigger('click');
 }
 
 $(document).keydown(function(e) {

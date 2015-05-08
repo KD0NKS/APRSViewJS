@@ -34,11 +34,21 @@ Still nothing?  You are always more than welcome to test
 Navigate to the project directory
 `> nw`
 
+##Build the Application
 
-###OLD DIRECTIONS USING NODE WEBKIT
+* In gulpFile.js
+    * Change the version of you want to use.
+    * Change your build target ['win', 'osx', 'win32', 'win64', 'osx32', 'osx64', 'linux32', 'linux64']
+* Install the dependencies.  These should be ignored and not included in the repository.
 
-Navigate to the project directory
-`> nodewebkit app`
+    `npm install --save-dev gulp gulp-util node-webkit-builder`
+
+* Run the Build
+ 
+    `gulp nw`
+
+* The executables will be in the /build folder.
+
 
 ##Third-Party Libraries - Currently Used
 * [NW/NWJS](http://nwjs.io)
