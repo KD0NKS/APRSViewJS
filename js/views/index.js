@@ -243,8 +243,8 @@ function pageViewModel() {
             
             msg.callsign = self.aprsSettings.stationSettings.callsign();
             
-            if(self.aprsSettings.stationSettings.ssid && self.aprsSettings.stationSettings.ssid != '') {
-                msg.callsign = msg.callsign + '-' + self.aprsSettings.stationSettings.ssid;
+            if(self.aprsSettings.stationSettings.ssid && self.aprsSettings.stationSettings.ssid() != '') {
+                msg.callsign = msg.callsign + '-' + self.aprsSettings.stationSettings.ssid();
             }
             
             msg.destination = self.aprsSettings.AX_25_SOFTWAREVERSION;

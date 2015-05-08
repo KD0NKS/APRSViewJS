@@ -218,18 +218,6 @@ function LayerManager(cachedTilesDatabase) {
 	
 	self.ReloadOverlayLayers = function() {
 		self.overlays.push(new L.TileLayer.NamedWMS(
-			'http://services.nationalmap.gov/arcgis/services/NEXRAD_Weather/MapServer/WMSServer'
-			, {
-				layers: '0'
-				, format: 'image/png'
-				, transparent: true
-				, opacity: 0.5
-				, attribution: 'USGS <a href="http://nationalmap.gov"><i>The National Map</i></a>'
-				, displayName: 'NextRAD - US'
-			}
-		));
-        
-        self.overlays.push(new L.TileLayer.NamedWMS(
             "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
             , {
                 displayName: 'NWS Ridge NexRad'
@@ -260,6 +248,30 @@ function LayerManager(cachedTilesDatabase) {
 				displayName: 'NOR'
 			}
 		));
+        
+        self.overlays.push(new L.TileLayer.NamedWMS(
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            , {
+                displayName: 'Tornado Warnings'
+                , layers: 'WARN_SHORT_TOR'
+                , format: 'image/png'
+                , transparent: true
+                , attribution: "NOAA/NOS nowCOAST"
+                , opacity: 0.5
+            }
+        ));
+        
+        self.overlays.push(new L.TileLayer.NamedWMS(
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            , {
+                displayName: 'Severe Thunderstorm Warnings'
+                , layers: 'WARN_SHORT_SVR'
+                , format: 'image/png'
+                , transparent: true
+                , attribution: "NOAA/NOS nowCOAST"
+                , opacity: 0.5
+            }
+        ));
 	};
 	
 	self.LoadMapLayers = function() {
