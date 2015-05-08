@@ -39,20 +39,20 @@ var markersLayer = null;
 var oldIcon = L.icon({ iconUrl: '../css/images/station/OldPoint.gif' });
 
 // do DOM lookups once
-var mapEle = $('#map');
-var statusBar = $('#statusBar');
-var messagesEle = $('#messages');
-var tabNavBarEle = null; // set when tabs are created
+//var mapEle = $('#map');
+//var statusBar = $('#statusBar');
+//var messagesEle = $('#messages');
+//var tabNavBarEle = null; // set when tabs are created
 var viewModel = null;
 
 // DOM is already init'd, must create tabs before doing anything with map
-$('#tabs').tabs({
-    create: function(event, ui) {
-        $('body').css('opacity', '1'); // show body after markup has been enhanced
-        tabNavBarEle = $('#mainAppTabs');
-        resizeDynamicElements();
-    },
-    beforeActivate: function(event, ui) {
+//$('#tabs').tabs({
+//    create: function(event, ui) {
+//        $('body').css('opacity', '1'); // show body after markup has been enhanced
+//        tabNavBarEle = $('#mainAppTabs');
+//        resizeDynamicElements();
+//    },
+//    beforeActivate: function(event, ui) {
         /*
         if (ui.newTab.text() === 'Map') {
             statusBar.show() 
@@ -61,10 +61,10 @@ $('#tabs').tabs({
             statusBar.hide();
         }
         */
-    }
-});
+//    }
+//});
 
-$(window).on('resize', resizeDynamicElements);
+//$(window).on('resize', resizeDynamicElements);
 
 $.when(
     layerManager.LoadMapLayers()
@@ -663,18 +663,10 @@ function readServerData() {
 /*
  *   Resizes the leaflet map and messages div (the CSS3 vw/vh does not cut the mustard)
  */
-function resizeDynamicElements() {
-    var h = $(window).height() - tabNavBarEle.height() - 10; // ~45px
-    var w = $(window).width();
-    
-    mapEle.height(h).width(w);
-    
-    messagesEle.height(h - 75);
-}
 
 function messagesTabClick(sendTo) {
     viewModel.messageAddressee(sendTo);
-    $('#messagesTab').trigger("click");
+    $('#messages').trigger("click");
 }
 
 $(document).keydown(function(e) {

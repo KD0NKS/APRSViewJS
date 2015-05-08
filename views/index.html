@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/leaflet.label.css" />
     <link rel="stylesheet" href="../css/leaflet-search.css" />
     <link rel="stylesheet" href="../js/lib/Leaflet.contextmenu-master/dist/leaflet.contextmenu.css" />
+    <link rel="stylesheet" href="../js/lib/DataTables-1.10.7/css/jquery.dataTables.min.css" />
     
     
     <!--<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />-->
@@ -16,99 +17,77 @@
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
     <!--<link rel="stylesheet" href="../bootstrap/css/bootstrap-responsive.min.css" />-->
     
-    <link rel="stylesheet" href="../js/lib/bower_components/clusterize/clusterize.css">
 </head>
 <body>
     <div role="tabpanel">
         <!-- Nav tabs -->
         <ul id="mainAppTabs" class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation" class="active"><a href="#mapTab" aria-controls="mapTab" role="tab" data-toggle="tab">Map</a></li>
             <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
             <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div id="tabs" class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="map">
-                <div id="statusBar" style="z-index: 1000">
-                    Latitude: <span data-bind="text: mouseLatLng().lat.toFixed(4)"></span>
-                    Longitude: <span data-bind="text: mouseLatLng().lng.toFixed(4)"></span> Last Heard: <span data-bind="text: lastStationHeard"></span> 
+            <div id="mapTab" role="tabpanel" class="tab-pane active">
+                <div class="fixed-map-container">
+                    <div id="map" class="fixed-map-container-inner">
+                        <div id="statusBar" style="z-index: 1000">
+                            Latitude: <span data-bind="text: mouseLatLng().lat.toFixed(4)"></span>
+                            Longitude: <span data-bind="text: mouseLatLng().lng.toFixed(4)"></span> Last Heard: <span data-bind="text: lastStationHeard"></span> 
+                        </div>
+                    </div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="messages">
-                <div class="container-fluid">
+                <div id="newMessagePanel" class="container-fluid" style="padding-top: 10px; padding-bottom: 5px">
                     <div class="row">
-                        <div class="col-xs-2">
+                        <div class="col-md-3" style="white-space: nowrap; padding: 5px;">
                             <label for="addressee">To: </label>
                             <input id="addressee" type="text" data-bind="value: messageAddressee" maxlength="9" />
                         </div>
-                        <div class="col-xs-2">
+                        <div class="col-md-4" style="white-space: nowrap; padding: 5px;">
                             <label for="messageText">Message: </label>
                             <input id="messageText" type="text" data-bind="value: messageText" maxlength="67" />
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-md-2" style="white-space: nowrap; padding: 5px;">
                             <label for="isRequireAck">Require Ack: </label>
                             <input id="isRequireAck" type="checkbox" data-bind="checked: messageRequireAck" />
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-md-1" style="padding: 5px;">
                             <input type="button" class="btn btn-default" value="Send" data-bind="click: SendMessage" />
                         </div>
                     </div>
                 </div>
                 
-                <div class="clusterize">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Received Time</th>
-                                <th>Message Number</th>
-                                <th>To/Group Name</th>
-                                <th>From</th>
-                                <th>Message</th>
-                                <th>
-                                    <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <div id="scrollArea" class="clusterize-scroll">
-                        <table>
-                            <tbody id="contentArea" class="clusterize-content">
-                                <tr class="clusterize-no-data">
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!--
                 <div class="fixed-table-container">
                     <div class="header-background"></div>
-                    <div class="fixed-table-container-inner">
-                        <table id="allMessagesTable" class="table table-collapsed header-fixed">
+                    <div id="allMessagesTable" class="fixed-table-container-inner">
+                        <table class="messages-table">
                             <thead>
                                 <tr>
-                                    <th>Received Time</th>
-                                    <th>Message Number</th>
-                                    <th>To/Group Name</th>
-                                    <th>From</th>
-                                    <th>Message</th>
+                                    <th style="min-width: 50px;"><div class="th-inner">Received Time</div></th>
+                                    <th style="min-width: 65px; max-width: 100px;"><div class="th-inner">Message Number</div></th>
+                                    <th style="min-width: 60px;"><div class="th-inner">To/Group Name</div></th>
+                                    <th style="min-width: 60px;"><div class="th-inner">From</div></th>
+                                    <th style="min-width: 80px;"><div class="th-inner">Message</div></th>
                                     <th>
-                                        <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
+                                        <div class="th-inner">
+                                            <a href="#" data-bind="value: $data, click: $root.DeleteAllMessages"><img src="../css/images/DeleteIcon.png"style="height: 12px; width: 12px;" /></a>
+                                        </div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody data-bind="foreach: messageWindowMessages">
                                 <tr>
-                                    <td>
+                                    <td style="min-width: 50px; max-width: 100px;">
                                         <span data-bind="text: receivedTime, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
                                     </td>
                                     <td>
                                         <span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
-                                    </td>
+                                    </td style="min-width: 65px; max-width: 100px;">
                                     <td>
-                                        <!-- ADDRESSEE AND GROUP NAME SHOULD BE IN THE SAME COLUMN --
+                                        <!-- ADDRESSEE AND GROUP NAME SHOULD BE IN THE SAME COLUMN -->
                                         <a href="#" data-bind="text: addressee
                                                 , click: function() { messagesTabClick(addressee()) }
                                                 , style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }">
@@ -137,7 +116,6 @@
                         </table>
                     </div>
                 </div>
-                -->
             </div>
             <div role="tabpanel" class="tab-pane" id="settings">
                 <!-- Nav tabs -->
@@ -504,7 +482,7 @@
     <script type="text/javascript" src="../js/lib/notify.min.js"></script>
     <script type="text/javascript" src="../js/lib/knockout-3.0.0.js"></script>
     <script type="text/javascript" src='../js/lib/bower_components/knockout-es5/dist/knockout-es5.min.js'></script>
-    <script type="text/javascript" src="../js/lib/bower_components/clusterize/clusterize.min.js"></script>
+    <script type="text/javascript" src='../js/lib/DataTables-1.10.7/js/jquery.dataTables.min.js'></script>
     
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
 
@@ -514,7 +492,8 @@
     <script type="text/javascript" src="../js/techpire/APRSConnectionManager.js"></script> 
     <script type="text/javascript" src="../js/techpire/StationMarkerIcon.js"></script> 
     <script type="text/javascript" src="../js/techpire/APRSPositionMarker.js"></script> 
-    <script type="text/javascript" src="../js/techpire/TrailColorUtil.js"></script> 
+    <script type="text/javascript" src="../js/techpire/TrailColorUtil.js"></script>
+    <script type="text/javascript" src="../js/views/index-ui.js"></script>
     <script type="text/javascript" src="../js/views/index.js"></script>
 </body>
 </html>
