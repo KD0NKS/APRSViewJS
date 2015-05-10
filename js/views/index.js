@@ -276,6 +276,7 @@ function pageViewModel() {
             msg.message = self.messageText().trim();
             msg.digipeaters.push('WIDE2-1');
             
+            console.log(msg);
             connectionManager.SendPacket(msg);
             
             self.messageText('');
@@ -337,6 +338,7 @@ function pageViewModel() {
     // DataConnection Form
     self.EditConnection = function(dataConnection) {
         self.dcId(dataConnection.id);
+        self.dcConnectionType(dataConnection.connectionType);
         self.dcDescription(dataConnection.description);
         self.dcHost(dataConnection.host);
         self.dcPort(dataConnection.port);
@@ -361,6 +363,10 @@ function pageViewModel() {
             , 'keepAliveTime': 60000
         };
         
+        if(self.dcConnectionType == 'AGWPE') {
+            args.radioPort = self.dcRadioPort();
+        }
+        
         if(self.dcId()) {
             args.id = self.dcId();   
             
@@ -378,7 +384,7 @@ function pageViewModel() {
         self.dcHost('');
         self.dcPort(0);
         self.dcFilter('');
-        self.dcRadioPort('');
+        self.dcRadioPort(0);
         self.dcIsEnabled(false);
         self.dcIsTransmitEnabled(false);
     };

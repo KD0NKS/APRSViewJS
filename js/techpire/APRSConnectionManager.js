@@ -138,6 +138,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     description: connection.description
                     , host: connection.host
                     , port: (connection.port ? connection.port : undefined)
+                    , radioPort: (connection.radioPort ? connection.radioPort : undefined)
                     , callsign: connection.callsign
                     , passcode: connection.passcode
                     , isEnabled: connection.isEnabled
@@ -172,6 +173,8 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         conn.passcode = connection.passcode;
         conn.isTransmitEnabled = connection.isTransmitEnabled;
         conn.filter = connection.filter;
+        
+        conn.radioPort = connection.radioPort;
         
         conn.isEnabled = connection.isEnabled;
     };

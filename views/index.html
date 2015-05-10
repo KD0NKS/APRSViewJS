@@ -210,6 +210,7 @@
                                     </a>
                                     <div class="panel-collapse collapse" data-bind="attr: { id: $data.id }">
                                         <div class="panel-body">
+                                            <span data-bind="text: $data.connectionType"></span>
                                             <div>
                                                 <label for="host">Host:</label>
                                                 <span name="host" data-bind="text: $data.host" />
@@ -218,7 +219,11 @@
                                                 <label for="port">Port:</label>
                                                 <span name="port" data-bind="text: $data.port" />
                                             </div>
-                                            <div data-bind="visibility: $data.filter">
+                                            <div data-bind="visibility: $data.connectionType == 'AGWPE'">
+                                                <label for="filter">Radio Port:</label>
+                                                <span name="filter" data-bind="text: $data.radioPort" />
+                                            </div>
+                                            <div data-bind="visibility: $data.connectionType == 'APRSIS'">
                                                 <label for="filter">Filter:</label>
                                                 <span name="filter" data-bind="text: $data.filter" />
                                             </div>
@@ -307,7 +312,7 @@
                                             <label for="host">Host URL:</label>
                                             <input type="text" name="host" data-bind="value: dcHost" />
                                         </div>
-                                        <div id='isServerPort' data-bind='visible: dcConnectionType() == "APRSIS"'>
+                                        <div id='isServerPort'>
                                             <label for="port">Host Port:</label>
                                             <input name="port" type="number" data-bind="value: dcPort" />
                                         </div>
@@ -317,7 +322,7 @@
                                         </div>
                                         <div data-bind='visible: dcConnectionType() == "AGWPE"'>
                                             <label for="radioPort">Radio Port:</label>
-                                            <input name="radioPort" type="text" data-bind="value: dcRadioPort" />
+                                            <input name="radioPort" type="number" data-bind="value: dcRadioPort" />
                                         </div>
                                         <div>
                                             <label for="isEnabled">Connection Enabled:</label>
