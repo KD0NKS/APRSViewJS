@@ -196,52 +196,51 @@
                                     </h4>
                                 </div>
                                 
-                                <!-- ko foreach: dataConnections -->
-                                <div class="panel panel-default" data-bind="value: $data">
-                                    <a class="panel-default" data-toggle="collapse" data-parent="#accordion" data-bind="attr: { href: ('#' + $data.id), 'aria-controls': $data.id }" aria-expanded="true">
+                                <div class="panel panel-default" data-bind="foreach: { data: dataConnections, as: 'connection' }">
+                                    <a class="panel-default" data-toggle="collapse" data-parent="#accordion" data-bind="attr: { href: ('#' + connection.id), 'aria-controls': connection.id }" aria-expanded="true">
                                         <div class="panel-heading">
                                             <h4 class="panel-title">
-                                                <span data-bind="text: $data.description"></span>
+                                                <span data-bind="text: connection.description"></span>
                                                 <!-- ko if: socket -->
-                                                <span data-bind="text: $data.socket.writable"></span>
+                                                <span data-bind="text: connection.socket.writable"></span>
                                                 <!-- /ko -->
                                             </h4>
                                         </div>
                                     </a>
-                                    <div class="panel-collapse collapse" data-bind="attr: { id: $data.id }">
+                                    <div class="panel-collapse collapse" data-bind="attr: { id: connection.id }">
                                         <div class="panel-body">
-                                            <span data-bind="text: $data.connectionType"></span>
+                                            <span data-bind="text: connection.connectionType"></span>
                                             <div>
                                                 <label for="host">Host:</label>
-                                                <span name="host" data-bind="text: $data.host" />
+                                                <span name="host" data-bind="text: connection.host" />
                                             </div>
-                                            <div data-bind="visibility: $data.port">
+                                            <div>
                                                 <label for="port">Port:</label>
-                                                <span name="port" data-bind="text: $data.port" />
+                                                <span name="port" data-bind="text: connection.port" />
                                             </div>
-                                            <div data-bind="visibility: $data.connectionType == 'AGWPE'">
+                                            <div data-bind="visible: connection.connectionType == 'AGWPE'">
                                                 <label for="filter">Radio Port:</label>
-                                                <span name="filter" data-bind="text: $data.radioPort" />
+                                                <span name="filter" data-bind="text: connection.radioPort" />
                                             </div>
-                                            <div data-bind="visibility: $data.connectionType == 'APRSIS'">
+                                            <div data-bind="visible: connection.connectionType == 'APRSIS'">
                                                 <label for="filter">Filter:</label>
-                                                <span name="filter" data-bind="text: $data.filter" />
+                                                <span name="filter" data-bind="text: connection.filter" />
                                             </div>
                                             <div>
                                                 <label for="transmitEnabled">Transmission Enabled:</label>
-                                                <span name="transmitEnabled" data-bind="text: $data.isTransmitEnabled"></span>
+                                                <span name="transmitEnabled" data-bind="text: connection.isTransmitEnabled"></span>
                                             </div>
                                             <div>
                                                 <label for="reconnectOnFailure">Reconnect on Failure:</label>
-                                                <span name="reconnectOnFailure" data-bind="text: $data.isReconnectOnFailure" />
+                                                <span name="reconnectOnFailure" data-bind="text: connection.isReconnectOnFailure" />
                                             </div>
                                             <div>
                                                 <label for="reconnectInterval">Time until Reconnect:</label>
-                                                <span name="reconnectInterval" data-bind="text: $data.reconnectInterval">ms</span>
+                                                <span name="reconnectInterval" data-bind="text: connection.reconnectInterval">ms</span>
                                             </div>
                                             <div>
                                                 <label for="isEnabled">Connection Enabled:</label>
-                                                <input name="isEnabled" type="checkbox" data-bind="checked: $data.isEnabled" />
+                                                <input name="isEnabled" type="checkbox" data-bind="checked: connection.isEnabled" />
                                             </div>
                                         </div>
                                         
@@ -251,11 +250,11 @@
                                                    />
                                             <button type="button" class="btn btn-default"
                                                    data-toggle="modal"
-                                                   data-bind="attr: { 'data-target': ('#confirm-delete' + $data.id) }">
+                                                   data-bind="attr: { 'data-target': ('#confirm-delete' + connection.id) }">
                                                 Delete
                                             </button>
                                             
-                                            <div class="modal fade" data-bind="attr: { id: ('confirm-delete' + $data.id) }" role="dialog" aria-hidden="true">
+                                            <div class="modal fade" data-bind="attr: { id: ('confirm-delete' + connection.id) }" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -275,7 +274,6 @@
                                         
                                     </div>
                                 </div>
-                                <!-- /ko -->
                             </div>
                             <div>
                                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dataConnectionEditModal">

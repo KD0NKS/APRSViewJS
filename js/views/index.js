@@ -346,6 +346,10 @@ function pageViewModel() {
         self.dcIsEnabled(dataConnection.isEnabled);
         self.dcIsTransmitEnabled(dataConnection.isTransmitEnabled);
         
+        if(dataConnection.connectionType == 'AGWPE') {
+            self.dcRadioPort(dataConnection.radioPort);   
+        }
+        
         $('#dataConnectionEditModal').modal('show');
     };
     
@@ -363,7 +367,7 @@ function pageViewModel() {
             , 'keepAliveTime': 60000
         };
         
-        if(self.dcConnectionType == 'AGWPE') {
+        if(self.dcConnectionType() == 'AGWPE') {
             args.radioPort = self.dcRadioPort();
         }
         

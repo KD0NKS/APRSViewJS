@@ -146,7 +146,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                     , filter: (connection.filter ? connection.filter : undefined)
                 }
             }
-            , { }
+            , { upsert: true }
             , function(err) {
                 if(err) {
                     console.log('Failed to upsert station settings.');
