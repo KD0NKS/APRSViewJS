@@ -71,9 +71,9 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         self.mapPackets.plug(Bacon.fromEventTarget(connection, 'position'));
         self.mapPackets.plug(Bacon.fromEventTarget(connection, 'object'));
         
-        if(connection.connectionType == 'AGWPE') {
-            connection.Monitor();
-        }
+        //if(connection.connectionType == 'AGWPE') {
+        //    connection.Monitor();
+        //}
     };
     
     self.AddConnection = function(connection) {
@@ -95,14 +95,12 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 console.log('Failed to upsert station settings.');
                 console.log(err);
             } else if(newConn) {
-                console.log(newConn);
-                console.log(connection);
-                
                 connection = newConn;
                 
                 // build the physical connection
                 //var dataConnection = self.connectionFactory.CreateDataConnection(connection);
                 console.log('creating connection');
+                
                 var dataConnection = self.connectionFactory.CreateDataConnection(connection);
                 ko.track(dataConnection);
                 console.log(dataConnection);

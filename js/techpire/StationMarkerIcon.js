@@ -12,7 +12,7 @@ function StationMarkerIcon() {
         , { key: '/\'', value: "/PrimaryTable/SmallAircraft.gif", name: "Small Aircraft" }
         , { key: '/(', value: "/PrimaryTable/MobileSatteliteStation.gif", name: "Mobile Sattelite Station" }
         , { key: '/)', value: "/PrimaryTable/Wheelchair.gif", name: "Wheelchair" }
-        , { key: '/*', value: "/PrimaryTable/SnowMobile.gif", name: "Snow Mobile" }
+        , { key: '/*', value: "/PrimaryTable/Snowmobile.gif", name: "Snow Mobile" }
         , { key: '/+', value: "/PrimaryTable/RedCross.gif", name: "Red Cross" }
         , { key: '/,', value: "/PrimaryTable/BoyScout.gif", name: "Boy Scouts" }
         , { key: '/-', value: "/PrimaryTable/House.gif", name: "House" }
