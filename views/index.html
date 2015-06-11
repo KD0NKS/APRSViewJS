@@ -235,8 +235,8 @@
                                                 <span name="reconnectOnFailure" data-bind="text: connection.isReconnectOnFailure" />
                                             </div>
                                             <div>
-                                                <label for="reconnectInterval">Time until Reconnect:</label>
-                                                <span name="reconnectInterval" data-bind="text: connection.reconnectInterval">ms</span>
+                                                <label for="reconnectInterval">Time until Reconnect (in ms):</label>
+                                                <span name="reconnectInterval" data-bind="text: connection.keepAliveTime"></span>
                                             </div>
                                             <div>
                                                 <label for="isEnabled">Connection Enabled:</label>
