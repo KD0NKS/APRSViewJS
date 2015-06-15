@@ -118,10 +118,10 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
       * It will result in an endliess recursive cycle.
       */
     self.UpdateConnection = function(connection) {
-        connection.callsign = self.aprsSettings.callsign();
-        
         if(self.aprsSettings.ssid() && self.aprsSettings.ssid() != '') {
-            connection.callsign = connection.callsign + '-' + self.aprsSettings.ssid()
+            connection.callsign = self.aprsSettings.callsign() + '-' + self.aprsSettings.ssid()
+        } else {
+            connection.callsign = self.aprsSettings.callsign();   
         }
         
         connection.settingsName = 'DATA_CONNECTION';
@@ -208,12 +208,11 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         for(var c = 0; c < self.dataConnections().length; c++) {
             var connection = self.dataConnections()[c];
             
-            connection.callsign = newVal;
+            //connection.callsign = newVal;
             
             self.UpdateConnection(connection);
             
-            // TODO: if aprsis connection send login
-            //SendLogin
+            // TODO: if aprsis connection send login?
         }
     });
     
@@ -221,12 +220,9 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         for(var c = 0; c < self.dataConnections().length; c++) {
             var connection = self.dataConnections()[c];
             
-            connection.ssid = newVal;
-            
             self.UpdateConnection(connection);
             
-            // TODO: if aprsis connection send login
-            //SendLogin
+            // TODO: if aprsis connection send login?
         }
     });
     
@@ -234,12 +230,11 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         for(var c = 0; c < self.dataConnections().length; c++) {
             var connection = self.dataConnections()[c];
             
-            connection.passcode = newVal;
+            //connection.passcode = newVal;
             
             self.UpdateConnection(connection);
             
-            // TODO: if aprsis connection send login
-            //SendLogin
+            // TODO: if aprsis connection send login?
         }
     });
 }
