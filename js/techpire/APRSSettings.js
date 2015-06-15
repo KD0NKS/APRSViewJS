@@ -152,17 +152,20 @@ function APRSSettings(appSettingsDB) {
                     console.log(err);
                 } else if(updatedRecord) {
                     if(self.stationSettings) {
-                        self.stationSettings.callsign(updatedRecord.callsign);
-                        self.stationSettings.ssid(updatedRecord.ssid);
-                        self.stationSettings.passcode(updatedRecord.passcode);
-                        self.stationSettings.pointLifetime(updatedRecord.pointLifetime);
-                        self.stationSettings.trackStation(updatedRecord.trackStation);
-                        self.stationSettings.stationLatitude(updatedRecord.stationLatitude);
-                        self.stationSettings.stationLongitude(updatedRecord.stationLongitude);
-                        self.stationSettings.stationAutoPosition(updatedRecord.stationAutoPosition);
-                        self.stationSettings.stationIcon(updatedRecord.stationIcon);
+                        console.log('Updating station settings');
+                        
+                        self.stationSettings.callsign(self.callsign());
+                        self.stationSettings.ssid(self.ssid());
+                        self.stationSettings.passcode(self.passcode());
+                        self.stationSettings.pointLifetime(self.pointLifetime());
+                        self.stationSettings.trackStation(self.trackStation());
+                        self.stationSettings.stationLatitude(self.stationLatitude());
+                        self.stationSettings.stationLongitude(self.stationLongitude());
+                        self.stationSettings.stationAutoPosition(self.stationAutoPosition());
+                        self.stationSettings.stationIcon(self.stationIcon());
                         self.stationSettings.stationSendPositionInterval(600000);
                     } else {
+                        // TODO: THIS IS INCORRECT, PASS A NEW OBJECT BASED ON THE ABOVE PROPERTIES
                         self.stationSettings = new StationSettings(updatedRecord);
                     }
                 }

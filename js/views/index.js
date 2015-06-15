@@ -287,6 +287,11 @@ function pageViewModel() {
         console.log("Send Position");
         
         try {
+            console.log(aprsSettings.stationSettings.callsign);
+            console.log(aprsSettings.stationSettings.callsign());
+            console.log(self.aprsSettings.stationSettings.stationLatitude());
+            console.log(self.aprsSettings.stationSettings.stationLongitude());
+            
             if(aprsSettings.stationSettings 
                     && aprsSettings.stationSettings.callsign
                     && aprsSettings.stationSettings.callsign() != null
