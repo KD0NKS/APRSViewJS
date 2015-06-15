@@ -174,7 +174,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         
         conn.radioPort = connection.radioPort;
         
-        conn.isEnabled = connection.isEnabled;
+        //conn.isEnabled = connection.isEnabled;
     };
     
     self.DeleteConnection = function(connection) {
