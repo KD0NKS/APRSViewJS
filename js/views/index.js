@@ -287,11 +287,6 @@ function pageViewModel() {
         console.log("Send Position");
         
         try {
-            console.log(aprsSettings.stationSettings.callsign);
-            console.log(aprsSettings.stationSettings.callsign());
-            console.log(self.aprsSettings.stationSettings.stationLatitude());
-            console.log(self.aprsSettings.stationSettings.stationLongitude());
-            
             if(aprsSettings.stationSettings 
                     && aprsSettings.stationSettings.callsign
                     && aprsSettings.stationSettings.callsign() != null
@@ -717,4 +712,38 @@ $(document).keydown(function(e) {
 
         return true;
     }
+});
+
+$(function() {
+    /*
+    $('#positionTransmitInterval').slider({
+        range: 'min'
+        , min: 30000
+        , max: 600000
+        , value: 600000
+        , step: 30000
+        , slide: function(event, ui) {
+            if(ui.value < 30000) {
+                return false;   
+            } else if(ui.value > 600000) {
+                return false;   
+            } else {
+                $('#posInterval').val($('#positionTransmitInterval').slider('value'));
+            }
+        }
+        
+        /*
+            1m = 60000 ms
+            2.5m = 150000 ms
+            5m = 300000 ms 	
+            10m = 600000 ms
+            15m = 900000 ms
+            30m = 1800000 ms
+            60m = 3600000 ms
+            90m = 5400000 ms
+        *
+    });
+    
+    $('#posInterval').val($('#positionTransmitInterval').slider('value'));
+    */
 });

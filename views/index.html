@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/leaflet-search.css" />
     <link rel="stylesheet" href="../js/lib/Leaflet.contextmenu-master/dist/leaflet.contextmenu.css" />
     
-    <!--<link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />-->
+    <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.10.4.custom.min.css" />
     <link rel="stylesheet" href="../css/settings.css" />
     <link rel="stylesheet" href="../css/main.css" />
 
@@ -125,7 +125,7 @@
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="stationSettings" data-bind="with: aprsSettings">
+                    <div role="tabpanel" class="tab-pane active" id="stationSettings" data-bind="with: aprsSettings" style="padding: 5px">
                         <div>
                             <label for="callSign" >Callsign:</label>
                             <input name="callSign" data-bind="value: callsign" />
@@ -142,6 +142,23 @@
                             <label for="lifetime">Point Lifetime:</label>
                             <input name="lifetime" type="number" data-bind="value: pointLifetime" />
                         </div>
+                        <div>
+                            <label for="transmitPosition">Transmit Station Position</label>
+                            <input name="transmitPosition" type="checkbox" />
+                        </div>
+                        
+                        <div style="position: relative; width: 100%;">
+                            <label for="positionTransmitInterval" >Transmit Position Interval:</label>
+                            <input id="positionTransmitInterval"
+                                    name="positionTransmitInterval" type="range"
+                                    min="30000" max="600000" value="600000" step="30000"
+                                    style="display: inline-block; width: 250px;"
+                                    />
+                            
+                            <input id="posInterval" type="text" readonly style="border: 0px;" />
+                            
+                        </div>
+                        
                         <div>
                             <label for="trackStat">Track Station:</label>
                             <input name="trackStat" type="checkbox" data-bind="boolean: trackStation" />
@@ -347,33 +364,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                        
-                        
-                        <!--
-                        <div id="editConnection">
-                            <div class="panel-group">
-                                
-                                
-
-                                <!-- APRS IS -->
-                                <!--
-                                instance.filter = args['filter'];
-                                instance.keepAliveTime = args['keepAliveTime'];
-                                -->
-
-                                <!-- AGW -->
-                                <!--
-                                self.radioPort = args['radioPort'];
-                                --
-                            </div>
-                            <div class="labelInputCont">
-                                <input type="button" class="btn btn-default" value="Add" />
-                                <input type="button" class="btn btn-default" value="Cancel" />
-                            </div>
-                        </div>
-                        -->
                     </div>
                 </div>
             </div>
