@@ -15,7 +15,7 @@ function StationSettings(data) {
     self.stationLongitude = ko.observable(data.stationLongitude);
     self.stationAutoPosition = ko.observable(data.stationAutoPosition);
     self.stationIcon = ko.observable(data.stationIcon);
-    self.stationSendPositionInterval = ko.observable(600000); //ko.observable(data.stationSendPositionInterval); // in milliseconds
+    self.stationSendPositionInterval = ko.observable(data.stationSendPositionInterval); //ko.observable(data.stationSendPositionInterval); // in milliseconds
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -76,7 +76,8 @@ function APRSSettings(appSettingsDB) {
     self.stationLongitude = ko.observable();
     self.stationAutoPosition = ko.observable(false);
     self.stationIcon = ko.observable('/-');
-    self.stationSendPositionInterval = ko.observable(600000);
+    self.stationTransmitPosition = ko.observable(false);
+    self.stationSendPositionInterval = ko.observable(1800000); // in milliseconds
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -91,6 +92,24 @@ function APRSSettings(appSettingsDB) {
             return self.stationIcon()[1];
         } else {
             return '-';   
+        }
+    });
+    
+    self.sendPosIntervalMin = ko.computed(function() {
+        var time = (self.stationSendPositionInterval() / 60000);
+        
+        if(time % 1 == 0) {
+            if(time > 1) {
+                return time + ' min.';
+            } else {
+                return time + ' min.';
+            }
+        } else {
+            if(time == 0.5) {
+                return (time * 60) + ' sec.';
+            } else {
+                return Math.floor(time) + ' min. ' + ((time % 1) * 60) + ' sec.';
+            }
         }
     });
     
@@ -118,7 +137,8 @@ function APRSSettings(appSettingsDB) {
                     self.stationLongitude(dbStationSettings.stationLongitude);
                     self.stationAutoPosition(dbStationSettings.stationAutoPosition);
                     self.stationIcon(dbStationSettings.stationIcon);
-                    self.stationSendPositionInterval(600000);
+                    self.stationSendPositionInterval(dbStationSettings.stationSendPositionInterval);
+                    self.stationTransmitPosition(dbStationSettings.stationTransmitPosition);
                     
                     self.stationSettings = new StationSettings(dbStationSettings);
                 } else {
@@ -143,7 +163,8 @@ function APRSSettings(appSettingsDB) {
                 , stationLongitude: self.stationLongitude()
                 , stationAutoPosition: self.stationAutoPosition()
                 , stationIcon: self.stationIcon()
-                , stationSendPositionInterval: 600000
+                , stationTransmitPosition: self.stationTransmitPosition()
+                , stationSendPositionInterval: self.stationSendPositionInterval()
             }
             , { upsert: true }
             , function(err, updatedRecord) {
@@ -163,7 +184,8 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.stationLongitude(self.stationLongitude());
                         self.stationSettings.stationAutoPosition(self.stationAutoPosition());
                         self.stationSettings.stationIcon(self.stationIcon());
-                        self.stationSettings.stationSendPositionInterval(600000);
+                        self.stationSettings.stationTransmitPosition(self.stationTransmitPosition());
+                        self.stationSettings.stationSendPositionInterval(self.stationSendPositionInterval());
                     } else {
                         // TODO: THIS IS INCORRECT, PASS A NEW OBJECT BASED ON THE ABOVE PROPERTIES
                         self.stationSettings = new StationSettings(updatedRecord);
@@ -195,7 +217,8 @@ function APRSSettings(appSettingsDB) {
             self.stationLongitude();
             self.stationAutoPosition(false);
             self.stationIcon = ko.observable('/-');
-            self.stationSendPositionInterval(600000);
+            self.stationTransmitPosition = ko.observable(false);
+            self.stationSendPositionInterval(1800000);
         }
     };
 }

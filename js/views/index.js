@@ -55,8 +55,7 @@ $(document).ready(function() {
 
         viewModel = new pageViewModel();
         ko.applyBindings(viewModel);
-        viewModel.SendPositionPacket();
-
+        
         window.setInterval(viewModel.RemoveOldPositions, 60000); //600000
 
         // Set a mouse listener to update the status bar with the current latitude and longitude.
@@ -94,14 +93,12 @@ $(document).ready(function() {
             connectionManager.LoadConnections()
             , readServerData(viewModel)
         ).done(function() {
-
+            viewModel.SendPositionPacket();
         });
     });
 });
 
 function resizeDynamicElements() {
-    console.log('resize');
-    
     var h = $(window).innerHeight() - 43;
     
     map.invalidateSize();
@@ -178,6 +175,8 @@ function pageViewModel() {
     self.dcIsEnabled = ko.observable(false);
     self.dcIsTransmitEnabled = ko.observable(false);
     self.sendMessageInterval = null;
+    
+    self.
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -288,12 +287,16 @@ function pageViewModel() {
         
         try {
             if(aprsSettings.stationSettings 
+                    && self.aprsSettings.stationSettings.stationTransmitPosition
+                    && self.aprsSettings.stationSettings.stationTransmitPosition() == true
+                    && self.aprsSettings.stationSettings.stationSendPositionInterval
+                    && self.aprsSettings.stationSettings.stationSendPositionInterval() != null
+                    && self.aprsSettings.stationSettings.stationSendPositionInterval() > 0
                     && aprsSettings.stationSettings.callsign
                     && aprsSettings.stationSettings.callsign() != null
                     && self.aprsSettings.stationSettings.stationLatitude() != null
-                    && self.aprsSettings.stationSettings.stationLongitude() != null) {
-                console.log("Send Position");
-                
+                    && self.aprsSettings.stationSettings.stationLongitude() != null
+                    ) {
                 var posRpt = new APRSPositionReport();
 
                 posRpt.callsign = aprsSettings.stationSettings.callsign();
@@ -321,17 +324,19 @@ function pageViewModel() {
             
             if(self.sendMessageInterval != null) {
                 clearInterval(self.sendMessageInterval);
+                clearTimeout(self.sendMessageInterval);
             }
             
-            self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval(), posRpt);
+            self.startPosInterval();
         } catch(e) {
             console.log(e);
             
             if(self.sendMessageInterval != null) {
                 clearInterval(self.sendMessageInterval);
+                clearTimeout(self.sendMessageInterval);
             }
             
-            self.sendMessageInterval = setInterval(self.SendPositionPacket, 60000, posRpt);
+            self.startPosInterval();
         }
     };
     
@@ -401,6 +406,24 @@ function pageViewModel() {
         
         connectionManager.DeleteConnection(connection);
     };
+    
+    // Utility Methods
+    self.startPosInterval() {
+        self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval());
+    };
+    
+    // Settings Listeners
+    self.aprsSettings.stationSettings.stationSendPositionInterval.subscribe(function(newVal) {
+        
+    });
+
+    self.aprsSettings.stationSettings.stationTransmitPosition.subscribe(function(newVal) {
+        if(self.aprsSettings.stationSettings.stationTransmitPosition() == true) {
+            self.StopInterval(self.sendMessageInterval);
+        } else {
+            self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval());
+        }
+    });
 };
 
 function createMap(baseLayer) {
@@ -608,7 +631,6 @@ function readServerData() {
 				In the future, we should try to determine if this is a static
 				station.  If it is, don't add a polyline for it.
 				*/
-				
 				var stationTrail = ko.utils.arrayFirst(viewModel.trails(), function(t) { 
 					return (
 						t.callsign == data.callsign
@@ -690,7 +712,7 @@ function readServerData() {
 			check to see if the user's current position is inside the affected area using the given coordinates
 		*/
 	});
-}
+};
 
 /****************** UI SCRIPTS ******************/
 /*
@@ -712,38 +734,4 @@ $(document).keydown(function(e) {
 
         return true;
     }
-});
-
-$(function() {
-    /*
-    $('#positionTransmitInterval').slider({
-        range: 'min'
-        , min: 30000
-        , max: 600000
-        , value: 600000
-        , step: 30000
-        , slide: function(event, ui) {
-            if(ui.value < 30000) {
-                return false;   
-            } else if(ui.value > 600000) {
-                return false;   
-            } else {
-                $('#posInterval').val($('#positionTransmitInterval').slider('value'));
-            }
-        }
-        
-        /*
-            1m = 60000 ms
-            2.5m = 150000 ms
-            5m = 300000 ms 	
-            10m = 600000 ms
-            15m = 900000 ms
-            30m = 1800000 ms
-            60m = 3600000 ms
-            90m = 5400000 ms
-        *
-    });
-    
-    $('#posInterval').val($('#positionTransmitInterval').slider('value'));
-    */
 });
