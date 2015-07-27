@@ -15,6 +15,7 @@ function StationSettings(data) {
     self.stationLongitude = ko.observable(data.stationLongitude);
     self.stationAutoPosition = ko.observable(data.stationAutoPosition);
     self.stationIcon = ko.observable(data.stationIcon);
+    self.stationTransmitPosition = ko.observable(data.stationTransmitPosition);
     self.stationSendPositionInterval = ko.observable(data.stationSendPositionInterval); //ko.observable(data.stationSendPositionInterval); // in milliseconds
     
     self.stationSymbolTable = ko.computed(function() {
@@ -79,6 +80,13 @@ function APRSSettings(appSettingsDB) {
     self.stationTransmitPosition = ko.observable(false);
     self.stationSendPositionInterval = ko.observable(1800000); // in milliseconds
     
+    // Observable settings objects
+    self.stationSettings = new StationSettings(
+        self
+    );
+    
+    self.packetFilterSettings = null; // TODO: Make this an array of simple filter 'objects'
+    
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
             return self.stationIcon()[0];
@@ -112,10 +120,6 @@ function APRSSettings(appSettingsDB) {
             }
         }
     });
-    
-    // Observable settings objects
-    self.stationSettings = null;
-    self.packetFilterSettings = null; // TODO: Make this an array of simple filter 'objects'
     
     self.reloadSettings = function() {
         console.log('reloading settings');

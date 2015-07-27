@@ -8,16 +8,11 @@ var TechpireAPRS = require('TechpireAPRS')
     , Datastore = require('nedb')
     , path = require('path')
     , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db') })
-    , aprsSettings = new APRSSettings(settingsDB)
-    , connectionManager = new APRSConnectionManager(aprsSettings, settingsDB)
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
     , layerManager = new LayerManager(layerDB)
     , gui = require('nw.gui')
     , stationMarkerIcon = new StationMarkerIcon()
     ;
-
-layerDB.loadDatabase();
-settingsDB.loadDatabase();
 
 console.log('Saving layers to: ' + path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db'));
 
@@ -44,15 +39,23 @@ var mapEle = null;
 var msgPanel = null;
 var tabEle = null;
 
+var aprsSettings;
+
 $(document).ready(function() {
+    layerDB.loadDatabase();
+    settingsDB.loadDatabase();
+    
     mapEle = $('#map');
     msgPanel = $('#allMessagesTable');
     
+    aprsSettings = new APRSSettings(settingsDB)
+    
     $.when(
         layerManager.LoadMapLayers()
+        , aprsSettings.reloadSettings()
     ).done(function() {
         createMap(layerManager.baseLayer());
-
+        
         viewModel = new pageViewModel();
         ko.applyBindings(viewModel);
         
@@ -89,12 +92,12 @@ $(document).ready(function() {
         
         resizeDynamicElements();
 
-        $.when(
-            connectionManager.LoadConnections()
-            , readServerData(viewModel)
-        ).done(function() {
+        viewModel.connectionManager.LoadConnections();
+        readServerData(viewModel);
+        
+        setTimeout(function() {
             viewModel.SendPositionPacket();
-        });
+        }, 60000);
     });
 });
 
@@ -152,6 +155,8 @@ function MessageObject(data) {
 function pageViewModel() {
 	var self = this;
     
+    self.aprsSettings = aprsSettings;
+    
     // map - status bar
     self.mouseLatLng = ko.observable(L.latLng(39, -99));
     self.lastStationHeard = ko.observable('');
@@ -161,8 +166,7 @@ function pageViewModel() {
     self.messageText = ko.observable('');
     self.messageRequireAck = ko.observable('');
     
-    self.aprsSettings = aprsSettings;
-    self.aprsSettings.reloadSettings();
+    self.connectionManager = new APRSConnectionManager(self.aprsSettings, settingsDB)
     
     // Data Connection Form - See DataConnection Form
     self.dcId = ko.observable();
@@ -176,7 +180,6 @@ function pageViewModel() {
     self.dcIsTransmitEnabled = ko.observable(false);
     self.sendMessageInterval = null;
     
-    self.
     
     // MESSAGES
 	self.DeleteMessage = function(m) {
@@ -276,7 +279,7 @@ function pageViewModel() {
             msg.digipeaters.push('WIDE2-1');
             
             console.log(msg);
-            connectionManager.SendPacket(msg);
+            self.connectionManager.SendPacket(msg);
             
             self.messageText('');
         }
@@ -284,16 +287,30 @@ function pageViewModel() {
     
     self.SendPositionPacket = function() {
         console.log("Send Position");
+        console.log(self.aprsSettings.stationSettings);
+        
+        /*
+        self.aprsSettings.stationSettings
+        && self.aprsSettings.stationSettings.stationTransmitPosition
+        && self.aprsSettings.stationSettings.stationTransmitPosition() == true
+        && self.aprsSettings.stationSettings.stationSendPositionInterval
+        && self.aprsSettings.stationSettings.stationSendPositionInterval() != null
+        && self.aprsSettings.stationSettings.stationSendPositionInterval() > 0
+        && aprsSettings.stationSettings.callsign
+        && aprsSettings.stationSettings.callsign() != null
+        && self.aprsSettings.stationSettings.stationLatitude() != null
+        && self.aprsSettings.stationSettings.stationLongitude() != null
+        */
         
         try {
-            if(aprsSettings.stationSettings 
+            if(self.aprsSettings.stationSettings 
                     && self.aprsSettings.stationSettings.stationTransmitPosition
                     && self.aprsSettings.stationSettings.stationTransmitPosition() == true
                     && self.aprsSettings.stationSettings.stationSendPositionInterval
                     && self.aprsSettings.stationSettings.stationSendPositionInterval() != null
                     && self.aprsSettings.stationSettings.stationSendPositionInterval() > 0
-                    && aprsSettings.stationSettings.callsign
-                    && aprsSettings.stationSettings.callsign() != null
+                    && self.aprsSettings.stationSettings.callsign
+                    && self.aprsSettings.stationSettings.callsign() != null
                     && self.aprsSettings.stationSettings.stationLatitude() != null
                     && self.aprsSettings.stationSettings.stationLongitude() != null
                     ) {
@@ -319,7 +336,7 @@ function pageViewModel() {
 
                 posRpt.message = 'Testing a new software.';
                 
-                connectionManager.SendPacket(posRpt);
+                self.connectionManager.SendPacket(posRpt);
             }
             
             if(self.sendMessageInterval != null) {
@@ -379,10 +396,10 @@ function pageViewModel() {
         if(self.dcId()) {
             args.id = self.dcId();   
             
-            connectionManager.UpdateConnection(args);
+            self.connectionManager.UpdateConnection(args);
         } else {
             // TODO: OR UPDATE
-            connectionManager.AddConnection(args);   
+            self.connectionManager.AddConnection(args);   
         }
         
         $('#dataConnectionEditModal').modal('hide');
@@ -404,19 +421,18 @@ function pageViewModel() {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
         
-        connectionManager.DeleteConnection(connection);
+        self.connectionManager.DeleteConnection(connection);
     };
     
     // Utility Methods
-    self.startPosInterval() {
+    self.startPosInterval = function() {
         self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval());
     };
     
-    // Settings Listeners
     self.aprsSettings.stationSettings.stationSendPositionInterval.subscribe(function(newVal) {
-        
+        console.log('stationSendPositionInterval');
     });
-
+    
     self.aprsSettings.stationSettings.stationTransmitPosition.subscribe(function(newVal) {
         if(self.aprsSettings.stationSettings.stationTransmitPosition() == true) {
             self.StopInterval(self.sendMessageInterval);
@@ -478,18 +494,18 @@ function setStationPosition(e) {
 };
 
 function readServerData() {
-	connectionManager.sentMessages.onValue(function(value) {
+	viewModel.connectionManager.sentMessages.onValue(function(value) {
 		// Debugging purposes - outputs the data to the console.
 		console.log(value);
 	});
 	
-	connectionManager.mapPackets.ofType = function(type) {
-		return connectionManager.mapPackets.filter(function(data) {
+	viewModel.connectionManager.mapPackets.ofType = function(type) {
+		return viewModel.connectionManager.mapPackets.filter(function(data) {
 			return data instanceof type
 		});
 	};
 	
-	connectionManager.mapPackets.ofType(ObjectReport).onValue(function(data) {
+	viewModel.connectionManager.mapPackets.ofType(ObjectReport).onValue(function(data) {
 		// TODO: remove the hard coded position marker
 		if(data.indicator == '*') { // Live object
 			if(data.latitude != null && data.longitude != null) {
@@ -565,7 +581,7 @@ function readServerData() {
 		}
 	});
 	
-	connectionManager.mapPackets.ofType(APRSPositionReport).onValue(function(data) {
+	viewModel.connectionManager.mapPackets.ofType(APRSPositionReport).onValue(function(data) {
 		// Debugging purposes - outputs the packet to the console.
 		//console.log(data);
 		
@@ -666,7 +682,7 @@ function readServerData() {
         viewModel.lastStationHeard(data.callsign);
 	});
 	
-	connectionManager.messages.onValue(function(value) {
+	viewModel.connectionManager.messages.onValue(function(value) {
         var msgs = null;
         
         if(value.message.toLowerCase().indexOf('ack') != 0) {
