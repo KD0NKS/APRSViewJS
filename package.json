@@ -1,18 +1,18 @@
 {
-  "name": "aprsviewjs",
-  "main": "views/index.html",
-  "version": "0.0.1",
-  "single-instance": true,
-  "window": {
-    "title": "APRSViewJS",
-    "width": 800,
-    "height": 600,
-    "min_width": 650,
-    "min_height": 650,
-    "toolbar": true
-  },
-  "chromium-args": "--child-clean-exit",
-  "devDependencies": {
+  "name": "aprsviewjs"
+  , "main": "views/index.html"
+  , "version": "0.0.1"
+  , "single-instance": true
+  , "window": {
+    "title": "APRSViewJS"
+    , "width": 800
+    , "height": 600
+    , "min_width": 650
+    , "min_height": 650
+    , "toolbar": false
+  }
+  , "chromium-args": "--child-clean-exit"
+  , "devDependencies": {
     "node-webkit-builder": "^1.0.11"
   }
 }

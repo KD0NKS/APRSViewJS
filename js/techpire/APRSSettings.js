@@ -144,7 +144,17 @@ function APRSSettings(appSettingsDB) {
                     self.stationSendPositionInterval(dbStationSettings.stationSendPositionInterval);
                     self.stationTransmitPosition(dbStationSettings.stationTransmitPosition);
                     
-                    self.stationSettings = new StationSettings(dbStationSettings);
+                    self.stationSettings.callsign(self.callsign());
+                    self.stationSettings.ssid(self.ssid());
+                    self.stationSettings.passcode(self.passcode());
+                    self.stationSettings.pointLifetime(self.pointLifetime());
+                    self.stationSettings.trackStation(self.trackStation());
+                    self.stationSettings.stationLatitude(self.stationLatitude());
+                    self.stationSettings.stationLongitude(self.stationLongitude());
+                    self.stationSettings.stationAutoPosition(self.stationAutoPosition());
+                    self.stationSettings.stationIcon(self.stationIcon());
+                    self.stationSettings.stationTransmitPosition(self.stationTransmitPosition());
+                    self.stationSettings.stationSendPositionInterval(self.stationSendPositionInterval());
                 } else {
                     self.saveSettings();
                 }

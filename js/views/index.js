@@ -7,8 +7,8 @@ var TechpireAPRS = require('TechpireAPRS')
     , APRSMessage = require('TechpireAPRS').APRSMessage
     , Datastore = require('nedb')
     , path = require('path')
-    , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db') })
-    , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db') })
+    , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db'), autoload: true })
+    , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db'), autoload: true })
     , layerManager = new LayerManager(layerDB)
     , gui = require('nw.gui')
     , stationMarkerIcon = new StationMarkerIcon()
@@ -42,9 +42,6 @@ var tabEle = null;
 var aprsSettings;
 
 $(document).ready(function() {
-    layerDB.loadDatabase();
-    settingsDB.loadDatabase();
-    
     mapEle = $('#map');
     msgPanel = $('#allMessagesTable');
     
@@ -97,7 +94,7 @@ $(document).ready(function() {
         
         setTimeout(function() {
             viewModel.SendPositionPacket();
-        }, 60000);
+        }, 30000);
     });
 });
 
@@ -278,7 +275,6 @@ function pageViewModel() {
             msg.message = self.messageText().trim();
             msg.digipeaters.push('WIDE2-1');
             
-            console.log(msg);
             self.connectionManager.SendPacket(msg);
             
             self.messageText('');
@@ -287,20 +283,6 @@ function pageViewModel() {
     
     self.SendPositionPacket = function() {
         console.log("Send Position");
-        console.log(self.aprsSettings.stationSettings);
-        
-        /*
-        self.aprsSettings.stationSettings
-        && self.aprsSettings.stationSettings.stationTransmitPosition
-        && self.aprsSettings.stationSettings.stationTransmitPosition() == true
-        && self.aprsSettings.stationSettings.stationSendPositionInterval
-        && self.aprsSettings.stationSettings.stationSendPositionInterval() != null
-        && self.aprsSettings.stationSettings.stationSendPositionInterval() > 0
-        && aprsSettings.stationSettings.callsign
-        && aprsSettings.stationSettings.callsign() != null
-        && self.aprsSettings.stationSettings.stationLatitude() != null
-        && self.aprsSettings.stationSettings.stationLongitude() != null
-        */
         
         try {
             if(self.aprsSettings.stationSettings 
@@ -339,20 +321,12 @@ function pageViewModel() {
                 self.connectionManager.SendPacket(posRpt);
             }
             
-            if(self.sendMessageInterval != null) {
-                clearInterval(self.sendMessageInterval);
-                clearTimeout(self.sendMessageInterval);
-            }
-            
+            self.stopPosInterval();
             self.startPosInterval();
         } catch(e) {
             console.log(e);
             
-            if(self.sendMessageInterval != null) {
-                clearInterval(self.sendMessageInterval);
-                clearTimeout(self.sendMessageInterval);
-            }
-            
+            self.stopPosInterval();
             self.startPosInterval();
         }
     };
@@ -376,7 +350,6 @@ function pageViewModel() {
     };
     
     self.SaveConnection = function() {
-        //r/39.2575/-94.6326/500
         var args = {
             'connectionType': self.dcConnectionType()
             , 'description': self.dcDescription()
@@ -425,19 +398,58 @@ function pageViewModel() {
     };
     
     // Utility Methods
+    self.posIntervalStartTime = null;
+    self.posIntervalTime = null;
+    
+    self.stopPosInterval = function() {
+        if(self.sendMessageInterval != null) {
+            clearInterval(self.sendMessageInterval);
+            clearTimeout(self.sendMessageInterval);
+        }  
+    };
+    
     self.startPosInterval = function() {
-        self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval());
+        self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSettings.stationSendPositionInterval());
+        self.posIntervalStartTime = new Date().getTime();
+        self.posIntervalTime = self.aprsSettings.stationSettings.stationSendPositionInterval();
     };
     
     self.aprsSettings.stationSettings.stationSendPositionInterval.subscribe(function(newVal) {
-        console.log('stationSendPositionInterval');
+        newVal = parseInt(newVal);
+        
+        // DO NOT START THE INTERVAL BEFORE THE START TIME HAS BEEN SET.
+        // THERE IS A 60 SECOND DELAY ON STARTUP BEFORE THE FIRST POSITION HAS BEEN SENT.
+        if(self.posIntervalStartTime != null && self.posIntervalTime != null && newVal > 0) {
+            var timeRemaining = self.posIntervalTime - (new Date().getTime() - self.posIntervalStartTime);
+            
+            if(timeRemaining > 1000) {
+                if(newVal < self.posIntervalTime) {
+                    // decrease time
+                    if(newVal < timeRemaining) {
+                        self.stopPosInterval();
+                        self.startPosInterval();
+                    }
+                } else if(newVal > self.posIntervalTime) {
+                    // increse time
+                    self.stopPosInterval();
+                    
+                    self.sendMessageInterval = setInterval(self.SendPositionPacket, ((newVal - self.posIntervalTime) + timeRemaining));
+                    self.posIntervalStartTime = new Date().getTime();
+                    self.posIntervalTime = self.aprsSettings.stationSettings.stationSendPositionInterval();
+                }
+            }
+        } else if(newVal == 0) {
+            self.stopPosInterval();   
+        }
     });
     
     self.aprsSettings.stationSettings.stationTransmitPosition.subscribe(function(newVal) {
         if(self.aprsSettings.stationSettings.stationTransmitPosition() == true) {
-            self.StopInterval(self.sendMessageInterval);
+            //console.log('Stopping interval because the transmit position has been disabled');
+            
+            self.startPosInterval();
         } else {
-            self.sendMessageInterval = setInterval(self.SendPositionPacket, self.aprsSettings.stationSendPositionInterval());
+            self.startPosInterval();
         }
     });
 };
