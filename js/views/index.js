@@ -51,10 +51,10 @@ $(document).ready(function() {
         layerManager.LoadMapLayers()
         , aprsSettings.reloadSettings()
     ).done(function() {
-        createMap(layerManager.baseLayer());
-        
         viewModel = new pageViewModel();
         ko.applyBindings(viewModel);
+        
+        createMap(layerManager.baseLayer());
         
         window.setInterval(viewModel.RemoveOldPositions, 60000); //600000
 
@@ -187,14 +187,39 @@ function pageViewModel() {
         self.messageWindowMessages([]);
     };
 	
+    // STATION ICONS/TRAILS
+    
 	// collection of markers for all stations on the map.
 	// does knockout have a remove function on arrays?
 	self.markers = ko.observableArray([]);
 
 	// trails for all the stations on the map... in the future, this will only be for moving stations
 	self.trails = ko.observableArray([]);
-	
     
+    self.ClearAllStations = function() {
+        if(self.trails().length > 0) {
+            ko.utils.arrayForEach(self.trails(), function(t) {
+                map.removeLayer(t.polyline);
+            });
+        }
+        
+        
+        // Clear all existing markers from map
+        markersLayer.clearLayers();
+        
+        // clear trail references
+        self.trails([]);
+        
+        // Clear all existing station marker references
+        self.markers([]);
+    };
+    
+    self.ClearAllTrails = function() {
+        console.log('Clearing all trails');
+        
+        
+    };
+	
 	// USE SLICE!!!!!
 	self.RemoveOldPositions = function() {
 		var checkNext = true;
@@ -316,7 +341,7 @@ function pageViewModel() {
                 posRpt.latitude = self.aprsSettings.stationSettings.stationLatitude();
                 posRpt.longitude = self.aprsSettings.stationSettings.stationLongitude();
 
-                posRpt.message = 'Testing a new software.';
+                posRpt.message = self.aprsSettings.stationSettings.comment();
                 
                 self.connectionManager.SendPacket(posRpt);
             }
@@ -465,6 +490,14 @@ function createMap(baseLayer) {
             {
                 text: 'Set my station position to here.'
                 , callback: setStationPosition
+            }
+            , {
+                text: 'Clear all stations.'
+                , callback: viewModel.ClearAllStations
+            }
+            , {
+                text: 'Clear map tile cache.'
+                , callback: layerManager.ClearMapCache
             }
         ]
 	});

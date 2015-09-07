@@ -280,6 +280,20 @@ function LayerManager(cachedTilesDatabase) {
 		self.ReloadBaseLayers();
 		self.ReloadOverlayLayers();
 	};
+    
+    self.ClearMapCache = function() {
+        ko.utils.arrayForEach(self.baseLayers(), function(layer) {
+            self.ClearLayerCache(layer.options.displayName);
+        });
+    };
+    
+    self.ClearLayerCache = function(layerName) {
+        db.remove({ 'point': new RegExp('^' + layerName + ',') }, { multi: true }, function(err, numRemoved) {
+            console.log('Removed ' + numRemoved + ' layers from the database for layer ' + layerName);
+        });
+        
+        db.persistence.compactDatafile();
+    };
 }
 
 /*

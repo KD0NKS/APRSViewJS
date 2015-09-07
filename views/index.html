@@ -117,7 +117,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#stationSettings" aria-controls="stationSettings" role="tab" data-toggle="tab">Station Settings</a></li>
                     <li role="presentation"><a href="#connectionSettings" aria-controls="connectionSettings" role="tab" data-toggle="tab">Connections</a></li>
-                    <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+                    <li role="presentation"><a href="#mapSettings" aria-controls="mapSettings" role="tab" data-toggle="tab">Map Settings</a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -134,6 +134,10 @@
                         <div>
                             <label for="passcode">Passcode:</label>
                             <input name="passcode" type="text" data-bind="value: passcode" />
+                        </div>
+                        <div>
+                            <label for="comment">Comment:</label>
+                            <input name="comment" type="text" data-bind="value: comment" maxlength="67" />
                         </div>
                         <div>
                             <label for="lifetime">Point Lifetime:</label>
@@ -360,6 +364,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="mapSettings" class="tab-pane" data-bind="with: connectionManager">
+                        <div style="margin: 5px;">
+                            
                         </div>
                     </div>
                 </div>

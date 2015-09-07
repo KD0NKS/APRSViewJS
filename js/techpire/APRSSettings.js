@@ -9,6 +9,7 @@ function StationSettings(data) {
     self.callsign = ko.observable(data.callsign);       // Station callsign
     self.ssid = ko.observable(data.ssid);            // SSID
     self.passcode = ko.observable(data.passcode);                 // APRS-IS passcode
+    self.comment = ko.observable(data.comment);
     self.pointLifetime = ko.observable(data.pointLifetime);    // must be in milliseconds
     self.trackStation = ko.observable(data.trackStation);      // re-center the map on the user's station when it's heard
     self.stationLatitude = ko.observable(data.stationLatitude);
@@ -71,6 +72,7 @@ function APRSSettings(appSettingsDB) {
 	self.callsign = ko.observable('N0CALL');
 	self.ssid = ko.observable('');
 	self.passcode = ko.observable(-1);
+    self.comment = ko.observable('');
 	self.pointLifetime = ko.observable(90);
 	self.trackStation = ko.observable(false);
     self.stationLatitude = ko.observable();
@@ -135,6 +137,7 @@ function APRSSettings(appSettingsDB) {
                     self.callsign(dbStationSettings.callsign);
                     self.ssid(dbStationSettings.ssid);
                     self.passcode(dbStationSettings.passcode);
+                    self.comment(dbStationSettings.comment);
                     self.pointLifetime(dbStationSettings.pointLifetime);
                     self.trackStation(dbStationSettings.trackStation);
                     self.stationLatitude(dbStationSettings.stationLatitude);
@@ -147,6 +150,7 @@ function APRSSettings(appSettingsDB) {
                     self.stationSettings.callsign(self.callsign());
                     self.stationSettings.ssid(self.ssid());
                     self.stationSettings.passcode(self.passcode());
+                    self.stationSettings.comment(self.comment());
                     self.stationSettings.pointLifetime(self.pointLifetime());
                     self.stationSettings.trackStation(self.trackStation());
                     self.stationSettings.stationLatitude(self.stationLatitude());
@@ -171,6 +175,7 @@ function APRSSettings(appSettingsDB) {
                 , callsign: self.callsign()
                 , ssid: self.ssid()
                 , passcode: self.passcode()
+                , comment: self.comment()
                 , pointLifetime: self.pointLifetime()
                 , trackStation: self.trackStation()
                 , stationLatitude: self.stationLatitude()
@@ -192,6 +197,7 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.callsign(self.callsign());
                         self.stationSettings.ssid(self.ssid());
                         self.stationSettings.passcode(self.passcode());
+                        self.stationSettings.comment(self.comment());
                         self.stationSettings.pointLifetime(self.pointLifetime());
                         self.stationSettings.trackStation(self.trackStation());
                         self.stationSettings.stationLatitude(self.stationLatitude());
@@ -214,6 +220,7 @@ function APRSSettings(appSettingsDB) {
             self.callsign(self.stationSettings.callsign());
             self.ssid(self.stationSettings.ssid());
             self.passcode(self.stationSettings.passcode());
+            self.comment(self.stationSettings.comment());
             self.pointLifetime(self.stationSettings.pointLifetime());
             self.trackStation(self.stationSettings.trackStation());
             self.stationLatitude(self.stationSettings.stationLatitude);
@@ -225,6 +232,7 @@ function APRSSettings(appSettingsDB) {
             self.callsign('N0CALL');
             self.ssid('');
             self.passcode(-1);
+            self.comment('');
             self.pointLifetime(90);
             self.trackStation(false);
             self.stationLatitude();
