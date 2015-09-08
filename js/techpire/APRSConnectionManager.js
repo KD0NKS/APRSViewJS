@@ -103,7 +103,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 
                 var dataConnection = self.connectionFactory.CreateDataConnection(connection);
                 ko.track(dataConnection);
-                console.log(dataConnection);
+                //console.log(dataConnection);
 
                 // add the connection to our list of connections
                 self.dataConnections.push(dataConnection);
@@ -188,6 +188,13 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
                 self.dataConnections.remove(connection);
                 
                 // TODO: unplug from baconjs?
+                /*
+                stubbed in, needs testing
+                self.sentMessages.unplug(Bacon.fromEventTarget(connection, 'sending'));
+                self.messages.unplug(Bacon.fromEventTarget(connection, 'message'));
+                self.mapPackets.unplug(Bacon.fromEventTarget(connection, 'position'));
+                self.mapPackets.unplug(Bacon.fromEventTarget(connection, 'object'));
+                */
             }
         });
     };

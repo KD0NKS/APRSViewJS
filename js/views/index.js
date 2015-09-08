@@ -8,8 +8,10 @@ var TechpireAPRS = require('TechpireAPRS')
     , Datastore = require('nedb')
     , path = require('path')
     , settingsDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewSettingsDB.db'), autoload: true })
+    , aprsSettings = new APRSSettings(settingsDB)
     , layerDB = new Datastore({ filename: path.join(require('nw.gui').App.dataPath, 'aprsViewMapDB.db'), autoload: true })
     , layerManager = new LayerManager(layerDB)
+    , messageSettings = new MessageSettings(settingsDB)
     , gui = require('nw.gui')
     , stationMarkerIcon = new StationMarkerIcon()
     ;
@@ -45,11 +47,12 @@ $(document).ready(function() {
     mapEle = $('#map');
     msgPanel = $('#allMessagesTable');
     
-    aprsSettings = new APRSSettings(settingsDB)
+    //aprsSettings = new APRSSettings(settingsDB)
     
     $.when(
         layerManager.LoadMapLayers()
         , aprsSettings.reloadSettings()
+        , messageSettings.LoadSettings()
     ).done(function() {
         viewModel = new pageViewModel();
         ko.applyBindings(viewModel);
@@ -153,6 +156,7 @@ function pageViewModel() {
 	var self = this;
     
     self.aprsSettings = aprsSettings;
+    self.messageSettings = messageSettings;
     
     // map - status bar
     self.mouseLatLng = ko.observable(L.latLng(39, -99));
@@ -727,12 +731,13 @@ function readServerData() {
         if(value.message.toLowerCase().indexOf('ack') != 0) {
             viewModel.messageWindowMessages.push(new MessageObject(value));
             
-            // TODO: Create user preferences to turn notifications off, these can get pretty annoying
-            $.notify(
-                'From: ' + value.callsign
-                + '\nTo: ' + value.addressee
-                + '\n' + value.message
-                , { autoHide: true, autoHideDelay: 15000 });
+            if(viewModel.messageSettings.isDisplayMessageNotifications()) {
+                $.notify(
+                    'From: ' + value.callsign
+                    + '\nTo: ' + value.addressee
+                    + '\n' + value.message
+                    , { autoHide: true, autoHideDelay: 15000 });
+            }
         } else {
             var msgNum = '';
             

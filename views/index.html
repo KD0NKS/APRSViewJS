@@ -118,11 +118,12 @@
                     <li role="presentation" class="active"><a href="#stationSettings" aria-controls="stationSettings" role="tab" data-toggle="tab">Station Settings</a></li>
                     <li role="presentation"><a href="#connectionSettings" aria-controls="connectionSettings" role="tab" data-toggle="tab">Connections</a></li>
                     <li role="presentation"><a href="#mapSettings" aria-controls="mapSettings" role="tab" data-toggle="tab">Map Settings</a></li>
+                    <li role="presentation"><a href="#messageSettings" aria-controls="messageSettings" role="tab" data-toggle="tab">Message Settings</a></li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="stationSettings" data-bind="with: aprsSettings" style="padding: 5px">
+                    <div role="tabpanel" class="tab-pane active" id="stationSettings" data-bind="with: aprsSettings" style="padding: 5px;">
                         <div>
                             <label for="callSign" >Callsign:</label>
                             <input name="callSign" data-bind="value: callsign" />
@@ -146,6 +147,7 @@
                         <div>
                             <label for="transmitPosition">Transmit Station Position</label>
                             <input name="transmitPosition" type="checkbox" data-bind="checked: stationTransmitPosition" />
+                            <button type="button" data-bind="click: $root.SendPositionPacket">Transmit Position Now</button>
                         </div>
                         
                         <div style="position: relative;">
@@ -202,7 +204,7 @@
                             <input type="button" class="btn btn-default" value="Cancel" data-bind="click: cancelSave" />
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="connectionSettings" data-bind="with: connectionManager">
+                    <div role="tabpanel" class="tab-pane" id="connectionSettings" data-bind="with: connectionManager" style="padding: 5px;">
                         <div id="connectionList">
                             <div class="labelInputCont text-center settingsHeader">
                                 <h4>Data Connections</h4>
@@ -219,9 +221,6 @@
                                         <div class="panel-heading">
                                             <h4 class="panel-title">
                                                 <span data-bind="text: connection.description"></span>
-                                                <!-- ko if: socket -->
-                                                <span data-bind="text: connection.socket.writable"></span>
-                                                <!-- /ko -->
                                             </h4>
                                         </div>
                                     </a>
@@ -300,6 +299,130 @@
                             </div>
                         </div>
                         
+                        <div>
+                            <div class="labelInputCont text-center settingsHeader">
+                                <h4>Data Filters</h4>
+                            </div>
+                            
+                            <div class="panel-group" id="filterAccordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <a href="#stationTypeFilterPanel" aria-controls="stationTypeFilterPanel" class="panel-default" data-toggle="collapse" data-parent="#filterAccordion" aria-expanded="true">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                Station Type Filters
+                                            </h4>
+                                        </div>
+                                    </a>
+                                    <div id="stationTypeFilterPanel" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                        </div>
+                                        
+                                        <div class="panel-footer">
+                                        </div>
+                                    </div>
+                                
+                                    <a href="#packetTypeFilterPanel" aria-controls="packetTypeFilterPanel" class="panel-default" data-toggle="collapse" data-parent="#filterAccordion" aria-expanded="true">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                Packet Type Filters
+                                            </h4>
+                                        </div>
+                                    </a>
+                                    <div id="packetTypeFilterPanel" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="labelInputCont">
+                                                <label for="statusReport" class="settingsLabelWidth" style="width: 100px; text-align: right;">Status Report:</label>
+                                                <input name="statusReport" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="gpgga" class="settingsLabelWidth" style="width: 100px; text-align: right;">GPGGA:</label>
+                                                <input name="gpgga" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="newMicE" class="settingsLabelWidth" style="width: 100px; text-align: right;">New Mic-E:</label>
+                                                <input name="newMicE" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="oldMicE" class="settingsLabelWidth" style="width: 100px; text-align: right;">Old Mic-E:</label>
+                                                <input name="oldMicE" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="position" class="settingsLabelWidth" style="width: 100px; text-align: right;">Position:</label>
+                                                <input name="position" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="wxReport" class="settingsLabelWidth">WX Report:</label>
+                                                <input name="wxReport" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="thirdParty" class="settingsLabelWidth">Third Party:</label>
+                                                <input name="thirdParty" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="query" class="settingsLabelWidth">Query:</label>
+                                                <input name="query" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="object" class="settingsLabelWidth">Object:</label>
+                                                <input name="object" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="item" class="settingsLabelWidth">Item:</label>
+                                                <input name="item" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="normal" class="settingsLabelWidth">Normal:</label>
+                                                <input name="normal" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="kill" class="settingsLabelWidth">Kill:</label>
+                                                <input name="kill" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="stationCapabilities" class="settingsLabelWidth">Station Capa:</label>
+                                                <input name="stationCapabilities" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="telemetry" class="settingsLabelWidth">Telemetry:</label>
+                                                <input name="telemetry" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="userDefined" class="settingsLabelWidth">User Defined:</label>
+                                                <input name="userDefined" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="message" class="settingsLabelWidth">Message:</label>
+                                                <input name="message" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                            <div class="labelInputCont">
+                                                <label for="nws" class="settingsLabelWidth">NWS:</label>
+                                                <input name="nws" class="settingsWidth" type="checkbox"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <a href="#stationFilterPanel" aria-controls="stationFilterPanel" class="panel-default" data-toggle="collapse" data-parent="#filterAccordion" aria-expanded="true">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                Station Filters
+                                            </h4>
+                                        </div>
+                                    </a>
+                                    <div id="stationFilterPanel" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                        </div>
+                                        
+                                        <div class="panel-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            
+                        </div>
+                        
                         <!-- Add or edit connection modal panel -->
                         <div id="dataConnectionEditModal" class="modal fade" data-bind="with: $root">
                             <div class="modal-dialog">
@@ -366,24 +489,28 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" id="mapSettings" class="tab-pane" data-bind="with: $root">
-                        <div style="margin: 5px;">
-                            <div style="margin-top: 10px; margin-bottom: 15px;">
-                                <label for="clearMapCacheBtn">Clear cached map tiles:</label>
-                                <button type="button" class="btn btn-default" data-bind="click: layerManager.ClearMapCache">Clear Tiles</button>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Base Layers</div>
-                                <div class="panel-body" data-bind="foreach: { data: layerManager.baseLayers, as: 'layer' }">
-                                    <li><span data-bind="text: layer.options.displayName"></span></li>
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Overlay Layers</div>
-                                <div class="panel-body" data-bind="foreach: { data: layerManager.overlays, as: 'layer' }">
-                                    <li><span data-bind="text: layer.options.displayName"></span></li>
-                                </div>
-                            </div>
+                    <div role="tabpanel" id="messageSettings" class="tab-pane" style="padding: 5px;" data-bind="with: messageSettings">
+                        <div>
+                            <label for="isDisplayMessageNotifications">Show Message Notifications</label>
+                            <input name="isDisplayMessageNotifications" type="checkbox" data-bind="checked: isDisplayMessageNotifications(), click: ToggleDisplayMessageNotifications" />
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="mapSettings" class="tab-pane" data-bind="with: $root" style="padding: 5px;">
+                        <div style="margin-top: 10px; margin-bottom: 15px;">
+                            <label for="clearMapCacheBtn">Clear cached map tiles:</label>
+                            <button type="button" class="btn btn-default" data-bind="click: layerManager.ClearMapCache">Clear Tiles</button>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><h4>Base Layers</h4></div>
+                            <ul class="list-group" data-bind="foreach: { data: layerManager.baseLayers, as: 'layer' }" style="padding: 10px; list-style-type: none;">
+                                <li><span data-bind="text: layer.options.displayName" style="margin-top: 5px; margin-bottom: 5px;"></span></li>
+                            </ul>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><h4>Overlay Layers</h4></div>
+                            <ul class="list-group" data-bind="foreach: { data: layerManager.overlays, as: 'layer' }" style="padding: 10px; list-style-type: none;">
+                                <li><span data-bind="text: layer.options.displayName" style="margin-top: 5px; margin-bottom: 5px;"></span></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -391,95 +518,7 @@
         </div>
         
         
-        <!--
-        <div role="tabpanel" class="tab-pane" id="settings">
-            
-
-            <div class="settingsContainer">
-                
-            </div>
-
-            <!--
-            <div class="filterContainer">
-            <div class="labelInputCont text-center settingsHeader" style="width: 100%">
-            <h4>Filters</h4>
-            </div>
-            <div style="width: 100%">
-            <div class="containerColumn">
-            <div class="labelInputCont">
-            <label for="statusReport" class="settingsLabelWidth">Status Report:</label>
-            <input name="statusReport" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="gpgga" class="settingsLabelWidth">GPGGA:</label>
-            <input name="gpgga" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="newMicE" class="settingsLabelWidth">New Mic-E:</label>
-            <input name="newMicE" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="oldMicE" class="settingsLabelWidth">Old Mic-E:</label>
-            <input name="oldMicE" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="position" class="settingsLabelWidth">Position:</label>
-            <input name="position" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="wxReport" class="settingsLabelWidth">WX Report:</label>
-            <input name="wxReport" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="thirdParty" class="settingsLabelWidth">Third Party:</label>
-            <input name="thirdParty" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="query" class="settingsLabelWidth">Query:</label>
-            <input name="query" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="object" class="settingsLabelWidth">Object:</label>
-            <input name="object" class="settingsWidth" type="checkbox"/>
-            </div>
-            </div>
-            <div class="containerColumn">
-            <div class="labelInputCont">
-            <label for="item" class="settingsLabelWidth">Item:</label>
-            <input name="item" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="normal" class="settingsLabelWidth">Normal:</label>
-            <input name="normal" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="kill" class="settingsLabelWidth">Kill:</label>
-            <input name="kill" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="stationCapabilities" class="settingsLabelWidth">Station Capa:</label>
-            <input name="stationCapabilities" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="telemetry" class="settingsLabelWidth">Telemetry:</label>
-            <input name="telemetry" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="userDefined" class="settingsLabelWidth">User Defined:</label>
-            <input name="userDefined" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="message" class="settingsLabelWidth">Message:</label>
-            <input name="message" class="settingsWidth" type="checkbox"/>
-            </div>
-            <div class="labelInputCont">
-            <label for="nws" class="settingsLabelWidth">NWS:</label>
-            <input name="nws" class="settingsWidth" type="checkbox"/>
-            </div>
-            </div>
-            </div>
-            </div>
-            -->
+        
 <!--
         </div>
 -->
@@ -499,7 +538,8 @@
 
     <!-- These are front end javascript -->
     <script type="text/javascript" src="../js/techpire/APRSSettings.js"></script>
-    <script type="text/javascript" src="../js/techpire/LayerManager.js"></script> 
+    <script type="text/javascript" src="../js/techpire/MessageSettings.js"></script>
+    <script type="text/javascript" src="../js/techpire/LayerManager.js"></script>
     <script type="text/javascript" src="../js/techpire/APRSConnectionManager.js"></script> 
     <script type="text/javascript" src="../js/techpire/StationMarkerIcon.js"></script> 
     <script type="text/javascript" src="../js/techpire/APRSPositionMarker.js"></script> 
