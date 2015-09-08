@@ -80,8 +80,8 @@
                                     </td>
                                     <td>
                                         <span data-bind="text: msgNumber, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
-                                    </td style="min-width: 65px; max-width: 100px;">
-                                    <td>
+                                    </td>
+                                    <td style="min-width: 65px; max-width: 100px;">
                                         <!-- ADDRESSEE AND GROUP NAME SHOULD BE IN THE SAME COLUMN -->
                                         <a href="#" data-bind="text: addressee
                                                 , click: function() { messagesTabClick(addressee()) }
@@ -366,9 +366,24 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" id="mapSettings" class="tab-pane" data-bind="with: connectionManager">
+                    <div role="tabpanel" id="mapSettings" class="tab-pane" data-bind="with: $root">
                         <div style="margin: 5px;">
-                            
+                            <div style="margin-top: 10px; margin-bottom: 15px;">
+                                <label for="clearMapCacheBtn">Clear cached map tiles:</label>
+                                <button type="button" class="btn btn-default" data-bind="click: layerManager.ClearMapCache">Clear Tiles</button>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Base Layers</div>
+                                <div class="panel-body" data-bind="foreach: { data: layerManager.baseLayers, as: 'layer' }">
+                                    <li><span data-bind="text: layer.options.displayName"></span></li>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Overlay Layers</div>
+                                <div class="panel-body" data-bind="foreach: { data: layerManager.overlays, as: 'layer' }">
+                                    <li><span data-bind="text: layer.options.displayName"></span></li>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

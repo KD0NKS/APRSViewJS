@@ -213,12 +213,6 @@ function pageViewModel() {
         // Clear all existing station marker references
         self.markers([]);
     };
-    
-    self.ClearAllTrails = function() {
-        console.log('Clearing all trails');
-        
-        
-    };
 	
 	// USE SLICE!!!!!
 	self.RemoveOldPositions = function() {
