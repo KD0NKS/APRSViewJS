@@ -1,6 +1,4 @@
 function StationMarkerIcon() {
-    console.log("CREATING ICON UTIL");
-    
     var self = this;
     
     self.symbols = [
@@ -97,83 +95,83 @@ function StationMarkerIcon() {
         , { key: '#', value: "/AlternateTable/Digipeater.gif", name: "Digipeater" }
         , { key: '$', value: "/AlternateTable/Bank.gif", name: "Bank" }
             // TODO: Create PowerPlant icon '\\%', value: "/AlternateTable/.gif"
-        , { key: '&', value: "/AlternateTable/BlackDiamond.gif", name: "" }
-        , { key: '\'', value: "/AlternateTable/CrashSite.gif", name: "" }
-        , { key: '(', value: "/AlternateTable/Cloudy.gif", name: "" }
-        , { key: ')', value: "/AlternateTable/Firenet.gif", name: "" }
-        , { key: '*', value: "/AlternateTable/Snow.gif", name: "" }
-        , { key: '+', value: "/AlternateTable/Church.gif", name: "" }
-        , { key: ',', value: "/AlternateTable/GirlScout.gif", name: "" }
-        , { key: '-', value: "/AlternateTable/HouseHF.gif", name: "" }
-        , { key: '.', value: "/AlternateTable/Ambiguous.gif", name: "" }
-        , { key: '/', value: "/AlternateTable/Waypoint.gif", name: "" }
+        , { key: '&', value: "/AlternateTable/BlackDiamond.gif", name: "Black Diamond" }
+        , { key: '\'', value: "/AlternateTable/CrashSite.gif", name: "Crash Site" }
+        , { key: '(', value: "/AlternateTable/Cloudy.gif", name: "Cloudy" }
+        , { key: ')', value: "/AlternateTable/Firenet.gif", name: "Firenet" }
+        , { key: '*', value: "/AlternateTable/Snow.gif", name: "Snow" }
+        , { key: '+', value: "/AlternateTable/Church.gif", name: "Church" }
+        , { key: ',', value: "/AlternateTable/GirlScout.gif", name: "Girl Scout" }
+        , { key: '-', value: "/AlternateTable/HouseHF.gif", name: "House HF" }
+        , { key: '.', value: "/AlternateTable/Ambiguous.gif", name: "Ambiguous" }
+        , { key: '/', value: "/AlternateTable/Waypoint.gif", name: "Waypoint" }
             // TODO: ADD 802.11 OR OTHER NETWORK NODE ICON (\8)
-        , { key: '9', value: "/AlternateTable/GasStation.gif", name: "" }
-        , { key: ':', value: "/AlternateTable/Hail.gif", name: "" }
-        , { key: ';', value: "/AlternateTable/Park.gif", name: "" }
-        , { key: '<', value: "/AlternateTable/WeatherFlag.gif", name: "" }
+        , { key: '9', value: "/AlternateTable/GasStation.gif", name: "Gas Station" }
+        , { key: ':', value: "/AlternateTable/Hail.gif", name: "Hail" }
+        , { key: ';', value: "/AlternateTable/Park.gif", name: "Park" }
+        , { key: '<', value: "/AlternateTable/WeatherFlag.gif", name: "Weather Flag" }
             // TODO: ADD APRSTT TOUCHTONE (DTMF USERS) ICON (\=)
-        , { key: '>', value: "/AlternateTable/Car.gif", name: "" }
-        , { key: '?', value: "/AlternateTable/InfoKiosk.gif", name: "" }
-        , { key: '@', value: "/AlternateTable/Hurricane.gif", name: "" }
-        , { key: 'A', value: "/AlternateTable/OverlayBox.gif", name: "" }
-        , { key: 'B', value: "/AlternateTable/BlowingSnow.gif", name: "" }
-        , { key: 'C', value: "/AlternateTable/CoastGuard.gif", name: "" }
-        , { key: 'D', value: "/AlternateTable/Drizzle.gif", name: "" }
-        , { key: 'E', value: "/AlternateTable/Smoke.gif", name: "" }
-        , { key: 'F', value: "/AlternateTable/FreezingRain.gif", name: "" }
-        , { key: 'G', value: "/AlternateTable/SnowShower.gif", name: "" }
-        , { key: 'H', value: "/AlternateTable/Haze.gif", name: "" }
-        , { key: 'I', value: "/AlternateTable/RainShower.gif", name: "" }
-        , { key: 'J', value: "/AlternateTable/Lightning.gif", name: "" }
-        , { key: 'K', value: "/AlternateTable/KenwoodHT.gif", name: "" }
-        , { key: 'L', value: "/AlternateTable/Lighthouse.gif", name: "" }
+        , { key: '>', value: "/AlternateTable/Car.gif", name: "Car" }
+        , { key: '?', value: "/AlternateTable/InfoKiosk.gif", name: "Info Kiosk" }
+        , { key: '@', value: "/AlternateTable/Hurricane.gif", name: "Hurricane" }
+        , { key: 'A', value: "/AlternateTable/OverlayBox.gif", name: "Overlay Box" }
+        , { key: 'B', value: "/AlternateTable/BlowingSnow.gif", name: "Blowing Snow" }
+        , { key: 'C', value: "/AlternateTable/CoastGuard.gif", name: "Coast Guard" }
+        , { key: 'D', value: "/AlternateTable/Drizzle.gif", name: "Drizzle" }
+        , { key: 'E', value: "/AlternateTable/Smoke.gif", name: "Smoke" }
+        , { key: 'F', value: "/AlternateTable/FreezingRain.gif", name: "Freezing Rain" }
+        , { key: 'G', value: "/AlternateTable/SnowShower.gif", name: "Snow Shower" }
+        , { key: 'H', value: "/AlternateTable/Haze.gif", name: "Haze" }
+        , { key: 'I', value: "/AlternateTable/RainShower.gif", name: "Rain Shower" }
+        , { key: 'J', value: "/AlternateTable/Lightning.gif", name: "Lightning" }
+        , { key: 'K', value: "/AlternateTable/KenwoodHT.gif", name: "Kenwood HT" }
+        , { key: 'L', value: "/AlternateTable/Lighthouse.gif", name: "Lighthouse" }
             // TODO: ADD MARS ICON (\M)
-        , { key: 'N', value: "/AlternateTable/Bouy.gif", name: "" }
-        , { key: 'O', value: "/AlternateTable/Rocket.gif", name: "" }
-        , { key: 'P', value: "/AlternateTable/Parking.gif", name: "" }
-        , { key: 'Q', value: "/AlternateTable/Earthquake.gif", name: "" }
-        , { key: 'R', value: "/AlternateTable/Restaurant.gif", name: "" }
-        , { key: 'S', value: "/AlternateTable/Satellite.gif", name: "" }
-        , { key: 'T', value: "/AlternateTable/Thunderstorm.gif", name: "" }
-        , { key: 'U', value: "/AlternateTable/Sunny.gif", name: "" }
-        , { key: 'V', value: "/AlternateTable/VORTAC.gif", name: "" }
-        , { key: 'W', value: "/AlternateTable/NWSSite.gif", name: "" }
-        , { key: 'X', value: "/AlternateTable/Pharmacy.gif", name: "" }
+        , { key: 'N', value: "/AlternateTable/Bouy.gif", name: "Bouy" }
+        , { key: 'O', value: "/AlternateTable/Rocket.gif", name: "Rocket" }
+        , { key: 'P', value: "/AlternateTable/Parking.gif", name: "Parking" }
+        , { key: 'Q', value: "/AlternateTable/Earthquake.gif", name: "Earthquake" }
+        , { key: 'R', value: "/AlternateTable/Restaurant.gif", name: "Restaurant" }
+        , { key: 'S', value: "/AlternateTable/Satellite.gif", name: "Satellite" }
+        , { key: 'T', value: "/AlternateTable/Thunderstorm.gif", name: "Thunderstorm" }
+        , { key: 'U', value: "/AlternateTable/Sunny.gif", name: "Sunny" }
+        , { key: 'V', value: "/AlternateTable/VORTAC.gif", name: "VORTAC" }
+        , { key: 'W', value: "/AlternateTable/NWSSite.gif", name: "NWS Site" }
+        , { key: 'X', value: "/AlternateTable/Pharmacy.gif", name: "Pharmacy" }
             // TODO: ADD RADIOS AND DEVICES ICON (\Y)
-        , { key: '[', value: "/AlternateTable/Wallcloud.gif", name: "" }
+        , { key: '[', value: "/AlternateTable/Wallcloud.gif", name: "Wallcloud" }
             // TODO: ADD OVERLAYABLE GPS SYMBOL (\\)
-        , { key: '^', value: "/AlternateTable/Aircraft.gif", name: "" }
-        , { key: '_', value: "/AlternateTable/WXSite.gif", name: "" }
-        , { key: '`', value: "/AlternateTable/Rain.gif", name: "" }
-        , { key: 'a', value: "/AlternateTable/ARRL.gif", name: "" }
-        , { key: 'b', value: "/AlternateTable/BlowingSand.gif", name: "" }
-        , { key: 'c', value: "/AlternateTable/CDTriangle.gif", name: "" }
-        , { key: 'd', value: "/AlternateTable/DXSpot.gif", name: "" }
-        , { key: 'e', value: "/AlternateTable/Sleet.gif", name: "" }
-        , { key: 'f', value: "/AlternateTable/FunnelCloud.gif", name: "" }
-        , { key: 'g', value: "/AlternateTable/GaleFlags.gif", name: "" }
-        , { key: 'h', value: "/AlternateTable/HamStore.gif", name: "" }
-        , { key: 'i', value: "/AlternateTable/POIBox.gif", name: "" }
-        , { key: 'j', value: "/AlternateTable/WorkZone.gif", name: "" }
-        , { key: 'k', value: "/AlternateTable/SpecialVehicle.gif", name: "" }
+        , { key: '^', value: "/AlternateTable/Aircraft.gif", name: "Aircraft" }
+        , { key: '_', value: "/AlternateTable/WXSite.gif", name: "WX Site" }
+        , { key: '`', value: "/AlternateTable/Rain.gif", name: "Rain" }
+        , { key: 'a', value: "/AlternateTable/ARRL.gif", name: "ARRL" }
+        , { key: 'b', value: "/AlternateTable/BlowingSand.gif", name: "Blowing Sand" }
+        , { key: 'c', value: "/AlternateTable/CDTriangle.gif", name: "CD Triangle" }
+        , { key: 'd', value: "/AlternateTable/DXSpot.gif", name: "DX Spot" }
+        , { key: 'e', value: "/AlternateTable/Sleet.gif", name: "Sleet" }
+        , { key: 'f', value: "/AlternateTable/FunnelCloud.gif", name: "Funnel Cloud" }
+        , { key: 'g', value: "/AlternateTable/GaleFlags.gif", name: "Gale Flags" }
+        , { key: 'h', value: "/AlternateTable/HamStore.gif", name: "Ham Store" }
+        , { key: 'i', value: "/AlternateTable/POIBox.gif", name: "POI Box" }
+        , { key: 'j', value: "/AlternateTable/WorkZone.gif", name: "Work Zone" }
+        , { key: 'k', value: "/AlternateTable/SpecialVehicle.gif", name: "Special Vehicle" }
             // TODO: ADD AREAS ICON (\l)
-        , { key: 'm', value: "/AlternateTable/ValueSign.gif", name: "" }
-        , { key: 'n', value: "/AlternateTable/OverlayTriangle.gif", name: "" }
-        , { key: 'o', value: "/AlternateTable/SmallCircle.gif", name: "" }
-        , { key: 'p', value: "/AlternateTable/PartlyCloudy.gif", name: "" }
-        , { key: 'r', value: "/AlternateTable/Restrooms.gif", name: "" }
-        , { key: 's', value: "/AlternateTable/Boat.gif", name: "" }    // TODO: Make a better graphic
-        , { key: 't', value: "/AlternateTable/Tornado.gif", name: "" }
-        , { key: 'u', value: "/AlternateTable/Truck.gif", name: "" }
-        , { key: 'v', value: "/AlternateTable/Van.gif", name: "" }
-        , { key: 'w', value: "/AlternateTable/Flood.gif", name: "" }
-        , { key: 'x', value: "/AlternateTable/Obstruction.gif", name: "" }
-        , { key: 'y', value: "/AlternateTable/Skywarn.gif", name: "" }
-        , { key: 'z', value: "/AlternateTable/Shelter.gif", name: "" }
-        , { key: '{', value: "/AlternateTable/Fog.gif", name: "" }
-        , { key: '|', value: "/AlternateTable/TNCSwitchStream1.gif", name: "" }
-        , { key: '~', value: "/AlternateTable/TNCSwitchStream2.gif", name: "" }
+        , { key: 'm', value: "/AlternateTable/ValueSign.gif", name: "Value Sign" }
+        , { key: 'n', value: "/AlternateTable/OverlayTriangle.gif", name: "Overlay Triangle" }
+        , { key: 'o', value: "/AlternateTable/SmallCircle.gif", name: "Small Circle" }
+        , { key: 'p', value: "/AlternateTable/PartlyCloudy.gif", name: "Partly Cloudy" }
+        , { key: 'r', value: "/AlternateTable/Restrooms.gif", name: "Restrooms" }
+        , { key: 's', value: "/AlternateTable/Boat.gif", name: "Boat" }    // TODO: Make a better graphic
+        , { key: 't', value: "/AlternateTable/Tornado.gif", name: "Tornado" }
+        , { key: 'u', value: "/AlternateTable/Truck.gif", name: "Truck" }
+        , { key: 'v', value: "/AlternateTable/Van.gif", name: "Van" }
+        , { key: 'w', value: "/AlternateTable/Flood.gif", name: "Flood" }
+        , { key: 'x', value: "/AlternateTable/Obstruction.gif", name: "Obstruction" }
+        , { key: 'y', value: "/AlternateTable/Skywarn.gif", name: "Skywarn" }
+        , { key: 'z', value: "/AlternateTable/Shelter.gif", name: "Shelter" }
+        , { key: '{', value: "/AlternateTable/Fog.gif", name: "Fog" }
+        , { key: '|', value: "/AlternateTable/TNCSwitchStream1.gif", name: "TNC Switch Stream 1" }
+        , { key: '~', value: "/AlternateTable/TNCSwitchStream2.gif", name: "TNC Switch Stream 2" }
     ];
     
     self.getSymbolPath = function(symbolTableId, symbolCode) {

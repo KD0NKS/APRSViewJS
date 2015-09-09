@@ -1,3 +1,7 @@
+var TechpireAPRS = require('TechpireAPRS')
+        , PacketTypeUtil = require('TechpireAPRS').PacketTypeUtil
+        ;
+
 /*******
 	Settings for APRSView
 ****/
@@ -45,21 +49,14 @@ function PacketFilterSettings(data) {
     
     self.gpgga = ko.observable(data.gpgga);
     self.item = ko.observable(data.item);
-    self.kill = ko.observable(data.kill);
     self.message = ko.observable(data.message);
-    self.newMicE = ko.observable(data.newMicE);
-    self.normal = ko.observable(data.normal);
-    self.nws = ko.observable(data.nws);
+    self.micE = ko.observable(data.micE);
     self.object = ko.observable(data.object);
-    self.oldMicE = ko.observable(data.oldMicE);
     self.position = ko.observable(data.position);
-    self.query = ko.observable(data.query);
-    self.stationCapabilities = ko.observable(data.stationCapabilities);
     self.statusReport = ko.observable(data.statusReport);
     self.telemetry = ko.observable(data.telemetry);
     self.thirdParty = ko.observable(data.thirdParty);
-    self.userDefined = ko.observable(data.userDefined);
-    self.wxReport = ko.observable(data.wxReport);  
+    self.wxReport = ko.observable(data.wxReport);
 };
 
 function APRSSettings(appSettingsDB) {
@@ -70,6 +67,8 @@ function APRSSettings(appSettingsDB) {
     self.SOFTWARE_NAME = 'testsoftware';
     self.SOFTWARE_VERSION = 0;
     self.AX_25_SOFTWAREVERSION = 'APZ678';
+    
+    self.packetTypeUtil = new PacketTypeUtil();
     
 	//Storage of defaults here
 	self.callsign = ko.observable('N0CALL');
@@ -93,20 +92,13 @@ function APRSSettings(appSettingsDB) {
     self.packetFilterSettings = new PacketFilterSettings({
         gpgga: true
         , item: true
-        , kill: true
         , message: true
-        , newMicE: true
-        , normal: true
-        , nws: true
+        , micE: true
         , object: true
-        , oldMicE: true
         , position: true
-        , query: true
-        , stationCapabilities: true
         , statusReport: true
         , telemetry: true
         , thirdParty: true
-        , userDefined: true
         , wxReport: true
     });
     
@@ -126,6 +118,9 @@ function APRSSettings(appSettingsDB) {
         }
     });
     
+    self.allowedPacketFilters = [];
+    
+    // OTHER METHODS
     self.sendPosIntervalMin = ko.computed(function() {
         var time = (self.stationSendPositionInterval() / 60000);
         
@@ -194,22 +189,17 @@ function APRSSettings(appSettingsDB) {
                 if(filters) {
                     self.packetFilterSettings.gpgga(filters.gpgga)
                     , self.packetFilterSettings.item(filters.item)
-                    , self.packetFilterSettings.kill(filters.kill)
                     , self.packetFilterSettings.message(filters.message)
-                    , self.packetFilterSettings.newMicE(filters.newMicE)
-                    , self.packetFilterSettings.normal(filters.normal)
-                    , self.packetFilterSettings.nws(filters.nws)
+                    , self.packetFilterSettings.micE(filters.micE)
                     , self.packetFilterSettings.object(filters.object)
-                    , self.packetFilterSettings.oldMicE(filters.oldMicE)
                     , self.packetFilterSettings.position(filters.position)
-                    , self.packetFilterSettings.query(filters.query)
-                    , self.packetFilterSettings.stationCapabilities(filters.stationCapabilities)
                     , self.packetFilterSettings.statusReport(filters.statusReport)
                     , self.packetFilterSettings.telemetry(filters.telemetry)
                     , self.packetFilterSettings.thirdParty(filters.thirdParty)
-                    , self.packetFilterSettings.userDefined(filters.userDefined)
                     , self.packetFilterSettings.wxReport(filters.wxReport)
                 }
+                
+                self.allowedPacketFilters = self.GetAllowedPacketTypeSymbols();
             }
         });
     };
@@ -271,36 +261,73 @@ function APRSSettings(appSettingsDB) {
                     settingsName: self.packetFilterSettings.settingsName
                     , gpgga: self.packetFilterSettings.gpgga()
                     , item: self.packetFilterSettings.item()
-                    , kill: self.packetFilterSettings.kill()
                     , message: self.packetFilterSettings.message()
-                    , newMicE: self.packetFilterSettings.newMicE()
-                    , normal: self.packetFilterSettings.normal()
-                    , nws: self.packetFilterSettings.nws()
+                    , micE: self.packetFilterSettings.micE()
                     , object: self.packetFilterSettings.object()
-                    , oldMicE: self.packetFilterSettings.oldMicE()
                     , position: self.packetFilterSettings.position()
-                    , query: self.packetFilterSettings.query()
-                    , stationCapabilities: self.packetFilterSettings.stationCapabilities()
                     , statusReport: self.packetFilterSettings.statusReport()
                     , telemetry: self.packetFilterSettings.telemetry()
                     , thirdParty: self.packetFilterSettings.thirdParty()
-                    , userDefined: self.packetFilterSettings.userDefined()
                     , wxReport: self.packetFilterSettings.wxReport()
                 }
             }
             , { upsert: true }
             , function(err, numReplaced, upsert) {
-                console.log(err);
-                console.log(numReplaced);
-                console.log(upsert);
-                
                 if(err) {
                     console.log(err);
                 }
             }
         );
         
+        self.allowedPacketFilters = self.GetAllowedPacketTypeSymbols();
+        
         return true;   
+    };
+    
+    self.GetAllowedPacketTypeSymbols = function() {
+        var retVal = [];
+        
+        if(self.packetFilterSettings.gpgga() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('GPGGA'));
+        } 
+        
+        if(self.packetFilterSettings.item() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('ITEM'));
+        }
+        
+        if(self.packetFilterSettings.message() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('MESSAGE'));
+        }
+        
+        if(self.packetFilterSettings.micE() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('MIC-E'));
+        }
+        
+        if(self.packetFilterSettings.object() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('OBJECT'));
+        }
+        
+        if(self.packetFilterSettings.position() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('POSITION'));
+        }
+        
+        if(self.packetFilterSettings.statusReport() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('STATUS_REPORT'));
+        }
+        
+        if(self.packetFilterSettings.telemetry() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('TELEMETRY'));
+        }
+        
+        if(self.packetFilterSettings.thirdParty() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('THIRD_PARTY'));
+        }
+        
+        if(self.packetFilterSettings.wxReport() == true) {
+            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('WX_REPORT'));
+        }
+        
+        return retVal;
     };
     
     self.cancelSave = function() {

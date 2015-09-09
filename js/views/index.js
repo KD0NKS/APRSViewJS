@@ -542,13 +542,13 @@ function readServerData() {
 		console.log(value);
 	});
 	
-	viewModel.connectionManager.mapPackets.ofType = function(type) {
-		return viewModel.connectionManager.mapPackets.filter(function(data) {
+	viewModel.connectionManager.filteredMapPackets.ofType = function(type) {
+		return viewModel.connectionManager.filteredMapPackets.filter(function(data) {
 			return data instanceof type
 		});
 	};
 	
-	viewModel.connectionManager.mapPackets.ofType(ObjectReport).onValue(function(data) {
+	viewModel.connectionManager.filteredMapPackets.ofType(ObjectReport).onValue(function(data) {
 		// TODO: remove the hard coded position marker
 		if(data.indicator == '*') { // Live object
 			if(data.latitude != null && data.longitude != null) {
@@ -624,7 +624,7 @@ function readServerData() {
 		}
 	});
 	
-	viewModel.connectionManager.mapPackets.ofType(APRSPositionReport).onValue(function(data) {
+	viewModel.connectionManager.filteredMapPackets.ofType(APRSPositionReport).onValue(function(data) {
 		// Debugging purposes - outputs the packet to the console.
 		//console.log(data);
 		
@@ -725,7 +725,7 @@ function readServerData() {
         viewModel.lastStationHeard(data.callsign);
 	});
 	
-	viewModel.connectionManager.messages.onValue(function(value) {
+	viewModel.connectionManager.filteredMessages.onValue(function(value) {
         var msgs = null;
         
         if(value.message.toLowerCase().indexOf('ack') != 0) {

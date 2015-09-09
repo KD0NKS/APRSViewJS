@@ -22,10 +22,20 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
 	self.connectionFactory = new TechpireAPRS.APRSDataConnectionFactory();
 
 	self.dataConnections = ko.observableArray();
-
-	self.messages = new Bacon.Bus();
-	self.mapPackets = new Bacon.Bus();
-	self.sentMessages = new Bacon.Bus();
+    
+    //self.allData = new Bacon.EventStream();
+    
+    self.messages = new Bacon.Bus();
+    self.mapPackets = new Bacon.Bus();
+    self.sentMessages = new Bacon.Bus();
+    
+    self.filteredMapPackets = self.mapPackets.filter(function(packet) {
+        return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
+    });
+    
+    self.filteredMessages = self.messages.filter(function(packet) {
+        return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
+    });
     
     self.LoadConnections = function() {
         var args = Array();
@@ -70,6 +80,8 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         self.messages.plug(Bacon.fromEventTarget(connection, 'message'));
         self.mapPackets.plug(Bacon.fromEventTarget(connection, 'position'));
         self.mapPackets.plug(Bacon.fromEventTarget(connection, 'object'));
+        
+        //self.allData.concat(connection);
         
         //if(connection.connectionType == 'AGWPE') {
         //    connection.Monitor();
