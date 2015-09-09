@@ -39,24 +39,27 @@ function StationSettings(data) {
 };
 
 function PacketFilterSettings(data) {
-    this.settingsName = 'PACKET_FILTER_SETTINGS';
-    this.statusReport = ko.observable(data.statusReport);
-    this.gpgga = ko.observable(data.gpgga);
-    this.newMicE = ko.observable(data.newMicE);
-    this.oldMicE = ko.observable(data.oldMicE);
-    this.position = ko.observable(data.position);
-    this.wxReport = ko.observable(data.wxReport);
-    this.thirdParty = ko.observable(data.thirdParty);
-    this.query = ko.observable(data.query);
-    this.object = ko.observable(data.object);
-    this.item = ko.observable(data.item);
-    this.normal = ko.observable(data.normal);
-    this.kill = ko.observable(data.kill);
-    this.stationCapabilities = ko.observable(data.stationCapabilities);
-    this.telemetry = ko.observable(data.telemetry);
-    this.userDefined = ko.observable(data.userDefined);
-    this.message = ko.observable(data.message);
-    this.nws = ko.observable(data.nws);
+    var self = this;
+    
+    self.settingsName = 'PACKET_FILTERS';
+    
+    self.gpgga = ko.observable(data.gpgga);
+    self.item = ko.observable(data.item);
+    self.kill = ko.observable(data.kill);
+    self.message = ko.observable(data.message);
+    self.newMicE = ko.observable(data.newMicE);
+    self.normal = ko.observable(data.normal);
+    self.nws = ko.observable(data.nws);
+    self.object = ko.observable(data.object);
+    self.oldMicE = ko.observable(data.oldMicE);
+    self.position = ko.observable(data.position);
+    self.query = ko.observable(data.query);
+    self.stationCapabilities = ko.observable(data.stationCapabilities);
+    self.statusReport = ko.observable(data.statusReport);
+    self.telemetry = ko.observable(data.telemetry);
+    self.thirdParty = ko.observable(data.thirdParty);
+    self.userDefined = ko.observable(data.userDefined);
+    self.wxReport = ko.observable(data.wxReport);  
 };
 
 function APRSSettings(appSettingsDB) {
@@ -87,7 +90,25 @@ function APRSSettings(appSettingsDB) {
         self
     );
     
-    self.packetFilterSettings = null; // TODO: Make this an array of simple filter 'objects'
+    self.packetFilterSettings = new PacketFilterSettings({
+        gpgga: true
+        , item: true
+        , kill: true
+        , message: true
+        , newMicE: true
+        , normal: true
+        , nws: true
+        , object: true
+        , oldMicE: true
+        , position: true
+        , query: true
+        , stationCapabilities: true
+        , statusReport: true
+        , telemetry: true
+        , thirdParty: true
+        , userDefined: true
+        , wxReport: true
+    });
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -164,6 +185,33 @@ function APRSSettings(appSettingsDB) {
                 }
             }
         });
+        
+        self.db.findOne({ settingsName: 'PACKET_FILTERS' }, function (err, filters) {
+            if(err) {
+                console.log('Failed to load packet filters');
+                console.log(err);
+            } else {
+                if(filters) {
+                    self.packetFilterSettings.gpgga(filters.gpgga)
+                    , self.packetFilterSettings.item(filters.item)
+                    , self.packetFilterSettings.kill(filters.kill)
+                    , self.packetFilterSettings.message(filters.message)
+                    , self.packetFilterSettings.newMicE(filters.newMicE)
+                    , self.packetFilterSettings.normal(filters.normal)
+                    , self.packetFilterSettings.nws(filters.nws)
+                    , self.packetFilterSettings.object(filters.object)
+                    , self.packetFilterSettings.oldMicE(filters.oldMicE)
+                    , self.packetFilterSettings.position(filters.position)
+                    , self.packetFilterSettings.query(filters.query)
+                    , self.packetFilterSettings.stationCapabilities(filters.stationCapabilities)
+                    , self.packetFilterSettings.statusReport(filters.statusReport)
+                    , self.packetFilterSettings.telemetry(filters.telemetry)
+                    , self.packetFilterSettings.thirdParty(filters.thirdParty)
+                    , self.packetFilterSettings.userDefined(filters.userDefined)
+                    , self.packetFilterSettings.wxReport(filters.wxReport)
+                }
+            }
+        });
     };
     
     // inserts new record or updates the existing record using the upsert option
@@ -171,19 +219,21 @@ function APRSSettings(appSettingsDB) {
         //Save to DB
         self.db.update({ settingsName: 'STATION_SETTINGS' }
             , {
-                settingsName: 'STATION_SETTINGS'
-                , callsign: self.callsign()
-                , ssid: self.ssid()
-                , passcode: self.passcode()
-                , comment: self.comment()
-                , pointLifetime: self.pointLifetime()
-                , trackStation: self.trackStation()
-                , stationLatitude: self.stationLatitude()
-                , stationLongitude: self.stationLongitude()
-                , stationAutoPosition: self.stationAutoPosition()
-                , stationIcon: self.stationIcon()
-                , stationTransmitPosition: self.stationTransmitPosition()
-                , stationSendPositionInterval: self.stationSendPositionInterval()
+                $set: {
+                    settingsName: 'STATION_SETTINGS'
+                    , callsign: self.callsign()
+                    , ssid: self.ssid()
+                    , passcode: self.passcode()
+                    , comment: self.comment()
+                    , pointLifetime: self.pointLifetime()
+                    , trackStation: self.trackStation()
+                    , stationLatitude: self.stationLatitude()
+                    , stationLongitude: self.stationLongitude()
+                    , stationAutoPosition: self.stationAutoPosition()
+                    , stationIcon: self.stationIcon()
+                    , stationTransmitPosition: self.stationTransmitPosition()
+                    , stationSendPositionInterval: self.stationSendPositionInterval()
+                }
             }
             , { upsert: true }
             , function(err, updatedRecord) {
@@ -192,8 +242,6 @@ function APRSSettings(appSettingsDB) {
                     console.log(err);
                 } else if(updatedRecord) {
                     if(self.stationSettings) {
-                        console.log('Updating station settings');
-                        
                         self.stationSettings.callsign(self.callsign());
                         self.stationSettings.ssid(self.ssid());
                         self.stationSettings.passcode(self.passcode());
@@ -208,11 +256,51 @@ function APRSSettings(appSettingsDB) {
                         self.stationSettings.stationSendPositionInterval(self.stationSendPositionInterval());
                     } else {
                         // TODO: THIS IS INCORRECT, PASS A NEW OBJECT BASED ON THE ABOVE PROPERTIES
-                        self.stationSettings = new StationSettings(updatedRecord);
+                        //self.stationSettings = new StationSettings(updatedRecord);
                     }
                 }
             }
         );
+    };
+    
+    self.savePacketFilterSettings = function() {
+        self.db.update(
+            { settingsName: 'PACKET_FILTERS' }
+            , {
+                $set: {
+                    settingsName: self.packetFilterSettings.settingsName
+                    , gpgga: self.packetFilterSettings.gpgga()
+                    , item: self.packetFilterSettings.item()
+                    , kill: self.packetFilterSettings.kill()
+                    , message: self.packetFilterSettings.message()
+                    , newMicE: self.packetFilterSettings.newMicE()
+                    , normal: self.packetFilterSettings.normal()
+                    , nws: self.packetFilterSettings.nws()
+                    , object: self.packetFilterSettings.object()
+                    , oldMicE: self.packetFilterSettings.oldMicE()
+                    , position: self.packetFilterSettings.position()
+                    , query: self.packetFilterSettings.query()
+                    , stationCapabilities: self.packetFilterSettings.stationCapabilities()
+                    , statusReport: self.packetFilterSettings.statusReport()
+                    , telemetry: self.packetFilterSettings.telemetry()
+                    , thirdParty: self.packetFilterSettings.thirdParty()
+                    , userDefined: self.packetFilterSettings.userDefined()
+                    , wxReport: self.packetFilterSettings.wxReport()
+                }
+            }
+            , { upsert: true }
+            , function(err, numReplaced, upsert) {
+                console.log(err);
+                console.log(numReplaced);
+                console.log(upsert);
+                
+                if(err) {
+                    console.log(err);
+                }
+            }
+        );
+        
+        return true;   
     };
     
     self.cancelSave = function() {

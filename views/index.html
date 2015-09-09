@@ -204,8 +204,8 @@
                             <input type="button" class="btn btn-default" value="Cancel" data-bind="click: cancelSave" />
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="connectionSettings" data-bind="with: connectionManager" style="padding: 5px;">
-                        <div id="connectionList">
+                    <div id="connectionSettings" role="tabpanel" class="tab-pane" style="padding: 5px;">
+                        <div id="connectionList" data-bind="with: connectionManager">
                             <div class="labelInputCont text-center settingsHeader">
                                 <h4>Data Connections</h4>
                             </div>
@@ -299,7 +299,8 @@
                             </div>
                         </div>
                         
-                        <div>
+                        
+                        <div id="filterSettings">
                             <div class="labelInputCont text-center settingsHeader">
                                 <h4>Data Filters</h4>
                             </div>
@@ -328,75 +329,75 @@
                                             </h4>
                                         </div>
                                     </a>
-                                    <div id="packetTypeFilterPanel" class="panel-collapse collapse">
+                                    <div id="packetTypeFilterPanel" class="panel-collapse collapse" data-bind="with: aprsSettings">
                                         <div class="panel-body">
                                             <div class="labelInputCont">
-                                                <label for="statusReport" class="settingsLabelWidth" style="width: 100px; text-align: right;">Status Report:</label>
-                                                <input name="statusReport" class="settingsWidth" type="checkbox"/>
+                                                <label for="gpgga" class="settingsLabel">GPGGA:</label>
+                                                <input name="gpgga" type="checkbox" data-bind="checked: packetFilterSettings.gpgga, valueUpdate: 'click', click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="gpgga" class="settingsLabelWidth" style="width: 100px; text-align: right;">GPGGA:</label>
-                                                <input name="gpgga" class="settingsWidth" type="checkbox"/>
+                                                <label for="item" class="settingsLabel">Item:</label>
+                                                <input name="item" type="checkbox" data-bind="checked: packetFilterSettings.item, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="newMicE" class="settingsLabelWidth" style="width: 100px; text-align: right;">New Mic-E:</label>
-                                                <input name="newMicE" class="settingsWidth" type="checkbox"/>
+                                                <label for="kill" class="settingsLabel">Kill:</label>
+                                                <input name="kill" type="checkbox" data-bind="checked: packetFilterSettings.kill, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="oldMicE" class="settingsLabelWidth" style="width: 100px; text-align: right;">Old Mic-E:</label>
-                                                <input name="oldMicE" class="settingsWidth" type="checkbox"/>
+                                                <label for="message" class="settingsLabel">Message:</label>
+                                                <input name="message" type="checkbox" data-bind="checked: packetFilterSettings.message, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="position" class="settingsLabelWidth" style="width: 100px; text-align: right;">Position:</label>
-                                                <input name="position" class="settingsWidth" type="checkbox"/>
+                                                <label for="newMicE" class="settingsLabel">New Mic-E:</label>
+                                                <input name="newMicE" type="checkbox" data-bind="checked: packetFilterSettings.newMicE, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="wxReport" class="settingsLabelWidth">WX Report:</label>
-                                                <input name="wxReport" class="settingsWidth" type="checkbox"/>
+                                                <label for="normal" class="settingsLabel">Normal:</label>
+                                                <input name="normal" type="checkbox" data-bind="checked: packetFilterSettings.normal, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="thirdParty" class="settingsLabelWidth">Third Party:</label>
-                                                <input name="thirdParty" class="settingsWidth" type="checkbox"/>
+                                                <label for="nws" class="settingsLabel">NWS:</label>
+                                                <input name="nws" type="checkbox" data-bind="checked: packetFilterSettings.nws, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="query" class="settingsLabelWidth">Query:</label>
-                                                <input name="query" class="settingsWidth" type="checkbox"/>
+                                                <label for="object" class="settingsLabel">Object:</label>
+                                                <input name="object" type="checkbox" data-bind="checked: packetFilterSettings.object, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="object" class="settingsLabelWidth">Object:</label>
-                                                <input name="object" class="settingsWidth" type="checkbox"/>
+                                                <label for="oldMicE" class="settingsLabel">Old Mic-E:</label>
+                                                <input name="oldMicE" type="checkbox" data-bind="checked: packetFilterSettings.oldMicE, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="item" class="settingsLabelWidth">Item:</label>
-                                                <input name="item" class="settingsWidth" type="checkbox"/>
+                                                <label for="position" class="settingsLabel">Position:</label>
+                                                <input name="position" type="checkbox" data-bind="checked: packetFilterSettings.position, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="normal" class="settingsLabelWidth">Normal:</label>
-                                                <input name="normal" class="settingsWidth" type="checkbox"/>
+                                                <label for="query" class="settingsLabel">Query:</label>
+                                                <input name="query" type="checkbox" data-bind="checked: packetFilterSettings.query, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="kill" class="settingsLabelWidth">Kill:</label>
-                                                <input name="kill" class="settingsWidth" type="checkbox"/>
+                                                <label for="stationCapabilities" class="settingsLabel">Station Capabilities:</label>
+                                                <input name="stationCapabilities" type="checkbox" data-bind="checked: packetFilterSettings.stationCapabilities, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="stationCapabilities" class="settingsLabelWidth">Station Capa:</label>
-                                                <input name="stationCapabilities" class="settingsWidth" type="checkbox"/>
+                                                <label for="statusReport" class="settingsLabel">Status Report:</label>
+                                                <input name="statusReport" type="checkbox" data-bind="checked: packetFilterSettings.statusReport, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="telemetry" class="settingsLabelWidth">Telemetry:</label>
-                                                <input name="telemetry" class="settingsWidth" type="checkbox"/>
+                                                <label for="telemetry" class="settingsLabel">Telemetry:</label>
+                                                <input name="telemetry" type="checkbox" data-bind="checked: packetFilterSettings.telemetry, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="userDefined" class="settingsLabelWidth">User Defined:</label>
-                                                <input name="userDefined" class="settingsWidth" type="checkbox"/>
+                                                <label for="thirdParty" class="settingsLabel">Third Party:</label>
+                                                <input name="thirdParty" type="checkbox" data-bind="checked: packetFilterSettings.thirdParty, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="message" class="settingsLabelWidth">Message:</label>
-                                                <input name="message" class="settingsWidth" type="checkbox"/>
+                                                <label for="userDefined" class="settingsLabel">User Defined:</label>
+                                                <input name="userDefined" type="checkbox" data-bind="checked: packetFilterSettings.userDefined, click: savePacketFilterSettings" />
                                             </div>
                                             <div class="labelInputCont">
-                                                <label for="nws" class="settingsLabelWidth">NWS:</label>
-                                                <input name="nws" class="settingsWidth" type="checkbox"/>
+                                                <label for="wxReport" class="settingsLabel">WX Report:</label>
+                                                <input name="wxReport" type="checkbox" data-bind="checked: packetFilterSettings.wxReport, click: savePacketFilterSettings" />
                                             </div>
                                         </div>
                                     </div>
@@ -417,11 +418,8 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
-                            
                         </div>
+                        
                         
                         <!-- Add or edit connection modal panel -->
                         <div id="dataConnectionEditModal" class="modal fade" data-bind="with: $root">
