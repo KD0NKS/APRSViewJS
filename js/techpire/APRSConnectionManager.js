@@ -30,7 +30,19 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     self.sentMessages = new Bacon.Bus();
     
     self.filteredMapPackets = self.mapPackets.filter(function(packet) {
-        return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
+        //return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
+        
+        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0) {
+            if(packet.symbolTableId == '/') {
+                return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolTableId + packet.symbolCode) > 0;
+            } else {
+                return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolCode) > 0;
+            }
+            
+            return true;
+        } else {
+            return false;
+        }
     });
     
     self.filteredMessages = self.messages.filter(function(packet) {

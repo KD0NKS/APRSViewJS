@@ -42,23 +42,6 @@ function StationSettings(data) {
     self.sendPosition = ko.observable(true);
 };
 
-function PacketFilterSettings(data) {
-    var self = this;
-    
-    self.settingsName = 'PACKET_FILTERS';
-    
-    self.gpgga = ko.observable(data.gpgga);
-    self.item = ko.observable(data.item);
-    self.message = ko.observable(data.message);
-    self.micE = ko.observable(data.micE);
-    self.object = ko.observable(data.object);
-    self.position = ko.observable(data.position);
-    self.statusReport = ko.observable(data.statusReport);
-    self.telemetry = ko.observable(data.telemetry);
-    self.thirdParty = ko.observable(data.thirdParty);
-    self.wxReport = ko.observable(data.wxReport);
-};
-
 function APRSSettings(appSettingsDB) {
     var self = this;
     
@@ -69,6 +52,7 @@ function APRSSettings(appSettingsDB) {
     self.AX_25_SOFTWAREVERSION = 'APZ678';
     
     self.packetTypeUtil = new PacketTypeUtil();
+    self.stationMarkerIcon = new StationMarkerIcon();
     
 	//Storage of defaults here
 	self.callsign = ko.observable('N0CALL');
@@ -89,18 +73,12 @@ function APRSSettings(appSettingsDB) {
         self
     );
     
-    self.packetFilterSettings = new PacketFilterSettings({
-        gpgga: true
-        , item: true
-        , message: true
-        , micE: true
-        , object: true
-        , position: true
-        , statusReport: true
-        , telemetry: true
-        , thirdParty: true
-        , wxReport: true
-    });
+    // Keep these two lists seperate as the allowed packet filters are sub arrays, which have to remain
+    // intact for the checkbox values... or do they?  will && indexof each character work for the checked value?
+    self.packetFilterSettings = new ko.observableArray([]);
+    self.allowedPacketFilters = [];
+    
+    self.stationTypeFilterSettings = new ko.observableArray([]);
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -117,8 +95,6 @@ function APRSSettings(appSettingsDB) {
             return '-';   
         }
     });
-    
-    self.allowedPacketFilters = [];
     
     // OTHER METHODS
     self.sendPosIntervalMin = ko.computed(function() {
@@ -181,25 +157,42 @@ function APRSSettings(appSettingsDB) {
             }
         });
         
+        // load default packet filter settings
+        ko.utils.arrayForEach(self.packetTypeUtil.PacketTypes, function(f) {
+            self.packetFilterSettings.push(f.code);
+        });
+        
+        // load packet filters if they exist
         self.db.findOne({ settingsName: 'PACKET_FILTERS' }, function (err, filters) {
             if(err) {
                 console.log('Failed to load packet filters');
                 console.log(err);
             } else {
                 if(filters) {
-                    self.packetFilterSettings.gpgga(filters.gpgga)
-                    , self.packetFilterSettings.item(filters.item)
-                    , self.packetFilterSettings.message(filters.message)
-                    , self.packetFilterSettings.micE(filters.micE)
-                    , self.packetFilterSettings.object(filters.object)
-                    , self.packetFilterSettings.position(filters.position)
-                    , self.packetFilterSettings.statusReport(filters.statusReport)
-                    , self.packetFilterSettings.telemetry(filters.telemetry)
-                    , self.packetFilterSettings.thirdParty(filters.thirdParty)
-                    , self.packetFilterSettings.wxReport(filters.wxReport)
+                    self.packetFilterSettings(filters.packetTypes);
                 }
-                
-                self.allowedPacketFilters = self.GetAllowedPacketTypeSymbols();
+            }
+        });
+        
+        self.allowedPacketFilters = [];
+        
+        ko.utils.arrayForEach(self.packetFilterSettings(), function(f) {
+            self.allowedPacketFilters = self.allowedPacketFilters.concat(self.packetTypeUtil.GetSymbolsByCode(f));
+        });
+        
+        // load default station type filters
+        ko.utils.arrayForEach(self.stationMarkerIcon.symbols, function(symbol) {
+            self.stationTypeFilterSettings.push(symbol.key);
+        });
+        
+        self.db.findOne({ settingsName: 'STATION_TYPE_FILTERS' }, function(err, filters) {
+            if(err) {
+                console.log('Failed to load station tye filters');
+                console.log(err);
+            } else {
+                if(filters) {
+                    self.stationTypeFilterSettings(filters.symbols);
+                }
             }
         });
     };
@@ -258,17 +251,32 @@ function APRSSettings(appSettingsDB) {
             { settingsName: 'PACKET_FILTERS' }
             , {
                 $set: {
-                    settingsName: self.packetFilterSettings.settingsName
-                    , gpgga: self.packetFilterSettings.gpgga()
-                    , item: self.packetFilterSettings.item()
-                    , message: self.packetFilterSettings.message()
-                    , micE: self.packetFilterSettings.micE()
-                    , object: self.packetFilterSettings.object()
-                    , position: self.packetFilterSettings.position()
-                    , statusReport: self.packetFilterSettings.statusReport()
-                    , telemetry: self.packetFilterSettings.telemetry()
-                    , thirdParty: self.packetFilterSettings.thirdParty()
-                    , wxReport: self.packetFilterSettings.wxReport()
+                    packetTypes: self.packetFilterSettings()
+                }
+            }
+            , { upsert: true }
+            , function(err, numReplaced, upsert) {
+                if(err) {
+                    console.log(err);
+                } else {
+                    self.allowedPacketFilters = [];
+                    
+                    ko.utils.arrayForEach(self.packetFilterSettings(), function(f) {
+                        self.allowedPacketFilters = self.allowedPacketFilters.concat(self.packetTypeUtil.GetSymbolsByCode(f));
+                    });
+                }
+            }
+        );
+        
+        return true;   
+    };
+    
+    self.saveStationTypeFilterSettings = function() {
+        self.db.update(
+            { settingsName: 'STATION_TYPE_FILTERS' }
+            , {
+                $set: {
+                    symbols: self.stationTypeFilterSettings()
                 }
             }
             , { upsert: true }
@@ -279,55 +287,7 @@ function APRSSettings(appSettingsDB) {
             }
         );
         
-        self.allowedPacketFilters = self.GetAllowedPacketTypeSymbols();
-        
-        return true;   
-    };
-    
-    self.GetAllowedPacketTypeSymbols = function() {
-        var retVal = [];
-        
-        if(self.packetFilterSettings.gpgga() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('GPGGA'));
-        } 
-        
-        if(self.packetFilterSettings.item() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('ITEM'));
-        }
-        
-        if(self.packetFilterSettings.message() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('MESSAGE'));
-        }
-        
-        if(self.packetFilterSettings.micE() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('MIC-E'));
-        }
-        
-        if(self.packetFilterSettings.object() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('OBJECT'));
-        }
-        
-        if(self.packetFilterSettings.position() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('POSITION'));
-        }
-        
-        if(self.packetFilterSettings.statusReport() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('STATUS_REPORT'));
-        }
-        
-        if(self.packetFilterSettings.telemetry() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('TELEMETRY'));
-        }
-        
-        if(self.packetFilterSettings.thirdParty() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('THIRD_PARTY'));
-        }
-        
-        if(self.packetFilterSettings.wxReport() == true) {
-            retVal = retVal.concat(self.packetTypeUtil.GetSymbolsByCode('WX_REPORT'));
-        }
-        
-        return retVal;
+        return true;  
     };
     
     self.cancelSave = function() {

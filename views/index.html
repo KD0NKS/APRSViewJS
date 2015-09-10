@@ -314,14 +314,12 @@
                                             </h4>
                                         </div>
                                     </a>
-                                    <div id="stationTypeFilterPanel" class="panel-collapse collapse">
-                                        <div class="panel-body" style="max-height: 300px; overflow-y: auto;">
-                                            <div data-bind="foreach: stationMarkerIcon.symbols">
-                                                <div>
-                                                <input type="checkbox" />
+                                    <div id="stationTypeFilterPanel" class="panel-collapse collapse"  data-bind="with: aprsSettings">
+                                        <div class="panel-body" style="max-height: 300px; overflow-y: auto;" data-bind="foreach: stationMarkerIcon.symbols">
+                                            <div>
+                                                <input type="checkbox" data-bind="value: key, checked: $parent.stationTypeFilterSettings(), click: $parent.saveStationTypeFilterSettings" />
                                                 <img data-bind="attr:{src: ('../css/images/station' + value )}" />
                                                 <label style="width: 175px;"><span data-bind="text: name"></span></label>
-                                                </div>
                                             </div>
                                         </div>
                                         
@@ -337,46 +335,10 @@
                                         </div>
                                     </a>
                                     <div id="packetTypeFilterPanel" class="panel-collapse collapse" data-bind="with: aprsSettings">
-                                        <div class="panel-body" style="max-height: 300px; overflow-y: auto;">
-                                            <div class="labelInputCont">
-                                                <label for="gpgga" class="settingsLabel">GPGGA:</label>
-                                                <input name="gpgga" type="checkbox" data-bind="checked: packetFilterSettings.gpgga, valueUpdate: 'click', click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="item" class="settingsLabel">Item:</label>
-                                                <input name="item" type="checkbox" data-bind="checked: packetFilterSettings.item, click: savePacketFilterSettings" />
-                                            </div>
+                                        <div class="panel-body" style="max-height: 300px; overflow-y: auto;" data-bind="foreach: packetTypeUtil.PacketTypes">
                                             <div>
-                                                <label for="message" class="settingsLabel">Message:</label>
-                                                <input name="message" type="checkbox" data-bind="checked: packetFilterSettings.message, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="micE" class="settingsLabel">Mic-E:</label>
-                                                <input name="micE" type="checkbox" data-bind="checked: packetFilterSettings.micE, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div>
-                                                <label for="cbObject" class="settingsLabel">Object:</label>
-                                                <input name="cbObject" type="checkbox" data-bind="checked: packetFilterSettings.object, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="position" class="settingsLabel">Position:</label>
-                                                <input name="position" type="checkbox" data-bind="checked: packetFilterSettings.position, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="statusReport" class="settingsLabel">Status Report:</label>
-                                                <input name="statusReport" type="checkbox" data-bind="checked: packetFilterSettings.statusReport, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="telemetry" class="settingsLabel">Telemetry:</label>
-                                                <input name="telemetry" type="checkbox" data-bind="checked: packetFilterSettings.telemetry, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="thirdParty" class="settingsLabel">Third Party:</label>
-                                                <input name="thirdParty" type="checkbox" data-bind="checked: packetFilterSettings.thirdParty, click: savePacketFilterSettings" />
-                                            </div>
-                                            <div class="labelInputCont">
-                                                <label for="wxReport" class="settingsLabel">WX Report:</label>
-                                                <input name="wxReport" type="checkbox" data-bind="checked: packetFilterSettings.wxReport, click: savePacketFilterSettings" />
+                                                <input type="checkbox" data-bind="value: code, checked: $parent.packetFilterSettings(), click: $parent.savePacketFilterSettings" />
+                                                <label data-bind="text: name" />
                                             </div>
                                         </div>
                                     </div>
@@ -388,7 +350,7 @@
                                             </h4>
                                         </div>
                                     </a>
-                                    <div id="stationFilterPanel" class="panel-collapse collapse">
+                                    <div id="stationFilterPanel" class="panel-collapse collapse" data-bind="with: aprsSettings">
                                         <div class="panel-body">
                                         </div>
                                     </div>
