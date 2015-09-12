@@ -69,16 +69,20 @@ function APRSSettings(appSettingsDB) {
     self.stationSendPositionInterval = ko.observable(1800000); // in milliseconds
     
     // Observable settings objects
-    self.stationSettings = new StationSettings(
-        self
-    );
+    self.stationSettings = new StationSettings(self);
     
     // Keep these two lists seperate as the allowed packet filters are sub arrays, which have to remain
     // intact for the checkbox values... or do they?  will && indexof each character work for the checked value?
     self.packetFilterSettings = new ko.observableArray([]);
     self.allowedPacketFilters = [];
     
+    // these are allowed station types
     self.stationTypeFilterSettings = new ko.observableArray([]);
+    
+    // callsign/station filters
+    self.blockedStationFilters = new ko.observableArray([]);
+    self.newCallsignFilter = new ko.observable();
+    self.newSSIDCallsignFilter = new ko.observable(false);
     
     self.stationSymbolTable = ko.computed(function() {
         if(self.stationIcon()) {
@@ -187,11 +191,23 @@ function APRSSettings(appSettingsDB) {
         
         self.db.findOne({ settingsName: 'STATION_TYPE_FILTERS' }, function(err, filters) {
             if(err) {
-                console.log('Failed to load station tye filters');
+                console.log('Failed to load station type filters');
                 console.log(err);
             } else {
                 if(filters) {
                     self.stationTypeFilterSettings(filters.symbols);
+                }
+            }
+        });
+        
+        // blocked stations
+        self.db.findOne({ settingsName: 'BLOCKED_STATIONS_FILTERS' }, function(err, filters) {
+            if(err) {
+                console.log('Failed to load blocked station filters');
+                console.log(err);
+            } else {
+                if(filters) {
+                    self.blockedStationFilters(filters.callsigns);
                 }
             }
         });
@@ -288,6 +304,50 @@ function APRSSettings(appSettingsDB) {
         );
         
         return true;  
+    };
+    
+    self.addBlockedStationFilter = function() {
+        if(self.newSSIDCallsignFilter() == true) {
+            self.blockedStationFilters.push(self.newCallsignFilter() + '*');
+        } else {
+            self.blockedStationFilters.push(self.newCallsignFilter());
+        }
+        
+        self.saveBlockedStationFilters();
+        
+        self.newCallsignFilter('');
+        self.newSSIDCallsignFilter(false);
+        
+        return true;
+    };
+    
+    self.removeBlockedStationFilter = function(data) {
+        try {
+            self.blockedStationFilters.remove(data);
+            self.saveBlockedStationFilters();
+            
+            return true;
+        } catch(e) {
+            console.log('Failed to remove ' + data + ' from blocked stations filter list.');
+            return false;
+        }
+    };
+    
+    self.saveBlockedStationFilters = function() {
+        self.db.update(
+            { settingsName: 'BLOCKED_STATIONS_FILTERS' }
+            , {
+                $set: {
+                    callsigns: self.blockedStationFilters()
+                }
+            }
+            , { upsert: true }
+            , function(err, numReplaced, upsert) {
+                if(err) {
+                    console.log(err);
+                }
+            }
+        );
     };
     
     self.cancelSave = function() {

@@ -99,7 +99,10 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span data-bind="text: message, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"></span>
+                                        <span data-bind="text: message, attr:{ 'title': rawPacket() }, style: { color: msgNumber() != '' ? (isAcked() == true ? '#468847' : '#c7254e') : 'black' }"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                ></span>
                                     </td>
                                     <td>
                                         <a href="#" data-bind="value: $data, click: $root.DeleteMessage">
@@ -322,9 +325,6 @@
                                                 <label style="width: 175px;"><span data-bind="text: name"></span></label>
                                             </div>
                                         </div>
-                                        
-                                        <div class="panel-footer">
-                                        </div>
                                     </div>
                                 
                                     <a href="#packetTypeFilterPanel" aria-controls="packetTypeFilterPanel" class="panel-default" data-toggle="collapse" data-parent="#filterAccordion" aria-expanded="true">
@@ -351,7 +351,28 @@
                                         </div>
                                     </a>
                                     <div id="stationFilterPanel" class="panel-collapse collapse" data-bind="with: aprsSettings">
-                                        <div class="panel-body">
+                                        <!-- ko if: blockedStationFilters().length == 0 -->
+                                        <div class="panel-body alert alert-info" role="alert">
+                                            <h4>No blocked stations</h4>
+                                        </div>
+                                        <!-- /ko -->
+                                        
+                                        <ul class="list-group" style="max-height: 300px; overflow-y: auto;" data-bind="foreach: blockedStationFilters()">
+                                            <li class="list-group-item">
+                                                <button type="button" data-bind="click: $parent.removeBlockedStationFilter">Delete</button>
+                                                <span data-bind="text: $data.replace('*', '')"></span>
+                                                <span data-bind="if: $data.indexOf('*') > 0"> - ALL</span>
+                                            </li>
+                                        </ul>
+                                        
+                                        <div class="panel-footer">
+                                            <label for="stationCallsignFilter">Callsign: </label>
+                                            <input id="stationCallsignFilter" type="text" data-bind="value: newCallsignFilter"  style="margin-right: 15px;" />
+                                            
+                                            <label for="stationAllCallsignFilter">Block All SSID's: </label>
+                                            <input id="stationAllCallsignFilter" type="checkbox" data-bind="checked: newSSIDCallsignFilter" style="margin-right: 15px;" />
+                                            
+                                            <button type="button" data-bind="click: addBlockedStationFilter">Add</button>
                                         </div>
                                     </div>
                                 </div>

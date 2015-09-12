@@ -150,6 +150,7 @@ function MessageObject(data) {
 	this.message = ko.observable(data.message);
 	this.groupName = ko.observable(data.groupName);
     this.isAcked = ko.observable(false);
+    this.rawPacket = ko.observable(data.rawPacket);
 };
 
 function pageViewModel() {

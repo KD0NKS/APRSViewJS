@@ -33,21 +33,31 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
         //return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
         
         if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0) {
-            if(packet.symbolTableId == '/') {
-                return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolTableId + packet.symbolCode) > 0;
-            } else {
-                return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolCode) > 0;
+            if(!self.IsBlockedCallsign(packet.callsign)) {
+                if(packet.symbolTableId == '/') {
+                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolTableId + packet.symbolCode) > 0;
+                } else {
+                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolCode) > 0;
+                }
             }
-            
-            return true;
-        } else {
-            return false;
         }
+        
+        return false;
     });
     
     self.filteredMessages = self.messages.filter(function(packet) {
-        return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
+        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0) {
+            return !self.IsBlockedCallsign(packet.callsign);
+        }
+        
+        return false;
     });
+            
+    self.IsBlockedCallsign = function(callsign) {
+        return (aprsSettings.blockedStationFilters.indexOf(callsign) > 0
+                || aprsSettings.blockedStationFilters.indexOf(callsign.split('-')[0] + '*') > 0)
+                ;
+    };
     
     self.LoadConnections = function() {
         var args = Array();
