@@ -241,6 +241,7 @@ function LayerManager(cachedTilesDatabase) {
             }
         ));
         
+        /*
 		self.overlays.push(new L.NamedImageOverlay(
 			'http://radar.weather.gov/ridge/RadarImg/N0R/EAX_N0R_0.gif'
 			, [[41.3440, -97.0287], [36.2668, -91.4900]]
@@ -249,7 +250,7 @@ function LayerManager(cachedTilesDatabase) {
 			}
 		));
         
-        /*
+        
         self.overlays.push(new L.TileLayer.NamedWMS(
             "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
             , {
