@@ -32,12 +32,12 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     self.filteredMapPackets = self.mapPackets.filter(function(packet) {
         //return aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0;
         
-        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0) {
+        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > -1) {
             if(!self.IsBlockedCallsign(packet.callsign)) {
                 if(packet.symbolTableId == '/') {
-                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolTableId + packet.symbolCode) > 0;
+                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolTableId + packet.symbolCode) > -1;
                 } else {
-                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolCode) > 0;
+                    return aprsSettings.stationTypeFilterSettings().indexOf(packet.symbolCode) > -1;
                 }
             }
         }
@@ -46,7 +46,7 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     });
     
     self.filteredMessages = self.messages.filter(function(packet) {
-        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > 0) {
+        if(aprsSettings.allowedPacketFilters.indexOf(packet.messageType) > -1) {
             return !self.IsBlockedCallsign(packet.callsign);
         }
         
@@ -54,8 +54,8 @@ function APRSConnectionManager(aprsSettings, appSettingsDB) {
     });
             
     self.IsBlockedCallsign = function(callsign) {
-        return (aprsSettings.blockedStationFilters.indexOf(callsign) > 0
-                || aprsSettings.blockedStationFilters.indexOf(callsign.split('-')[0] + '*') > 0)
+        return (aprsSettings.blockedStationFilters.indexOf(callsign) > -1
+                || aprsSettings.blockedStationFilters.indexOf(callsign.split('-')[0] + '*') > -1)
                 ;
     };
     
