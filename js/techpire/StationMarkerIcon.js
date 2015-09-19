@@ -174,6 +174,103 @@ function StationMarkerIcon() {
         , { key: '~', value: "/AlternateTable/TNCSwitchStream2.gif", name: "TNC Switch Stream 2" }
     ];
     
+    self.overlays = [
+        { key: '0', value: "/Overlay/Zero.gif" }
+        , { key: '1', value: "/Overlay/One.gif" }
+        , { key: '2', value: "/Overlay/Two.gif" }
+        , { key: '3', value: "/Overlay/Three.gif" }
+        , { key: '4', value: "/Overlay/Four.gif" }
+        , { key: '5', value: "/Overlay/Five.gif" }
+        , { key: '6', value: "/Overlay/Six.gif" }
+        , { key: '7', value: "/Overlay/Seven.gif" }
+        , { key: '8', value: "/Overlay/Eight.gif" }
+        , { key: '9', value: "/Overlay/Nine.gif" }
+        , { key: 'a', value: "/Overlay/la.gif" }
+        , { key: 'b', value: "/Overlay/lb.gif" }
+        , { key: 'c', value: "/Overlay/lc.gif" }
+        , { key: 'd', value: "/Overlay/ld.gif" }
+        , { key: 'e', value: "/Overlay/le.gif" }
+        , { key: 'f', value: "/Overlay/lf.gif" }
+        , { key: 'g', value: "/Overlay/lg.gif" }
+        , { key: 'h', value: "/Overlay/lh.gif" }
+        , { key: 'i', value: "/Overlay/li.gif" }
+        , { key: 'j', value: "/Overlay/lj.gif" }
+        , { key: 'k', value: "/Overlay/lk.gif" }
+        , { key: 'l', value: "/Overlay/ll.gif" }
+        , { key: 'm', value: "/Overlay/lm.gif" }
+        , { key: 'n', value: "/Overlay/ln.gif" }
+        , { key: 'o', value: "/Overlay/lo.gif" }
+        , { key: 'p', value: "/Overlay/lp.gif" }
+        , { key: 'q', value: "/Overlay/lq.gif" }
+        , { key: 'r', value: "/Overlay/lr.gif" }
+        , { key: 's', value: "/Overlay/ls.gif" }
+        , { key: 't', value: "/Overlay/lt.gif" }
+        , { key: 'u', value: "/Overlay/lu.gif" }
+        , { key: 'v', value: "/Overlay/lv.gif" }
+        , { key: 'w', value: "/Overlay/lw.gif" }
+        , { key: 'x', value: "/Overlay/lx.gif" }
+        , { key: 'y', value: "/Overlay/ly.gif" }
+        , { key: 'z', value: "/Overlay/lz.gif" }
+        , { key: 'A', value: "/Overlay/A.gif" }
+        , { key: 'B', value: "/Overlay/B.gif" }
+        , { key: 'C', value: "/Overlay/C.gif" }
+        , { key: 'D', value: "/Overlay/D.gif" }
+        , { key: 'E', value: "/Overlay/E.gif" }
+        , { key: 'F', value: "/Overlay/F.gif" }
+        , { key: 'G', value: "/Overlay/G.gif" }
+        , { key: 'H', value: "/Overlay/H.gif" }
+        , { key: 'I', value: "/Overlay/I.gif" }
+        , { key: 'J', value: "/Overlay/J.gif" }
+        , { key: 'K', value: "/Overlay/K.gif" }
+        , { key: 'L', value: "/Overlay/L.gif" }
+        , { key: 'M', value: "/Overlay/M.gif" }
+        , { key: 'N', value: "/Overlay/N.gif" }
+        , { key: 'O', value: "/Overlay/O.gif" }
+        , { key: 'P', value: "/Overlay/P.gif" }
+        , { key: 'Q', value: "/Overlay/Q.gif" }
+        , { key: 'R', value: "/Overlay/R.gif" }
+        , { key: 'S', value: "/Overlay/S.gif" }
+        , { key: 'T', value: "/Overlay/T.gif" }
+        , { key: 'U', value: "/Overlay/U.gif" }
+        , { key: 'V', value: "/Overlay/V.gif" }
+        , { key: 'W', value: "/Overlay/W.gif" }
+        , { key: 'X', value: "/Overlay/X.gif" }
+        , { key: 'Y', value: "/Overlay/Y.gif" }
+        , { key: 'Z', value: "/Overlay/Z.gif" }
+        , { key: '!', value: "/Overlay/Exclamation.gif" }
+        , { key: '"', value: "/Overlay/dQuote.gif" }
+        , { key: '#', value: "/Overlay/hash.gif" }
+        , { key: '$', value: "/Overlay/dollar.gif" }
+        , { key: '%', value: "/Overlay/pct.gif" }
+        , { key: '&', value: "/Overlay/amp.gif" }
+        , { key: '\'', value: "/Overlay/sQuote.gif" }
+        , { key: '(', value: "/Overlay/oParen.gif" }
+        , { key: ')', value: "/Overlay/cParen.gif" }
+        , { key: '*', value: "/Overlay/asterisk.gif" }
+        , { key: '+', value: "/Overlay/plus.gif" }
+        , { key: ',', value: "/Overlay/comma.gif" }
+        , { key: '-', value: "/Overlay/dash.gif" }
+        , { key: '.', value: "/Overlay/period.gif" }
+        , { key: '/', value: "/Overlay/fSlash.gif" }
+        , { key: ':', value: "/Overlay/colon.gif" }
+        , { key: ';', value: "/Overlay/sColon.gif" }
+        , { key: '<', value: "/Overlay/oaBracket.gif" }
+        , { key: '=', value: "/Overlay/equal.gif" }
+        , { key: '>', value: "/Overlay/caBracket.gif" }
+        , { key: '?', value: "/Overlay/question.gif" }
+        , { key: '@', value: "/Overlay/at.gif" }
+        , { key: '[', value: "/Overlay/osBracket.gif" }
+        , { key: '\\', value: "/Overlay/bSlash.gif" }
+        , { key: ']', value: "/Overlay/csBracket.gif" }
+        , { key: '^', value: "/Overlay/caret.gif" }
+        , { key: '_', value: "/Overlay/underscore.gif" }
+        , { key: '`', value: "/Overlay/grave.gif" }
+        , { key: '{', value: "/Overlay/oBracket.gif" }
+        , { key: '|', value: "/Overlay/pipe.gif" }
+        , { key: '}', value: "/Overlay/cBracket.gif" }
+        , { key: '~', value: "/Overlay/tilde.gif" }
+    ];
+    
     self.getSymbolPath = function(symbolTableId, symbolCode) {
         var retVal = self.symbols.filter(function(s) {
             return s.key == (symbolTableId + symbolCode) || s.key == symbolCode;
@@ -191,4 +288,32 @@ function StationMarkerIcon() {
             return s.key.charAt(0) == ('/');
         });
     };
+    
+    self.getOverlayPath = function(symbolTableId, symbolCode) {
+        if(symbolTableId != '/') {
+            var retVal = self.overlays.filter(function(c) {
+                return c.key == symbolTableId;
+            });
+            
+            if(retVal.length > 0) {
+                return retVal[0].value;
+            }
+        }
+        
+        return null;
+    };
+    
+    self.GetIconLayers = function(symbolTableId, symbolCode) {
+        var retVal = [];
+        var overlay = self.getOverlayPath(symbolTableId, symbolCode);
+        
+        if(overlay != null) {
+            retVal[0] = overlay;
+            retVal[1] = self.getSymbolPath(symbolTableId, symbolCode);
+        } else {
+            retVal[0] = self.getSymbolPath(symbolTableId, symbolCode);
+        }
+        
+        return retVal;
+    }
 }

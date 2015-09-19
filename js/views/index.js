@@ -587,11 +587,14 @@ function readServerData() {
 						lastMarker.options.angle = 0;
 					}
                     
+                    var iconPaths = stationMarkerIcon.GetIconLayers(data.symbolTableId, data.symbolCode);
+                    
 					var marker = new L.APRSPositionMarker(
 						[data.latitude, data.longitude]
 						, { 
 							icon: L.icon({
-								iconUrl: '../css/images/station' + stationMarkerIcon.getSymbolPath(data.symbolTableId, data.symbolCode)
+								iconUrl: ('../css/images/station' + iconPaths[0])
+                                , shadowUrl: (iconPaths.length > 1) ? ('../css/images/station' + iconPaths[1]) : null
 							})
 							, receivedTime: Date.parse(data.receivedTime)
 							, callsign: data.name
@@ -664,11 +667,14 @@ function readServerData() {
 					lastMarker.options.angle = 0;
 				}
                 
+                var iconPaths = stationMarkerIcon.GetIconLayers(data.symbolTableId, data.symbolCode);
+                
 				var marker = new L.APRSPositionMarker(
 					[data.latitude, data.longitude]
 					, { 
 						icon: L.icon({
-							iconUrl: '../css/images/station' + stationMarkerIcon.getSymbolPath(data.symbolTableId, data.symbolCode)
+							iconUrl: ('../css/images/station' + iconPaths[0])
+                            , shadowUrl: (iconPaths.length > 1) ? ('../css/images/station' + iconPaths[1]) : null
 						})
 						, receivedTime: Date.parse(data.receivedTime)
 						, callsign: data.callsign

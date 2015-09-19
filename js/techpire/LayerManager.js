@@ -226,6 +226,7 @@ function LayerManager(cachedTilesDatabase) {
                 , transparent: true
                 , attribution: "NOAA/NOS nowCOAST"
                 , opacity: 0.5
+                , refreshRate: 2
             }
         ));
         
@@ -238,6 +239,7 @@ function LayerManager(cachedTilesDatabase) {
                 , transparent: true
                 , attribution: "NOAA/NWS"
                 , opacity: 0.5
+                , refreshRate: 2
             }
         ));
         
