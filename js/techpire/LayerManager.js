@@ -243,18 +243,8 @@ function LayerManager(cachedTilesDatabase) {
             }
         ));
         
-        /*
-		self.overlays.push(new L.NamedImageOverlay(
-			'http://radar.weather.gov/ridge/RadarImg/N0R/EAX_N0R_0.gif'
-			, [[41.3440, -97.0287], [36.2668, -91.4900]]
-			, {
-				displayName: 'NOR'
-			}
-		));
-        
-        
         self.overlays.push(new L.TileLayer.NamedWMS(
-            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/wwa"
             , {
                 displayName: 'Tornado Warnings'
                 , layers: 'WARN_SHORT_TOR'
@@ -266,7 +256,7 @@ function LayerManager(cachedTilesDatabase) {
         ));
         
         self.overlays.push(new L.TileLayer.NamedWMS(
-            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs"
+            "http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/wwa"
             , {
                 displayName: 'Severe Thunderstorm Warnings'
                 , layers: 'WARN_SHORT_SVR'
@@ -276,7 +266,6 @@ function LayerManager(cachedTilesDatabase) {
                 , opacity: 0.5
             }
         ));
-        */
 	};
 	
 	self.LoadMapLayers = function() {
