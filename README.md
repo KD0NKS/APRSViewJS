@@ -1,3 +1,7 @@
+Currently rewriting key parts of this projects as separate components and switching to using Electron.
+
+See js-aprs-fap, js-aprs-is.  More projects planned including GPS, ULS integration, tnc lib, app engine to tie all components together.  This will allow for independent UIs to be created.  Any help would be much appreciated!
+
 #APRSViewJS
 
 Experimental APRS Client using NW (NodeWebkit).
