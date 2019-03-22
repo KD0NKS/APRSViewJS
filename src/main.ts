@@ -12,4 +12,7 @@ new Vue({
   router,
   store,
   render: (h) => h(App),
+  created() {
+      this.$store.dispatch('getStationSettings')
+  }
 }).$mount('#app');

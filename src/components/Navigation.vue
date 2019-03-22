@@ -17,7 +17,7 @@
                     </v-list-tile-avatar>
 
                     <v-list-tile-content>
-                        <v-list-tile-title>KD0NKS</v-list-tile-title>
+                        <v-list-tile-title>{{ callsign }}</v-list-tile-title>
                     </v-list-tile-content>
 
                     <v-list-tile-action>
@@ -54,7 +54,12 @@
 
 <script>
     export default {
-        data() {
+        computed: {
+            callsign() {
+                return this.$store.state.stationSettings.callsign;
+            }
+        }
+        , data() {
             return {
                 drawer: true
                 , items: [

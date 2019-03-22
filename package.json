@@ -12,6 +12,7 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "js-aprs-engine": "git://github.com:KD0NKS/js-aprs-engine.git#2019-03-19_SaveSettings",
     "register-service-worker": "^1.5.2",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
