@@ -1,4 +1,5 @@
-Currently rewriting key parts of this projects as separate components and switching to using Electron.
+# Update
+Bear with me here.  The project is out of date, I know!  I can't even get it to recompile.  There were a couple major setbacks when dependencies on this project went dead or were completely pulled.  However, I am working on updating the project to use VueJS and Electron.  The only downside is I have to learn VueJS.  So far the project is broken out into this, js-aprs-is, js-aprs-fap, and js-aprs-engine (very early stages).  I am working on a very intuitive interface to make this easier to use!
 
 See js-aprs-fap, js-aprs-is.  More projects planned including GPS, ULS integration, tnc lib, app engine to tie all components together.  This will allow for independent UIs to be created.  Any help would be much appreciated!
 
