@@ -12,12 +12,14 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@types/vuelidate": "^0.7.4",
     "js-aprs-engine": "git://github.com:KD0NKS/js-aprs-engine.git#2019-03-19_SaveSettings",
     "register-service-worker": "^1.5.2",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
+    "vuelidate": "^0.7.4",
     "vuetify": "^1.3.0",
     "vuex": "^3.0.1"
   },

@@ -1,5 +1,18 @@
 <template>
-  <div class="settings">
-    <h1>Settings</h1>
-  </div>
+    <div class="settings">
+        <SettingsMain></SettingsMain>
+    </div>
 </template>
+
+<script lang="ts">
+    import { Component, Vue } from 'vue-property-decorator';
+    import SettingsMain from '@/components/SettingsMain.vue';
+
+    @Component({
+        components: {
+            SettingsMain
+        }
+    })
+
+    export default class About extends Vue {}
+</script>

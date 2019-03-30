@@ -9,13 +9,19 @@ export default new Vuex.Store({
         stationSettings: new StationSettings()
     },
     mutations: {
-        setStationSettings(state, settings) {
+        setStationSettings(state, settings: StationSettings) {
+            console.log('saving station settings');
             state.stationSettings = settings;
         }
     },
     actions: {
-        async getStationSettings({ state, commit }) {
-            commit('setStationSettings', new StationSettings())
+        getStationSettings({ state, commit }) {
+            commit('setStationSettings', new StationSettings());
         }
     },
+    getters: {
+        StationSettings(state) {
+            return state.stationSettings;
+        }
+    }
 });

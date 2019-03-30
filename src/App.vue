@@ -11,6 +11,8 @@
     import Navigation from "./components/Navigation";
     import Router from "./router";
 
+    import 'vuetify/dist/vuetify.min.css';
+
     export default {
         name: "App",
         components: {
