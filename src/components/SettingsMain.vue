@@ -36,9 +36,32 @@
                                     label="Passcode"
                                     required>
                             </v-text-field>
+
+                            <v-select
+                                    :items="aprsSymbols"
+                                    v-model="stationInfo.symbol"
+                                    item-text="name"
+                                    item-value="key"
+                                    label="Station Symbol"
+                                    @blur="updateSymbol(`${stationInfo.symbol}`)"
+                                    @change="updateSymbol(`${stationInfo.symbol}`)"
+                                    >
+                            </v-select>
+
+                            <v-select
+                                    :items="aprsSymbolOverlays"
+                                    v-model="stationInfo.symbolOverlay"
+                                    item-text="name"
+                                    item-value = "key"
+                                    label="Symbol Overlay"
+                                    :disabled="!isOverlayEnabled"
+                                    @blur="updateOverlay(`${stationInfo.symbolOverlay}`)"
+                                    @change="updateOverlay(`${stationInfo.symbolOverlay}`)"
+                                    >
+                            </v-select>
                         </v-container>
 
-                        <v-btn color="success" type="submit" :disabled="this.$v.stationInfo.$invalid" form="station-settings-form">Save</v-btn>
+                        <v-btn color="success" type="submit" :disabled="$v.stationInfo.$invalid" form="station-settings-form">Save</v-btn>
                         <v-btn color="error" @click="resetStationInfo">Reset</v-btn>
                     </v-form>
                 </v-card>
@@ -48,18 +71,22 @@
 </template>
 
 <script lang="ts">
-    import { StationSettings } from 'js-aprs-engine';
+    import { APRSSymbol, APRSSymbolService, StationSettings, StringUtil } from 'js-aprs-engine';
     import { validationMixin } from 'vuelidate';
-    import { required } from 'vuelidate/lib/validators';
+    import { required, requiredIf } from 'vuelidate/lib/validators';
     import store from '../store';
+
+    let symbolSvc = new APRSSymbolService();
 
     export default {
         data: () => ({
             panel: [true]
             , stationInfo: {
                 callsign: store.state.stationSettings.callsign
-                , ssid: store.state.stationSettings.ssid
                 , passcode: store.state.stationSettings.passcode
+                , ssid: store.state.stationSettings.ssid
+                , symbol: store.state.stationSettings.symbol
+                , symbolOverlay: store.state.stationSettings.symbol
             }
         })
         , created() {
@@ -88,12 +115,21 @@
 
                 return errors;
             }
+            , aprsSymbols() {
+                return symbolSvc.GetSymbols();
+            }
+            , aprsSymbolOverlays() {
+                return symbolSvc.GetOverlays();
+            }
+            , isOverlayEnabled(): boolean {
+                return !StringUtil.IsNullOrWhiteSpace(this.stationInfo.symbol) && symbolSvc.GetSymbolByKey(this.stationInfo.symbol).isAllowOverlay === true;
+            }
         }
         , methods: {
             saveStationInfo() {
                 this.$v.$touch();
 
-                if(!this.$v.stationInfo.$invalid) {
+                if(!this.$data.stationInfo.$invalid) {
                     store.commit('setStationSettings', {
                         callsign: this.stationInfo.callsign
                         , passcode: this.stationInfo.passcode
@@ -102,14 +138,24 @@
                 }
             }
             , resetStationInfo() {
-                console.log('Reset');
-
                 this.stationInfo.callsign = store.state.stationSettings.callsign;
-                this.stationInfo.ssid = store.state.stationSettings.ssid;
                 this.stationInfo.passcode = store.state.stationSettings.passcode;
+                this.stationInfo.ssid = store.state.stationSettings.ssid;
+                this.stationInfo.symbol = store.state.stationSettings.symbol;
+                this.stationInfo.symbolOverlay = store.state.stationSettings.symbolOverlay;
+            }
+            , updateSymbol(key: string) {
+                this.stationInfo.symbol = key;
+
+                if(symbolSvc.GetSymbolByKey(this.stationInfo.symbol).isAllowOverlay === false) {
+                    this.stationInfo.symbolOverlay = null;
+                }
+            }
+            , updateOverlay(key: string) {
+                this.stationInfo.symbolOverlay = key;
             }
         }
-        , mixins: [validationMixin]
+        , mixins: [ validationMixin ]
         , validations: {
             stationInfo: {
                 callsign: { required }
