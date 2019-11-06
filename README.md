@@ -1,3 +1,6 @@
+# THIS REPO IS DEAD!!!
+Please see: https://github.com/KD0NKS/aprs-view-js for the latest stuff.
+
 # Update
 Bear with me here.  The project is out of date, I know!  I can't even get it to recompile.  There were a couple major setbacks when dependencies on this project went dead or were completely pulled.  However, I am working on updating the project to use VueJS and Electron.  The only downside is I have to learn VueJS.  So far the project is broken out into this, js-aprs-is, js-aprs-fap, and js-aprs-engine (very early stages).  I am working on a very intuitive interface to make this easier to use!
 
